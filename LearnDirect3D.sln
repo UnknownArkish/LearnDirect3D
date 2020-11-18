@@ -8,6 +8,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Environment", "Environment\Environment.vcxproj", "{E6958FD2-D109-4B69-93BE-ECB36F56BA36}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0101_HelloDirectX", "0101_HelloDirectX\0101_HelloDirectX.vcxproj", "{7CAA17E2-682E-442D-B6DA-289FAACA891F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6958FD2-D109-4B69-93BE-ECB36F56BA36} = {E6958FD2-D109-4B69-93BE-ECB36F56BA36}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

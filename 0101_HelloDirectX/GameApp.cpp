@@ -53,7 +53,7 @@ void GameApp::DrawScene()
 	_pd3dImmediateContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
 	_pd3dImmediateContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-
+	_BasePassShader.Use(_pd3dImmediateContext.Get());
 	_pd3dImmediateContext->DrawIndexed(36, 0, 0);
 
 	HR(_pSwapChain->Present(0, 0));
@@ -64,12 +64,19 @@ void GameApp::InitShader()
 	ComPtr<ID3DBlob> blob;
 
 	HR(CreateShaderFromFile(nullptr, L"TriangleVS.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
-	HR(_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, _pVertexShader.GetAddressOf()));
 
 	_pd3dDevice->CreateInputLayout(VertexLayout::BASE_PASS_INPUT_LAYOUT, 2, blob->GetBufferPointer(), blob->GetBufferSize(), _pInputLayout.GetAddressOf());
 
-	HR(CreateShaderFromFile(nullptr, L"TrianglePS.hlsl", "main", "ps_5_0", blob.ReleaseAndGetAddressOf()));
-	HR(_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, _pPixelShader.GetAddressOf()));
+	ShaderDeclareDesc desc;
+	ZeroMemory(&desc, sizeof(ShaderDeclareDesc));
+	desc.FileName = L"TriangleVS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "vs_5_0";
+	_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc);
+	desc.FileName = L"TrianglePS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "ps_5_0";
+	_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc);
 }
 
 void GameApp::InitResource()
@@ -171,12 +178,8 @@ void GameApp::InitResource()
 	// 设置图元类型，设定输入布局
 	_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_pd3dImmediateContext->IASetInputLayout(_pInputLayout.Get());
-	// 将着色器绑定到渲染管线
-	_pd3dImmediateContext->VSSetShader(_pVertexShader.Get(), nullptr, 0);
 	// 将更新好的常量缓冲区绑定到顶点着色器
 	_pd3dImmediateContext->VSSetConstantBuffers(0, 1, _pConstantBuffer.GetAddressOf());
-
-	_pd3dImmediateContext->PSSetShader(_pPixelShader.Get(), nullptr, 0);
 
 	// ******************
 	// 设置调试对象名
@@ -185,6 +188,6 @@ void GameApp::InitResource()
 	D3D11SetDebugObjectName(_pVertexBuffer.Get(), "VertexBuffer");
 	D3D11SetDebugObjectName(_pIndexBuffer.Get(), "IndexBuffer");
 	D3D11SetDebugObjectName(_pConstantBuffer.Get(), "ConstantBuffer");
-	D3D11SetDebugObjectName(_pVertexShader.Get(), "Cube_VS");
-	D3D11SetDebugObjectName(_pPixelShader.Get(), "Cube_PS");
+	_BasePassShader.VSSetDebugName("CUBE_VS");
+	_BasePassShader.PSSetDebugName("CUBE_VS");
 }

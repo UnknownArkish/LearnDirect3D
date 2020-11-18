@@ -13,6 +13,8 @@
 #include <DirectXMath.h>
 #include "GameTimer.h"
 
+#include "Common.h"
+
 class D3DApp
 {
 public:
@@ -50,9 +52,6 @@ protected:
 
 	GameTimer m_Timer;           // 计时器
 
-	// 使用模板别名(C++11)简化类型名
-	template <class T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// Direct3D 11
 	ComPtr<ID3D11Device> _pd3dDevice;                    // D3D11设备
 	ComPtr<ID3D11DeviceContext> _pd3dImmediateContext;   // D3D11设备上下文

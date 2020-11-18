@@ -2,6 +2,7 @@
 
 #include <D3DApp.h>
 
+#include <Shader.h>
 #include "ConstantBuffer.h"
 
 class GameApp : public D3DApp
@@ -25,8 +26,9 @@ private:
 	ComPtr<ID3D11Buffer> _pIndexBuffer;
 	ComPtr<ID3D11Buffer> _pConstantBuffer;
 
-	ComPtr<ID3D11VertexShader> _pVertexShader;
-	ComPtr<ID3D11PixelShader> _pPixelShader;
+	//ComPtr<ID3D11VertexShader> _pVertexShader;
+	//ComPtr<ID3D11PixelShader> _pPixelShader;
+	Shader _BasePassShader;
 
 	ConstantBuffer::BasePassBuffer _ConstantBuffer;
 };
