@@ -164,7 +164,10 @@
     <ClInclude Include="includes\GameTimer.h" />
     <ClInclude Include="includes\Macros.h" />
     <ClInclude Include="includes\Renderer.h" />
+    <ClInclude Include="includes\SamplerState.h" />
     <ClInclude Include="includes\Shader.h" />
+    <ClInclude Include="includes\Texture.h" />
+    <ClInclude Include="includes\TextureView.h" />
     <ClInclude Include="includes\VertexLayoutCommon.h" />
     <ClInclude Include="includes\WICTextureLoader.h" />
   </ItemGroup>
