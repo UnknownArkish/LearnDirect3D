@@ -36,6 +36,12 @@
     <ClCompile Include="includes\VertexLayoutCommon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\DXTrace.h">
@@ -69,6 +75,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="includes\VertexLayoutCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\WICTextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
