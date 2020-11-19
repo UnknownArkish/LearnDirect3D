@@ -30,6 +30,12 @@
     <ClCompile Include="Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\VertexLayout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\DXTrace.h">
@@ -53,5 +59,22 @@
     <ClInclude Include="includes\Common.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="includes\ConstantBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\VertexLayout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\ConstantBufferObjectCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\VertexLayout.hlsli">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

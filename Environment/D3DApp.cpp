@@ -32,11 +32,12 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	m_Enable4xMsaa(true),
 	m_4xMsaaQuality(0),
 	_pd3dDevice(nullptr),
-	_pd3dImmediateContext(nullptr),
+	_pd3dDeviceContext(nullptr),
 	_pSwapChain(nullptr),
 	_pDepthStencilBuffer(nullptr),
 	_pRenderTargetView(nullptr),
-	_pDepthStencilView(nullptr)
+	_pDepthStencilView(nullptr),
+	_pRenderer(new Renderer())
 {
 	ZeroMemory(&_ScreenViewport, sizeof(D3D11_VIEWPORT));
 
@@ -49,8 +50,8 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 D3DApp::~D3DApp()
 {
 	// 恢复所有默认设定
-	if (_pd3dImmediateContext)
-		_pd3dImmediateContext->ClearState();
+	if (_pd3dDeviceContext)
+		_pd3dDeviceContext->ClearState();
 }
 
 HINSTANCE D3DApp::AppInst()const
@@ -109,12 +110,14 @@ bool D3DApp::Init()
 	if (!InitDirect3D())
 		return false;
 
+	_pRenderer->Init(_pd3dDevice.Get());
+
 	return true;
 }
 
 void D3DApp::OnResize()
 {
-	assert(_pd3dImmediateContext);
+	assert(_pd3dDeviceContext);
 	assert(_pd3dDevice);
 	assert(_pSwapChain);
 
@@ -171,7 +174,7 @@ void D3DApp::OnResize()
 
 
 	// 将渲染目标视图和深度/模板缓冲区结合到管线
-	_pd3dImmediateContext->OMSetRenderTargets(1, _pRenderTargetView.GetAddressOf(), _pDepthStencilView.Get());
+	_pd3dDeviceContext->OMSetRenderTargets(1, _pRenderTargetView.GetAddressOf(), _pDepthStencilView.Get());
 
 	// 设置视口变换
 	_ScreenViewport.TopLeftX = 0;
@@ -181,7 +184,7 @@ void D3DApp::OnResize()
 	_ScreenViewport.MinDepth = 0.0f;
 	_ScreenViewport.MaxDepth = 1.0f;
 
-	_pd3dImmediateContext->RSSetViewports(1, &_ScreenViewport);
+	_pd3dDeviceContext->RSSetViewports(1, &_ScreenViewport);
 
 	// 设置调试对象名
 	D3D11SetDebugObjectName(_pDepthStencilBuffer.Get(), "DepthStencilBuffer");
@@ -387,13 +390,13 @@ bool D3DApp::InitDirect3D()
 	{
 		d3dDriverType = driverTypes[driverTypeIndex];
 		hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-			D3D11_SDK_VERSION, _pd3dDevice.GetAddressOf(), &featureLevel, _pd3dImmediateContext.GetAddressOf());
+			D3D11_SDK_VERSION, _pd3dDevice.GetAddressOf(), &featureLevel, _pd3dDeviceContext.GetAddressOf());
 
 		if (hr == E_INVALIDARG)
 		{
 			// Direct3D 11.0 的API不承认D3D_FEATURE_LEVEL_11_1，所以我们需要尝试特性等级11.0以及以下的版本
 			hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, &featureLevels[1], numFeatureLevels - 1,
-				D3D11_SDK_VERSION, _pd3dDevice.GetAddressOf(), &featureLevel, _pd3dImmediateContext.GetAddressOf());
+				D3D11_SDK_VERSION, _pd3dDevice.GetAddressOf(), &featureLevel, _pd3dDeviceContext.GetAddressOf());
 		}
 
 		if (SUCCEEDED(hr))
@@ -437,7 +440,7 @@ bool D3DApp::InitDirect3D()
 	if (dxgiFactory2 != nullptr)
 	{
 		HR(_pd3dDevice.As(&_pd3dDevice1));
-		HR(_pd3dImmediateContext.As(&_pd3dImmediateContext1));
+		HR(_pd3dDeviceContext.As(&_pd3dImmediateContext1));
 		// 填充各种结构体用以描述交换链
 		DXGI_SWAP_CHAIN_DESC1 sd;
 		ZeroMemory(&sd, sizeof(sd));
@@ -508,7 +511,7 @@ bool D3DApp::InitDirect3D()
 	dxgiFactory1->MakeWindowAssociation(m_hMainWnd, DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_WINDOW_CHANGES);
 
 	// 设置调试对象名
-	D3D11SetDebugObjectName(_pd3dImmediateContext.Get(), "ImmediateContext");
+	D3D11SetDebugObjectName(_pd3dDeviceContext.Get(), "ImmediateContext");
 	DXGISetDebugObjectName(_pSwapChain.Get(), "SwapChain");
 
 	// 每当窗口被重新调整大小的时候，都需要调用这个OnResize函数。现在调用

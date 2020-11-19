@@ -2,7 +2,7 @@
 #include <DXTrace.h>
 
 #include "GameApp.h"
-#include "VertexLayout.h"
+#include <VertexLayout.h>
 
 using namespace DirectX;
 
@@ -37,24 +37,27 @@ void GameApp::UpdateScene(float dt)
 {
 	static float phi = 0.0f, theta = 0.0f;
 	phi += 0.0001f, theta += 0.00015f;
-	_ConstantBuffer.World = XMMatrixTranspose(XMMatrixRotationX(phi) * XMMatrixRotationY(theta));
-	// ¸üĞÂ³£Á¿»º³åÇø£¬ÈÃÁ¢·½Ìå×ªÆğÀ´
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	HR(_pd3dImmediateContext->Map(_pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(_ConstantBuffer), &_ConstantBuffer, sizeof(_ConstantBuffer));
-	_pd3dImmediateContext->Unmap(_pConstantBuffer.Get(), 0);
+
+	// æ›´æ–°å¸¸é‡ç¼“å†²åŒºï¼Œè®©ç«‹æ–¹ä½“è½¬èµ·æ¥
+	BasePassBuffer buffer;
+	_ConstantBuffer.GetBuffer(buffer);
+	buffer.World = XMMatrixTranspose(XMMatrixRotationX(phi) * XMMatrixRotationY(theta));
+	_ConstantBuffer.SetBuffer(buffer);
+	_ConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }
 
 void GameApp::DrawScene()
 {
-	assert(_pd3dImmediateContext);
+	assert(_pd3dDeviceContext);
 	assert(_pSwapChain);
 	static float blue[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,255,255)
-	_pd3dImmediateContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
-	_pd3dImmediateContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_pd3dDeviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
+	_pd3dDeviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	_BasePassShader.Use(_pd3dImmediateContext.Get());
-	_pd3dImmediateContext->DrawIndexed(36, 0, 0);
+	// è®¾ç½®å›¾å…ƒç±»å‹ï¼Œè®¾å®šè¾“å…¥å¸ƒå±€
+	_BasePassShader.Use(_pd3dDeviceContext.Get());
+	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+	_pRenderer->RenderCube(_pd3dDeviceContext.Get());
 
 	HR(_pSwapChain->Present(0, 0));
 }
@@ -63,17 +66,15 @@ void GameApp::InitShader()
 {
 	ComPtr<ID3DBlob> blob;
 
-	HR(CreateShaderFromFile(nullptr, L"TriangleVS.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
-
-	_pd3dDevice->CreateInputLayout(VertexLayout::BASE_PASS_INPUT_LAYOUT, 2, blob->GetBufferPointer(), blob->GetBufferSize(), _pInputLayout.GetAddressOf());
-
 	ShaderDeclareDesc desc;
 	ZeroMemory(&desc, sizeof(ShaderDeclareDesc));
-	desc.FileName = L"TriangleVS.hlsl";
+	desc.CsoName = L"TriangleVS.cso";
+	desc.FileName = L"shaders/TriangleVS.hlsl";
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "vs_5_0";
 	_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc);
-	desc.FileName = L"TrianglePS.hlsl";
+	desc.CsoName = L"TrianglePS.cso";
+	desc.FileName = L"shaders/TrianglePS.hlsl";
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "ps_5_0";
 	_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc);
@@ -81,113 +82,21 @@ void GameApp::InitShader()
 
 void GameApp::InitResource()
 {
-	VertexLayout::BasePassVertexLayout vertices[] =
-	{
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) }
-	};
-	// ÉèÖÃ¶¥µã»º³åÇøÃèÊö
-	D3D11_BUFFER_DESC vbd;
-	ZeroMemory(&vbd, sizeof(vbd));
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof vertices;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	// ĞÂ½¨¶¥µã»º³åÇø
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = vertices;
-	HR(_pd3dDevice->CreateBuffer(&vbd, &InitData, _pVertexBuffer.GetAddressOf()));
-
-	// ******************
-	// Ë÷ÒıÊı×é
-	//
-	DWORD indices[] = {
-		// ÕıÃæ
-		0, 1, 2,
-		2, 3, 0,
-		// ×óÃæ
-		4, 5, 1,
-		1, 0, 4,
-		// ¶¥Ãæ
-		1, 5, 6,
-		6, 2, 1,
-		// ±³Ãæ
-		7, 6, 5,
-		5, 4, 7,
-		// ÓÒÃæ
-		3, 2, 6,
-		6, 7, 3,
-		// µ×Ãæ
-		4, 0, 3,
-		3, 7, 4
-	};
-	// ÉèÖÃË÷Òı»º³åÇøÃèÊö
-	D3D11_BUFFER_DESC ibd;
-	ZeroMemory(&ibd, sizeof(ibd));
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = sizeof indices;
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0;
-	// ĞÂ½¨Ë÷Òı»º³åÇø
-	InitData.pSysMem = indices;
-	HR(_pd3dDevice->CreateBuffer(&ibd, &InitData, _pIndexBuffer.GetAddressOf()));
-	// ÊäÈë×°Åä½×¶ÎµÄË÷Òı»º³åÇøÉèÖÃ
-	_pd3dImmediateContext->IASetIndexBuffer(_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-
-	// ******************
-	// ÉèÖÃ³£Á¿»º³åÇøÃèÊö
-	//
-	D3D11_BUFFER_DESC cbd;
-	ZeroMemory(&cbd, sizeof(cbd));
-	cbd.Usage = D3D11_USAGE_DYNAMIC;
-	cbd.ByteWidth = sizeof(ConstantBuffer::BasePassBuffer);
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	// ĞÂ½¨³£Á¿»º³åÇø£¬²»Ê¹ÓÃ³õÊ¼Êı¾İ
-	HR(_pd3dDevice->CreateBuffer(&cbd, nullptr, _pConstantBuffer.GetAddressOf()));
-
-
-	// ³õÊ¼»¯³£Á¿»º³åÇøµÄÖµ
-	// Èç¹ûÄã²»ÊìÏ¤ÕâĞ©¾ØÕó£¬¿ÉÒÔÏÈºöÂÔ£¬´ı¶ÁÍêµÚËÄÕÂºóÔÙ»ØÍ·³¢ÊÔĞŞ¸Ä
-	_ConstantBuffer.World = XMMatrixIdentity();	// µ¥Î»¾ØÕóµÄ×ªÖÃÊÇËü±¾Éí
-	_ConstantBuffer.View = XMMatrixTranspose(XMMatrixLookAtLH(
+	_ConstantBuffer.Declare(_pd3dDevice.Get());
+	BasePassBuffer buffer;
+	buffer.World = XMMatrixIdentity();
+	buffer.View = XMMatrixTranspose(XMMatrixLookAtLH(
 		XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
 		XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
 		XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 	));
-	_ConstantBuffer.Projection = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
-
-
-	// ******************
-	// ¸øäÖÈ¾¹ÜÏß¸÷¸ö½×¶Î°ó¶¨ºÃËùĞè×ÊÔ´
-	//
-
-	// ÊäÈë×°Åä½×¶ÎµÄ¶¥µã»º³åÇøÉèÖÃ
-	UINT stride = sizeof(VertexLayout::BasePassVertexLayout);	// ¿çÔ½×Ö½ÚÊı
-	UINT offset = 0;						// ÆğÊ¼Æ«ÒÆÁ¿
-
-	_pd3dImmediateContext->IASetVertexBuffers(0, 1, _pVertexBuffer.GetAddressOf(), &stride, &offset);
-	// ÉèÖÃÍ¼ÔªÀàĞÍ£¬Éè¶¨ÊäÈë²¼¾Ö
-	_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	_pd3dImmediateContext->IASetInputLayout(_pInputLayout.Get());
-	// ½«¸üĞÂºÃµÄ³£Á¿»º³åÇø°ó¶¨µ½¶¥µã×ÅÉ«Æ÷
-	_pd3dImmediateContext->VSSetConstantBuffers(0, 1, _pConstantBuffer.GetAddressOf());
+	buffer.Projection = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
+	_ConstantBuffer.SetBuffer(buffer);
 
 	// ******************
-	// ÉèÖÃµ÷ÊÔ¶ÔÏóÃû
+	// è®¾ç½®è°ƒè¯•å¯¹è±¡å
 	//
-	D3D11SetDebugObjectName(_pInputLayout.Get(), "VertexPosColorLayout");
-	D3D11SetDebugObjectName(_pVertexBuffer.Get(), "VertexBuffer");
-	D3D11SetDebugObjectName(_pIndexBuffer.Get(), "IndexBuffer");
-	D3D11SetDebugObjectName(_pConstantBuffer.Get(), "ConstantBuffer");
+	_ConstantBuffer.SetDebugName("ConstantBuffer");
 	_BasePassShader.VSSetDebugName("CUBE_VS");
 	_BasePassShader.PSSetDebugName("CUBE_VS");
 }

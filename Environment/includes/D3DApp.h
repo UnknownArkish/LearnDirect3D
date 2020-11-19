@@ -12,6 +12,8 @@
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 #include "GameTimer.h"
+#include "Renderer.h"
+#include <memory>
 
 #include "Common.h"
 
@@ -54,7 +56,7 @@ protected:
 
 	// Direct3D 11
 	ComPtr<ID3D11Device> _pd3dDevice;                    // D3D11设备
-	ComPtr<ID3D11DeviceContext> _pd3dImmediateContext;   // D3D11设备上下文
+	ComPtr<ID3D11DeviceContext> _pd3dDeviceContext;   // D3D11设备上下文
 	ComPtr<IDXGISwapChain> _pSwapChain;                  // D3D11交换链
 	// Direct3D 11.1
 	ComPtr<ID3D11Device1> _pd3dDevice1;                  // D3D11.1设备
@@ -65,6 +67,8 @@ protected:
 	ComPtr<ID3D11RenderTargetView> _pRenderTargetView;   // 渲染目标视图
 	ComPtr<ID3D11DepthStencilView> _pDepthStencilView;   // 深度模板视图
 	D3D11_VIEWPORT _ScreenViewport;                      // 视口
+
+	std::unique_ptr<Renderer> _pRenderer;
 
 	// 派生类应该在构造函数设置好这些自定义的初始参数
 	std::wstring m_MainWndCaption;                       // 主窗口标题

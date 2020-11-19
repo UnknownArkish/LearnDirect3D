@@ -3,7 +3,8 @@
 #include <D3DApp.h>
 
 #include <Shader.h>
-#include "ConstantBuffer.h"
+#include <ConstantBuffer.h>
+#include <ConstantBufferObjectCommon.h>
 
 class GameApp : public D3DApp
 {
@@ -21,14 +22,6 @@ protected:
 	virtual void InitResource();
 
 private:
-	ComPtr<ID3D11InputLayout> _pInputLayout;
-	ComPtr<ID3D11Buffer> _pVertexBuffer;
-	ComPtr<ID3D11Buffer> _pIndexBuffer;
-	ComPtr<ID3D11Buffer> _pConstantBuffer;
-
-	//ComPtr<ID3D11VertexShader> _pVertexShader;
-	//ComPtr<ID3D11PixelShader> _pPixelShader;
 	Shader _BasePassShader;
-
-	ConstantBuffer::BasePassBuffer _ConstantBuffer;
+	ConstantBuffer<0, BasePassBuffer> _ConstantBuffer;
 };

@@ -6,6 +6,7 @@
 
 struct ShaderDeclareDesc
 {
+	const WCHAR* CsoName;
 	const WCHAR* FileName;
 	LPCSTR EntryPoint;
 	LPCSTR ShaderModel;
@@ -20,7 +21,7 @@ public:
 
 	HRESULT VSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
 	HRESULT GSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
-	HRESULT GSDeclareWithStreamOut(ID3D11Device* device, const ShaderDeclareDesc& desc);
+	HRESULT GSDeclareWithStreamOut(ID3D11Device* device, const ShaderDeclareDesc& desc, const D3D11_SO_DECLARATION_ENTRY* pSODeclaration, UINT numEntries);
 	HRESULT PSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
 
 	template<UINT TNameLength>
