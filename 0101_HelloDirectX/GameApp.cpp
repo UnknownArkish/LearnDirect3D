@@ -3,6 +3,9 @@
 
 #include "GameApp.h"
 
+#include <Texture.h>
+#include <TextureView.h>
+
 using namespace DirectX;
 
 GameApp::GameApp(HINSTANCE hInstance)

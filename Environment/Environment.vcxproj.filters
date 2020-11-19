@@ -42,6 +42,9 @@
     <ClCompile Include="WICTextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\DXTrace.h">
@@ -90,6 +93,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="includes\TextureView.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\RenderTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
