@@ -1,6 +1,6 @@
 #include "includes/Renderer.h"
 #include "includes/DXTrace.h"
-#include "includes/VertexLayout.h"
+#include "includes/VertexLayoutCommon.h"
 #include "includes/D3DUtil.h"
 #include <assert.h>
 
@@ -29,13 +29,21 @@ void Renderer::RenderCube(ID3D11DeviceContext* deviceContext)
 	deviceContext->DrawIndexed(36, 0, 0);
 }
 
+void Renderer::RenderCubePoint(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->IASetInputLayout(_pUniversalInputLayout.Get());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	BindRendererResource(deviceContext, _CubeResource);
+	deviceContext->Draw(8, 0);
+}
+
 
 void Renderer::InitVertexLayout(ID3D11Device* device)
 {
 	ComPtr<ID3DBlob> blob;
 
 	HR(CreateShaderFromFile(L"VertexLayout.cso", L"shaders/VertexLayout.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
-	HR(device->CreateInputLayout(VertexLayout::UNIVERSAL_INPUT_LAYOUT, 2, blob->GetBufferPointer(), blob->GetBufferSize(), _pUniversalInputLayout.ReleaseAndGetAddressOf()));
+	HR(device->CreateInputLayout(UNIVERSAL_INPUT_LAYOUT, 2, blob->GetBufferPointer(), blob->GetBufferSize(), _pUniversalInputLayout.ReleaseAndGetAddressOf()));
 
 	D3D11SetDebugObjectName(_pUniversalInputLayout.Get(), "UniversalInputLayout");
 }
@@ -49,7 +57,7 @@ void Renderer::InitQuadResource(ID3D11Device* device)
 
 void Renderer::InitCubeResource(ID3D11Device* device)
 {
-	VertexLayout::UniversalVertexLayout vertices[] =
+	UniversalVertexLayout vertices[] =
 	{
 		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
 		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
@@ -110,7 +118,7 @@ void Renderer::InitCubeResource(ID3D11Device* device)
 
 void Renderer::BindRendererResource(ID3D11DeviceContext* deviceContext, const RendererResource& resource)
 {
-	UINT stride = sizeof(VertexLayout::UniversalVertexLayout);
+	UINT stride = sizeof(UniversalVertexLayout);
 	UINT offset = 0;
 	deviceContext->IASetIndexBuffer(resource._pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	deviceContext->IASetVertexBuffers(0, 1, resource._pVertexBuffer.GetAddressOf(), &stride, &offset);

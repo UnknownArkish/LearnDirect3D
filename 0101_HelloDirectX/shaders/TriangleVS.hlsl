@@ -1,5 +1,5 @@
-#include "VertexLayout.hlsli"
-#include "ConstantBuffer.hlsli"
+#include "VertexLayoutCommon.hlsli"
+#include "ConstantBufferCommon.hlsli"
 
 VertexOut main(UniversalIA2VS vIn)
 {

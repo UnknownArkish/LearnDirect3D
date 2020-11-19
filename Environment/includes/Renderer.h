@@ -19,6 +19,7 @@ public:
 	void Init(ID3D11Device* device);
 	void RenderQuad(ID3D11DeviceContext* deviceContext);
 	void RenderCube(ID3D11DeviceContext* deviceContext);
+	void RenderCubePoint(ID3D11DeviceContext* deviceContext);
 private:
 	void InitVertexLayout(ID3D11Device* device);
 	void InitQuadResource(ID3D11Device* device);

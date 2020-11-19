@@ -147,7 +147,7 @@
     <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="DXTrace.cpp" />
     <ClCompile Include="GameTimer.cpp" />
-    <ClCompile Include="includes\VertexLayout.cpp" />
+    <ClCompile Include="includes\VertexLayoutCommon.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
@@ -162,10 +162,11 @@
     <ClInclude Include="includes\Macros.h" />
     <ClInclude Include="includes\Renderer.h" />
     <ClInclude Include="includes\Shader.h" />
-    <ClInclude Include="includes\VertexLayout.h" />
+    <ClInclude Include="includes\VertexLayoutCommon.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\VertexLayout.hlsli" />
+    <None Include="shaders\ConstantBufferCommon.hlsli" />
+    <None Include="shaders\VertexLayoutCommon.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

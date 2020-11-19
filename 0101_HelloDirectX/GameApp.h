@@ -23,5 +23,5 @@ protected:
 
 private:
 	Shader _BasePassShader;
-	ConstantBuffer<0, BasePassBuffer> _ConstantBuffer;
+	ConstantBuffer<0, BasePassConstantBuffer> _ConstantBuffer;
 };

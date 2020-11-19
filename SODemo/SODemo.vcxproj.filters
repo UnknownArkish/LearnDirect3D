@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameApp.cpp">
+    <ClCompile Include="源.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="源.cpp">
+    <ClCompile Include="GameApp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -28,13 +28,24 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\TrianglePS.hlsl">
+    <None Include="shaders\VertexLayout.hlsli">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\BasePassVS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\TriangleVS.hlsl">
+    <FxCompile Include="shaders\BasePassPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
-    <FxCompile Include="..\Environment\shaders\VertexLayout.hlsl">
+    <FxCompile Include="shaders\CalculateOffsetPassVS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CalculateOffsetPassGS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CalculateOffsetPassPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
   </ItemGroup>

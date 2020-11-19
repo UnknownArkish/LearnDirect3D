@@ -1,6 +1,6 @@
 #include <DirectXMath.h>
 
-struct BasePassBuffer
+struct BasePassConstantBuffer
 {
 	DirectX::XMMATRIX World;
 	DirectX::XMMATRIX View;

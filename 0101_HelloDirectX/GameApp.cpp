@@ -2,7 +2,6 @@
 #include <DXTrace.h>
 
 #include "GameApp.h"
-#include <VertexLayout.h>
 
 using namespace DirectX;
 
@@ -39,7 +38,7 @@ void GameApp::UpdateScene(float dt)
 	phi += 0.0001f, theta += 0.00015f;
 
 	// 更新常量缓冲区，让立方体转起来
-	BasePassBuffer buffer;
+	BasePassConstantBuffer buffer;
 	_ConstantBuffer.GetBuffer(buffer);
 	buffer.World = XMMatrixTranspose(XMMatrixRotationX(phi) * XMMatrixRotationY(theta));
 	_ConstantBuffer.SetBuffer(buffer);
@@ -83,7 +82,7 @@ void GameApp::InitShader()
 void GameApp::InitResource()
 {
 	_ConstantBuffer.Declare(_pd3dDevice.Get());
-	BasePassBuffer buffer;
+	BasePassConstantBuffer buffer;
 	buffer.World = XMMatrixIdentity();
 	buffer.View = XMMatrixTranspose(XMMatrixLookAtLH(
 		XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),

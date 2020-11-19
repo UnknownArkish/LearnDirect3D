@@ -33,7 +33,7 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="includes\VertexLayout.cpp">
+    <ClCompile Include="includes\VertexLayoutCommon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,15 +65,18 @@
     <ClInclude Include="includes\Renderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="includes\VertexLayout.h">
+    <ClInclude Include="includes\ConstantBufferObjectCommon.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="includes\ConstantBufferObjectCommon.h">
+    <ClInclude Include="includes\VertexLayoutCommon.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\VertexLayout.hlsli">
+    <None Include="shaders\VertexLayoutCommon.hlsli">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\ConstantBufferCommon.hlsli">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
