@@ -1,24 +1,25 @@
 #include "includes\Texture2D.h"
+#include "includes\Common.h"
 
 Texture2D::Texture2D() : 
 	_IsDeclared(false), _Desc(),
-	_CanWrite(false), _ColorDatas(nullptr), _Dirty(true)
+	_CanWrite(false), _Datas(nullptr), _Dirty(true)
 {
 	ZeroMemory(&_Desc, sizeof(D3D11_TEXTURE2D_DESC));
 }
 
 Texture2D::~Texture2D()
 {
-	if (_ColorDatas)
+	if (_Datas)
 	{
-		delete _ColorDatas;
-		_ColorDatas = nullptr;
+		delete _Datas;
+		_Datas = nullptr;
 	}
 }
 
 HRESULT Texture2D::Declare(ID3D11Device* device, UINT width, UINT height, DXGI_FORMAT format, bool useMipmap)
 {
-	if (_IsDeclared) return 0;
+	assert(!_IsDeclared);
 
 	assert(device);
 
@@ -36,37 +37,54 @@ HRESULT Texture2D::Declare(ID3D11Device* device, UINT width, UINT height, DXGI_F
 	_Desc.CPUAccessFlags = 0;					// CPU not read/ write
 	if (useMipmap) _Desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
-	ID3D11Texture2D* pTexture2D;
+	 ID3D11Texture2D* pTexture2D;
 	result = device->CreateTexture2D(&_Desc, nullptr, &pTexture2D);
 	if (SUCCEEDED(result))
 	{
 		_pResource = pTexture2D;
 		_IsDeclared = true;
 
-		_ColorDatas = new DirectX::XMFLOAT4[(size_t)width * height];
+		_Datas = new DirectX::XMFLOAT4[(size_t)width * height];
 		_CanWrite = true;
 	}
 
 	return result;
 }
 
-HRESULT Texture2D::DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, bool sRGB, DirectX::DDS_ALPHA_MODE* alphaMode)
+HRESULT Texture2D::DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, DirectX::DDS_ALPHA_MODE* alphaMode)
 {
+	assert(!_IsDeclared);
+	assert(device);
 
-	_CanWrite = false;
-	_ColorDatas = nullptr;
-	return 0;
+	HRESULT result = DirectX::CreateDDSTextureFromFile(device, fileName, _pResource.ReleaseAndGetAddressOf(), nullptr, 0, alphaMode);
+	if (SUCCEEDED(result))
+	{
+		ComPtr<ID3D11Texture2D> pTexture2D;
+		_pResource.As(&pTexture2D);
+		pTexture2D->GetDesc(&_Desc);
+
+		_CanWrite = false;
+		_Datas = nullptr;
+		_IsDeclared = true;
+	}
+	return result;
 }
 
 HRESULT Texture2D::DeclareWithWIC(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName)
 {
-	if (_IsDeclared) return 0;
+	assert(!_IsDeclared);
+	assert(device);
 
 	HRESULT result = DirectX::CreateWICTextureFromFile(device, fileName, _pResource.ReleaseAndGetAddressOf(), nullptr, 0);
 	if (SUCCEEDED(result))
 	{
+		ComPtr<ID3D11Texture2D> pTexture2D;
+		_pResource.As(&pTexture2D);
+		pTexture2D->GetDesc(&_Desc);
+
 		_CanWrite = false;
-		_ColorDatas = nullptr;
+		_Datas = nullptr;
+		_IsDeclared = true;
 	}
 	return result;
 }
@@ -94,11 +112,11 @@ void Texture2D::SetColors(const DirectX::XMFLOAT4* colors, UINT numColors)
 	assert(_IsDeclared);
 
 	assert(colors);
-	assert(_CanWrite && _ColorDatas != nullptr);
+	assert(_CanWrite && _Datas != nullptr);
 
 	UINT size = GetWidth() * GetHeight();
 	numColors = DirectX::XMMin(size, numColors);
-	memcpy_s(_ColorDatas, size, colors, size);
+	memcpy_s(_Datas, size, colors, size);
 	_Dirty = true;
 }
 
@@ -110,11 +128,11 @@ void Texture2D::Apply(ID3D11DeviceContext* deviceContext)
 	if (_Dirty)
 	{
 		assert(deviceContext);
-		assert(_ColorDatas != nullptr);
+		assert(_Datas != nullptr);
 
 		deviceContext->UpdateSubresource(
 			_pResource.Get(), 0, nullptr,
-			_ColorDatas,
+			_Datas,
 			GetWidth() * sizeof(DirectX::XMFLOAT4),
 			GetWidth() * GetHeight() * sizeof(DirectX::XMFLOAT4)
 		);
@@ -130,9 +148,9 @@ void Texture2D::GetColors(DirectX::XMFLOAT4** output) const
 	assert(*output);
 	if (_CanWrite)
 	{
-		assert(_ColorDatas != nullptr);
+		assert(_Datas != nullptr);
 
 		UINT size = GetWidth() * GetHeight();
-		memcpy_s(*output, size, _ColorDatas, size);
+		memcpy_s(*output, size, _Datas, size);
 	}
 }

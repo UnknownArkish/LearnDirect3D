@@ -14,7 +14,7 @@ public:
 	~Texture2D();
 
 	HRESULT Declare(ID3D11Device* device, UINT width, UINT height, DXGI_FORMAT format, bool useMipmap);
-	HRESULT DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, bool sRGB = false, DirectX::DDS_ALPHA_MODE* alphaMode = nullptr);
+	HRESULT DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, DirectX::DDS_ALPHA_MODE* alphaMode = nullptr);
 	HRESULT DeclareWithWIC(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName);
 
 	virtual UINT GetWidth() const override;
@@ -29,6 +29,6 @@ private:
 	D3D11_TEXTURE2D_DESC _Desc;
 
 	bool _CanWrite;
-	DirectX::XMFLOAT4* _ColorDatas;
+	DirectX::XMFLOAT4* _Datas;
 	bool _Dirty;
 };
