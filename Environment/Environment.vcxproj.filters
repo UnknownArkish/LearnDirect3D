@@ -48,6 +48,9 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\DXTrace.h">
@@ -102,6 +105,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="includes\Texture2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\TextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

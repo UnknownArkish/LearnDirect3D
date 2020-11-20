@@ -6,6 +6,7 @@
 #include <string>
 
 class ITextureView;
+class TextureLoader;
 
 class Texture
 {
@@ -20,12 +21,14 @@ public:
 	{
 		assert(_pResource);
 		D3D11SetDebugObjectName(_pResource.Get(), name);
-		if (_pResourceView) D3D11SetDebugObjectName(_pResourceView.Get(), std::strcat(name, "_View"));
 	}
 protected:
-	Texture() : _pResource(nullptr), _pResourceView(nullptr) {}
+	Texture() : _pResource(nullptr){}
 protected:
 	friend class ITextureView;
+	friend class TextureLoader;
 	ComPtr<ID3D11Resource> _pResource;
-	ComPtr<ID3D11ShaderResourceView> _pResourceView;
 };
+
+#include "TextureView.h"
+#include "TextureLoader.h"

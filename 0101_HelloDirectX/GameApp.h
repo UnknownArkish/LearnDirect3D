@@ -7,6 +7,7 @@
 #include <ConstantBufferObjectCommon.h>
 
 #include <SamplerState.h>
+#include <TextureLoader.h>
 #include <Texture2D.h>
 #include <TextureView.h>
 
