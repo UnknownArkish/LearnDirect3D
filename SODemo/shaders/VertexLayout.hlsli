@@ -20,6 +20,7 @@ struct BasePassIA2VS
 {
     float3 pos : POSITION;
     float4 color : COLOR0;
+    float2 uvs : TEXCOORD;
     
     float3 offset : COLOR1;
 };

@@ -48,7 +48,6 @@ inline void SamplerState<slot>::GSBind(ID3D11DeviceContext* deviceContext)
 {
 	assert(deviceContext);
 	deviceContext->GSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());
-	deviceContext->omset
 }
 
 template<UINT slot>

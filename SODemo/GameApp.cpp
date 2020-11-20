@@ -48,7 +48,7 @@ void GameApp::DrawScene()
 
 	if (_IsFirstDraw) DoFirstDraw();
 
-	// °ó¶¨InputLayout
+	// ç»‘å®šInputLayout
 	_pd3dDeviceContext->IASetInputLayout(_pBasePassInputLayout.Get());
 	_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// VertxBuffer
@@ -121,33 +121,33 @@ void GameApp::InitVertexBuffer()
 	HR(_pd3dDevice->CreateBuffer(&vbd, &initData, _pVBOffset.ReleaseAndGetAddressOf()));
 
 	DWORD indices[] = {
-		// ÕýÃæ
+		// æ­£é¢
 		0, 1, 2,
 		2, 3, 0,
-		// ×óÃæ
+		// å·¦é¢
 		4, 5, 1,
 		1, 0, 4,
-		// ¶¥Ãæ
+		// é¡¶é¢
 		1, 5, 6,
 		6, 2, 1,
-		// ±³Ãæ
+		// èƒŒé¢
 		7, 6, 5,
 		5, 4, 7,
-		// ÓÒÃæ
+		// å³é¢
 		3, 2, 6,
 		6, 7, 3,
-		// µ×Ãæ
+		// åº•é¢
 		4, 0, 3,
 		3, 7, 4
 	};
-	// ÉèÖÃË÷Òý»º³åÇøÃèÊö
+	// è®¾ç½®ç´¢å¼•ç¼“å†²åŒºæè¿°
 	D3D11_BUFFER_DESC ibd;
 	ZeroMemory(&ibd, sizeof(ibd));
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;
 	ibd.ByteWidth = sizeof indices;
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	ibd.CPUAccessFlags = 0;
-	// ÐÂ½¨Ë÷Òý»º³åÇø
+	// æ–°å»ºç´¢å¼•ç¼“å†²åŒº
 	initData.pSysMem = indices;
 	HR(_pd3dDevice->CreateBuffer(&ibd, &initData, _pIB.ReleaseAndGetAddressOf()));
 }

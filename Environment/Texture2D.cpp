@@ -75,7 +75,7 @@ HRESULT Texture2D::DeclareWithWIC(ID3D11Device* device, ID3D11DeviceContext* dev
 	assert(!_IsDeclared);
 	assert(device);
 
-	HRESULT result = DirectX::CreateWICTextureFromFile(device, fileName, _pResource.ReleaseAndGetAddressOf(), nullptr, 0);
+	HRESULT result = DirectX::CreateWICTextureFromFile(device, deviceContext, fileName, _pResource.ReleaseAndGetAddressOf(), nullptr, 0);
 	if (SUCCEEDED(result))
 	{
 		ComPtr<ID3D11Texture2D> pTexture2D;

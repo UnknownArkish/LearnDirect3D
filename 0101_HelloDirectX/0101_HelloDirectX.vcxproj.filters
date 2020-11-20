@@ -28,13 +28,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\TrianglePS.hlsl">
-      <Filter>资源文件</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\TriangleVS.hlsl">
-      <Filter>资源文件</Filter>
-    </FxCompile>
     <FxCompile Include="..\Environment\shaders\VertexLayout.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\BasePassPS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\BasePassVS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
   </ItemGroup>

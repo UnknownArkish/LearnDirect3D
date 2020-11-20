@@ -68,13 +68,13 @@ void GameApp::InitShader()
 
 	ShaderDeclareDesc desc;
 	ZeroMemory(&desc, sizeof(ShaderDeclareDesc));
-	desc.CsoName = L"TriangleVS.cso";
-	desc.FileName = L"shaders/TriangleVS.hlsl";
+	desc.CsoName = L"BasePassVS.cso";
+	desc.FileName = L"shaders/BasePassVS.hlsl";
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "vs_5_0";
 	_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc);
-	desc.CsoName = L"TrianglePS.cso";
-	desc.FileName = L"shaders/TrianglePS.hlsl";
+	desc.CsoName = L"BasePassPS.cso";
+	desc.FileName = L"shaders/BasePassPS.hlsl";
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "ps_5_0";
 	_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc);
@@ -82,6 +82,9 @@ void GameApp::InitShader()
 
 void GameApp::InitResource()
 {
+	_Texture.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"texture.png");
+
+
 	_ConstantBuffer.Declare(_pd3dDevice.Get());
 	BasePassConstantBuffer buffer;
 	buffer.World = XMMatrixIdentity();

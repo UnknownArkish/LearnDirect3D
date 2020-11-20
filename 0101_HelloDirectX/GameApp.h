@@ -6,6 +6,10 @@
 #include <ConstantBuffer.h>
 #include <ConstantBufferObjectCommon.h>
 
+#include <SamplerState.h>
+#include <TextureView.h>
+#include <Texture2D.h>
+
 class GameApp : public D3DApp
 {
 public:
@@ -20,8 +24,12 @@ public:
 protected:
 	virtual void InitShader();
 	virtual void InitResource();
-
 private:
 	Shader _BasePassShader;
+
+	Texture2D _Texture;
+
+	SamplerState<0> _SamplerState;
+	TextureView<0> _TextireView;
 	ConstantBuffer<0, BasePassConstantBuffer> _ConstantBuffer;
 };
