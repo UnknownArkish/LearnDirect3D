@@ -36,5 +36,5 @@ private:
 	TextureView<0> _TextireView;
 	SamplerState<0> _SamplerState;
 
-	ConstantBuffer<0, BasePassConstantBuffer> _ConstantBuffer;
+	ConstantBuffer<BasePassConstantBuffer> _ConstantBuffer;
 };

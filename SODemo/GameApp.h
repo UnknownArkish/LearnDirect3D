@@ -36,7 +36,7 @@ private:
 	Shader _CalculateOffsetPassShader;
 
 	Shader _BasePassShader;
-	ConstantBuffer<0, BasePassConstantBuffer> _ConstantBuffer;
+	ConstantBuffer<BasePassConstantBuffer> _ConstantBuffer;
 	ComPtr<ID3D11Buffer> _pVBBase;				// Slot 0£¬IA_INPUT
 	ComPtr<ID3D11Buffer> _pVBOffset;			// Slot 1£¬SO_TARGET | IA_INPUT
 	ComPtr<ID3D11Buffer> _pIB;					// IndexBuffer

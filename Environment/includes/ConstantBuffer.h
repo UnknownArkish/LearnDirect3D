@@ -4,7 +4,7 @@
 #include "DXTrace.h"
 #include "Common.h"
 
-template<UINT startSlot, class T>
+template<class T>
 class ConstantBuffer {
 public:
 	ConstantBuffer() : _Data(), _Dirty(true) {}
@@ -18,9 +18,9 @@ public:
 	}
 	void GetBuffer(T& output) { output = _Data; }
 
-	void VSBind(ID3D11DeviceContext* deviceContext);
-	void GSBind(ID3D11DeviceContext* deviceContext);
-	void PSBind(ID3D11DeviceContext* deviceContext);
+	void VSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void GSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void PSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 
 	void Apply(ID3D11DeviceContext* deviceContext);
 
@@ -37,8 +37,8 @@ private:
 	bool _Dirty;
 };
 
-template<UINT startSlot, class T>
-inline HRESULT ConstantBuffer<startSlot, T>::Declare(ID3D11Device* device)
+template<class T>
+inline HRESULT ConstantBuffer<T>::Declare(ID3D11Device* device)
 {
 	if (_Buffer != nullptr)
 		return S_OK;
@@ -51,26 +51,26 @@ inline HRESULT ConstantBuffer<startSlot, T>::Declare(ID3D11Device* device)
 	return device->CreateBuffer(&cbd, nullptr, _Buffer.GetAddressOf());
 }
 
-template<UINT startSlot, class T>
-inline void ConstantBuffer<startSlot, T>::VSBind(ID3D11DeviceContext* deviceContext)
+template<class T>
+inline void ConstantBuffer<T>::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
-	deviceContext->VSSetConstantBuffers(startSlot, 1, _Buffer.GetAddressOf());
+	deviceContext->VSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
 }
 
-template<UINT startSlot, class T>
-inline void ConstantBuffer<startSlot, T>::GSBind(ID3D11DeviceContext* deviceContext)
+template<class T>
+inline void ConstantBuffer<T>::GSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
-	deviceContext->GSSetConstantBuffers(startSlot, 1, _Buffer.GetAddressOf());
+	deviceContext->GSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
 }
 
-template<UINT startSlot, class T>
-inline void ConstantBuffer<startSlot, T>::PSBind(ID3D11DeviceContext* deviceContext)
+template<class T>
+inline void ConstantBuffer<T>::PSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
-	deviceContext->PSSetConstantBuffers(startSlot, 1, _Buffer.GetAddressOf());
+	deviceContext->PSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
 }
 
-template<UINT startSlot, class T>
-inline void ConstantBuffer<startSlot, T>::Apply(ID3D11DeviceContext* deviceContext)
+template<class T>
+inline void ConstantBuffer<T>::Apply(ID3D11DeviceContext* deviceContext)
 {
 	if (_Dirty)
 	{

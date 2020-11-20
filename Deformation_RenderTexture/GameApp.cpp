@@ -39,7 +39,7 @@ void GameApp::DrawScene()
 	{
 		_OffsetTex.BeginRender(_pd3dDeviceContext.Get());
 		{
-			_OffsetConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+			_OffsetConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 			_CalculateOffsetShader.Use(_pd3dDeviceContext.Get());
 			_pRenderer->RenderCubePoint(_pd3dDeviceContext.Get());
 		}
@@ -48,8 +48,8 @@ void GameApp::DrawScene()
 	}
 	else
 	{
-		_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
-		_OffsetConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+		_ConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
+		_OffsetConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 
 		_OffsetTexSampler.VSBind(_pd3dDeviceContext.Get());
 		_OffsetTexView.VSBind(_pd3dDeviceContext.Get());

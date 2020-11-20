@@ -61,7 +61,7 @@ void GameApp::DrawScene()
 	}
 
 	_BasePassShader.Use(_pd3dDeviceContext.Get());
-	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
 
 	_TextireView.PSBind(_pd3dDeviceContext.Get());
 	_SamplerState.PSBind(_pd3dDeviceContext.Get());

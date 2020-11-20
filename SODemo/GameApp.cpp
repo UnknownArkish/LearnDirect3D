@@ -62,7 +62,7 @@ void GameApp::DrawScene()
 	_pd3dDeviceContext->IASetIndexBuffer(_pIB.Get(), DXGI_FORMAT_R32_UINT, 0);
 	// Shader
 	_BasePassShader.Use(_pd3dDeviceContext.Get());
-	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
 
 	_pd3dDeviceContext->DrawIndexed(36, 0, 0);
 	//_pRenderer->RenderCube(_pd3dDeviceContext.Get());
@@ -207,7 +207,7 @@ void GameApp::DoFirstDraw()
 
 	_pd3dDeviceContext->SOSetTargets(1, _pVBOffset.GetAddressOf(), offset);
 	_CalculateOffsetPassShader.Use(_pd3dDeviceContext.Get());
-	_ConstantBuffer.GSBind(_pd3dDeviceContext.Get());
+	_ConstantBuffer.GSBind(_pd3dDeviceContext.Get(), 0);
 
 	_pRenderer->RenderCubePoint(_pd3dDeviceContext.Get());
 	_pd3dDeviceContext->SOSetTargets(0, { nullptr }, offset);

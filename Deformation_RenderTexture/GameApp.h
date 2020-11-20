@@ -34,7 +34,7 @@ private:
 	Texture2D _MainTex;
 	SamplerState<0> _MainTexSampler;
 	TextureView<0> _MainTexView;
-	ConstantBuffer<0, BasePassConstantBuffer> _ConstantBuffer;
+	ConstantBuffer<BasePassConstantBuffer> _ConstantBuffer;
 	BasePassConstantBuffer _BufferData;
 
 
@@ -42,6 +42,6 @@ private:
 	RenderTexture _OffsetTex;
 	SamplerState<1> _OffsetTexSampler;
 	TextureView<1> _OffsetTexView;
-	ConstantBuffer<1, OffsetConstantBuffer> _OffsetConstantBuffer;
+	ConstantBuffer<OffsetConstantBuffer> _OffsetConstantBuffer;
 	OffsetConstantBuffer _OffsetBufferData;
 };
