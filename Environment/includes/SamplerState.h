@@ -4,7 +4,6 @@
 #include <d3d11.h>
 #include "Common.h"
 
-template<UINT slot>
 class SamplerState
 {
 public:
@@ -25,9 +24,9 @@ public:
 	HRESULT Delcare(ID3D11Device* device, const D3D11_SAMPLER_DESC& desc);
 	void GetDesc(D3D11_SAMPLER_DESC& output) const { output = _Desc; }
 
-	void VSBind(ID3D11DeviceContext* deviceContext);
-	void GSBind(ID3D11DeviceContext* deviceContext);
-	void PSBind(ID3D11DeviceContext* deviceContext);
+	void VSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void GSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void PSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 
 	template<UINT TNameLength>
 	void SetDebugName(_In_ const char(&name)[TNameLength])
@@ -40,30 +39,26 @@ private:
 	ComPtr<ID3D11SamplerState> _pSamplerState;
 };
 
-template<UINT slot>
-inline HRESULT SamplerState<slot>::Delcare(ID3D11Device* device, const D3D11_SAMPLER_DESC& desc)
+inline HRESULT SamplerState::Delcare(ID3D11Device* device, const D3D11_SAMPLER_DESC& desc)
 {
 	assert(device);
 	_Desc = desc;
 	return device->CreateSamplerState(&desc, _pSamplerState.ReleaseAndGetAddressOf());
 }
 
-template<UINT slot>
-inline void SamplerState<slot>::VSBind(ID3D11DeviceContext* deviceContext)
+inline void SamplerState::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	deviceContext->VSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());
 }
 
-template<UINT slot>
-inline void SamplerState<slot>::GSBind(ID3D11DeviceContext* deviceContext)
+inline void SamplerState::GSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	deviceContext->GSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());
 }
 
-template<UINT slot>
-inline void SamplerState<slot>::PSBind(ID3D11DeviceContext* deviceContext)
+inline void SamplerState::PSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	deviceContext->PSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());

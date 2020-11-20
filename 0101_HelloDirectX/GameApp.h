@@ -33,8 +33,8 @@ private:
 
 	Texture2D _Texture;
 	RenderTexture _RenderTexture;
-	TextureView<0> _TextireView;
-	SamplerState<0> _SamplerState;
+	TextureView _TextireView;
+	SamplerState _SamplerState;
 
 	ConstantBuffer<BasePassConstantBuffer> _ConstantBuffer;
 };

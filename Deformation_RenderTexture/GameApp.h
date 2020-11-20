@@ -32,16 +32,16 @@ private:
 private:
 	Shader _BasePassShader;
 	Texture2D _MainTex;
-	SamplerState<0> _MainTexSampler;
-	TextureView<0> _MainTexView;
+	SamplerState _MainTexSampler;
+	TextureView _MainTexView;
 	ConstantBuffer<BasePassConstantBuffer> _ConstantBuffer;
 	BasePassConstantBuffer _BufferData;
 
 
 	Shader _CalculateOffsetShader;
 	RenderTexture _OffsetTex;
-	SamplerState<1> _OffsetTexSampler;
-	TextureView<1> _OffsetTexView;
+	SamplerState _OffsetTexSampler;
+	TextureView _OffsetTexView;
 	ConstantBuffer<OffsetConstantBuffer> _OffsetConstantBuffer;
 	OffsetConstantBuffer _OffsetBufferData;
 };

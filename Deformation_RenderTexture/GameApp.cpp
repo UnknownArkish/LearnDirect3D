@@ -1,6 +1,8 @@
 #include "GameApp.h"
 #include <DXTrace.h>
 
+using namespace DirectX;
+
 GameApp::GameApp(HINSTANCE hInstance) : D3DApp(hInstance)
 {
 
@@ -22,7 +24,14 @@ bool GameApp::Init()
 
 void GameApp::UpdateScene(float dt)
 {
+	static float phi = 0.0f, theta = 0.0f;
+	phi += 0.0001f, theta += 0.00015f;
 
+	BasePassConstantBuffer buffer;
+	_ConstantBuffer.GetBuffer(buffer);
+	buffer.World = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
+	_ConstantBuffer.SetBuffer(buffer);
+	_ConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }
 
 static bool firstDraw = true;
@@ -51,8 +60,12 @@ void GameApp::DrawScene()
 		_ConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
 		_OffsetConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 
-		_OffsetTexSampler.VSBind(_pd3dDeviceContext.Get());
-		_OffsetTexView.VSBind(_pd3dDeviceContext.Get());
+
+		_OffsetTexSampler.VSBind(_pd3dDeviceContext.Get(), 0);
+		_OffsetTexView.VSBind(_pd3dDeviceContext.Get(), 0);
+
+		_MainTexView.PSBind(_pd3dDeviceContext.Get(), 0);
+		_MainTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 
 		_BasePassShader.Use(_pd3dDeviceContext.Get());
 		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
@@ -94,10 +107,16 @@ void GameApp::InitResource()
 	// sampler state
 	D3D11_SAMPLER_DESC desc;
 	_OffsetTexSampler.GetDesc(desc);
-	desc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;		// 确保按照点采样
+	desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;		// 确保按照点采样
 	_OffsetTexSampler.Delcare(_pd3dDevice.Get(), desc);
 	// texture view
 	_OffsetTexView.Declare(&_OffsetTex);
+
+
+	_MainTex.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"texture.png");
+	_MainTexSampler.GetDesc(desc);
+	_MainTexSampler.Delcare(_pd3dDevice.Get(), desc);
+	_MainTexView.Declare(&_MainTex);
 
 	// constant buffer
 	_OffsetBufferData.Data = DirectX::XMFLOAT4(8, 4, 0, 0);

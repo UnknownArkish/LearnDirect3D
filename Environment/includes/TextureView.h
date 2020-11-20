@@ -9,9 +9,9 @@
 class ITextureView
 {
 public:
-	virtual void VSBind(ID3D11DeviceContext* deviceContext) = 0;
-	virtual void GSBind(ID3D11DeviceContext* deviceContext) = 0;
-	virtual void PSBind(ID3D11DeviceContext* deviceContext) = 0;
+	virtual void VSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
+	virtual void GSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
+	virtual void PSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
 	virtual void Declare(Texture* texture) = 0;
 protected:
 	ID3D11ShaderResourceView** GetShaderResourceViews()
@@ -24,18 +24,17 @@ protected:
 	Texture* _Texture;
 };
 
-template<UINT slot>
 class TextureView : public ITextureView
 {
 public:
-	virtual void VSBind(ID3D11DeviceContext* deviceContext) override;
-	virtual void GSBind(ID3D11DeviceContext* deviceContext) override;
-	virtual void PSBind(ID3D11DeviceContext* deviceContext) override;
+	virtual void VSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
+	virtual void GSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
+	virtual void PSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
 	virtual void Declare(Texture* texture) override;
 };
 
-template<UINT slot>
-inline void TextureView<slot>::VSBind(ID3D11DeviceContext* deviceContext)
+
+inline void TextureView::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	if (_Texture)
@@ -44,8 +43,8 @@ inline void TextureView<slot>::VSBind(ID3D11DeviceContext* deviceContext)
 	}
 }
 
-template<UINT slot>
-inline void TextureView<slot>::GSBind(ID3D11DeviceContext* deviceContext)
+
+inline void TextureView::GSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	if (_Texture)
@@ -54,8 +53,8 @@ inline void TextureView<slot>::GSBind(ID3D11DeviceContext* deviceContext)
 	}
 }
 
-template<UINT slot>
-inline void TextureView<slot>::PSBind(ID3D11DeviceContext* deviceContext)
+
+inline void TextureView::PSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	if (_Texture)
@@ -64,8 +63,8 @@ inline void TextureView<slot>::PSBind(ID3D11DeviceContext* deviceContext)
 	}
 }
 
-template<UINT slot>
-inline void TextureView<slot>::Declare(Texture* texture)
+
+inline void TextureView::Declare(Texture* texture)
 {
 	_Texture = texture;
 }
