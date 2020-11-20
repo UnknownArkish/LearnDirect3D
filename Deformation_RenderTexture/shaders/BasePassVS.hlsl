@@ -17,13 +17,15 @@ UniversalVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
     float row = floor(vertexID / data.x);
     
     float2 offsetUVs = float2(col / data.x, row / data.y);
-    float4 offset = offsetTex.Sample(offsetTexSampler, offsetUVs);
-    
-    result.posH = float4((input.pos + offset), 1.0f);
+    float4 offset = offsetTex.SampleLevel(offsetTexSampler, offsetUVs, 0);
+    //float4 offset = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    result.posH = float4((input.pos + offset.xyz), 1.0f);
     result.posH = mul(result.posH, gWorld);
     result.posH = mul(result.posH, gView);
     result.posH = mul(result.posH, gProjection);
     result.color = input.color;
+    result.uvs = input.uvs;
     
     return result;
 }

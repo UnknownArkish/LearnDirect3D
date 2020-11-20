@@ -37,10 +37,10 @@
     <FxCompile Include="shaders\CalculateOffsetPassPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\BassPassVS.hlsl">
+    <FxCompile Include="shaders\BasePassPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\BasePassPS.hlsl">
+    <FxCompile Include="shaders\BasePassVS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
   </ItemGroup>

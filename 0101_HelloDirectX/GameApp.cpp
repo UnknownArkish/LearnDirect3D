@@ -72,7 +72,7 @@ void GameApp::DrawScene()
 	{
 		_RenderTexture.EndRender(_pd3dDeviceContext.Get());
 		_TextireView.Declare(&_RenderTexture);
-		//_FirstDraw = false;
+		_FirstDraw = false;
 	}
 
 	HR(_pSwapChain->Present(0, 0));

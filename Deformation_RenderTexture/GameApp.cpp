@@ -46,9 +46,17 @@ void GameApp::DrawScene()
 		_OffsetTex.EndRender(_pd3dDeviceContext.Get());
 		firstDraw = false;
 	}
+	else
+	{
+		_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+		_OffsetConstantBuffer.VSBind(_pd3dDeviceContext.Get());
 
+		_OffsetTexSampler.VSBind(_pd3dDeviceContext.Get());
+		_OffsetTexView.VSBind(_pd3dDeviceContext.Get());
 
-
+		_BasePassShader.Use(_pd3dDeviceContext.Get());
+		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
+	}
 
 	HR(_pSwapChain->Present(0, 0));
 }
@@ -66,6 +74,17 @@ void GameApp::InitShader()
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "ps_5_0";
 	_CalculateOffsetShader.PSDeclare(_pd3dDevice.Get(), desc);
+
+	desc.CsoName = L"BasePassVS.cso";
+	desc.FileName = L"shaders/BasePassVS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "vs_5_0";
+	_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc);
+	desc.CsoName = L"BasePassPS.cso";
+	desc.FileName = L"shaders/BasePassPS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "ps_5_0";
+	_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc);
 }
 
 void GameApp::InitResource()
@@ -85,4 +104,16 @@ void GameApp::InitResource()
 	_OffsetConstantBuffer.Declare(_pd3dDevice.Get());
 	_OffsetConstantBuffer.SetBuffer(_OffsetBufferData);
 	_OffsetConstantBuffer.Apply(_pd3dDeviceContext.Get());
+
+	_ConstantBuffer.Declare(_pd3dDevice.Get());
+	_BufferData.World = DirectX::XMMatrixIdentity();
+	_BufferData.View = DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixLookAtLH(
+			DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	));
+	_BufferData.Projection = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
+	_ConstantBuffer.SetBuffer(_BufferData);
+	_ConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }
