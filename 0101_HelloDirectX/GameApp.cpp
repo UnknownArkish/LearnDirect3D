@@ -40,7 +40,6 @@ void GameApp::UpdateScene(float dt)
 	static float phi = 0.0f, theta = 0.0f;
 	phi += 0.0001f, theta += 0.00015f;
 
-	// 更新常量缓冲区，让立方体转起来
 	BasePassConstantBuffer buffer;
 	_ConstantBuffer.GetBuffer(buffer);
 	buffer.World = XMMatrixTranspose(XMMatrixRotationX(phi) * XMMatrixRotationY(theta));
@@ -56,7 +55,6 @@ void GameApp::DrawScene()
 	_pd3dDeviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
 	_pd3dDeviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	// 设置图元类型，设定输入布局
 	_BasePassShader.Use(_pd3dDeviceContext.Get());
 	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
 	_pRenderer->RenderCube(_pd3dDeviceContext.Get());
@@ -95,9 +93,6 @@ void GameApp::InitResource()
 	buffer.Projection = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
 	_ConstantBuffer.SetBuffer(buffer);
 
-	// ******************
-	// 设置调试对象名
-	//
 	_ConstantBuffer.SetDebugName("ConstantBuffer");
 	_BasePassShader.VSSetDebugName("CUBE_VS");
 	_BasePassShader.PSSetDebugName("CUBE_VS");

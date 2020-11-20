@@ -6,9 +6,9 @@
 class Texture
 {
 public:
-	virtual UINT GetWidth() = 0;
-	virtual UINT GetHeight() = 0;
-	virtual DXGI_FORMAT GetFormat() = 0;
+	virtual UINT GetWidth() const = 0;
+	virtual UINT GetHeight() const = 0;
+	virtual DXGI_FORMAT GetFormat() const = 0;
 protected:
 	Texture() : _pResource(nullptr) {}
 

@@ -6,16 +6,14 @@ class RenderTexture : public Texture
 {
 public:
 	RenderTexture();
-	HRESULT Declare(UINT width, UINT height, DXGI_FORMAT format);
+	HRESULT Declare(ID3D11Device* device, UINT width, UINT height, DXGI_FORMAT format, bool useMipmap);
 
-	// Í¨¹ý Texture ¼Ì³Ð
-	virtual UINT GetWidth() override;
-	virtual UINT GetHeight() override;
-	virtual DXGI_FORMAT GetFormat() override;
+	// é€šè¿‡ Texture ç»§æ‰¿
+	virtual UINT GetWidth() const override;
+	virtual UINT GetHeight() const override;
+	virtual DXGI_FORMAT GetFormat() const override;
 	void GetDesc(D3D11_TEXTURE2D_DESC& output)const { output = _Desc; }
 private:
-	DXGI_FORMAT _Format;
 	bool _IsDeclared;
 	D3D11_TEXTURE2D_DESC _Desc;
-
 };
