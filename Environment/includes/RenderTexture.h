@@ -27,6 +27,8 @@ private:
 	ComPtr<ID3D11DepthStencilView> _pDepthStencilView;
 	D3D11_VIEWPORT _ViewPort;
 
+	bool _Rendering;
+
 	ComPtr<ID3D11RenderTargetView> _pCacheRTV;
 	ComPtr<ID3D11DepthStencilView> _pCacheDSV;
 	D3D11_VIEWPORT _CacheVP;

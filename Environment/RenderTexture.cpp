@@ -1,7 +1,10 @@
 #include "includes\RenderTexture.h"
 
 RenderTexture::RenderTexture() : Texture(),
-	_IsDeclared(false), _Desc()
+	_IsDeclared(false), _Desc(), _UseMipmap(false),
+	_pRenderTargetView(nullptr), _pDepthStencilView(nullptr), _ViewPort(),
+	_pCacheRTV(nullptr), _pCacheDSV(nullptr), _CacheVP(),
+	_Rendering(false)
 {
 	ZeroMemory(&_Desc, sizeof(D3D11_TEXTURE2D_DESC));
 }
@@ -108,7 +111,9 @@ DXGI_FORMAT RenderTexture::GetFormat() const
 
 void RenderTexture::BeginRender(ID3D11DeviceContext* deviceContext)
 {
+	assert(_IsDeclared);
 	assert(deviceContext);
+	assert(!_Rendering);
 
 	deviceContext->OMGetRenderTargets(1, _pCacheRTV.GetAddressOf(), _pCacheDSV.GetAddressOf());
 	UINT num_Viewports = 1;
@@ -120,10 +125,16 @@ void RenderTexture::BeginRender(ID3D11DeviceContext* deviceContext)
 	deviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	deviceContext->OMSetRenderTargets(1, _pRenderTargetView.GetAddressOf(), _pDepthStencilView.Get());
 	deviceContext->RSSetViewports(1, &_ViewPort);
+
+	_Rendering = true;
 }
 
 void RenderTexture::EndRender(ID3D11DeviceContext* deviceContext)
 {
+	assert(_IsDeclared);
+	assert(deviceContext);
+	assert(_Rendering);
+
 	// 恢复默认设定
 	deviceContext->RSSetViewports(1, &_CacheVP);
 	deviceContext->OMSetRenderTargets(1, _pCacheRTV.GetAddressOf(), _pCacheDSV.Get());
@@ -137,4 +148,6 @@ void RenderTexture::EndRender(ID3D11DeviceContext* deviceContext)
 	// 清空临时缓存的渲染目标视图和深度模板视图
 	_pCacheRTV.Reset();
 	_pCacheDSV.Reset();
+
+	_Rendering = false;
 }

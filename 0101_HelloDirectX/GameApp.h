@@ -10,6 +10,8 @@
 #include <TextureView.h>
 #include <Texture2D.h>
 
+#include <RenderTexture.h>
+
 class GameApp : public D3DApp
 {
 public:
@@ -25,11 +27,14 @@ protected:
 	virtual void InitShader();
 	virtual void InitResource();
 private:
+	bool _FirstDraw;
+
 	Shader _BasePassShader;
 
 	Texture2D _Texture;
-
-	SamplerState<0> _SamplerState;
+	RenderTexture _RenderTexture;
 	TextureView<0> _TextireView;
+	SamplerState<0> _SamplerState;
+
 	ConstantBuffer<0, BasePassConstantBuffer> _ConstantBuffer;
 };

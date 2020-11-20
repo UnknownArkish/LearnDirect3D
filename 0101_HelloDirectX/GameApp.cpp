@@ -9,7 +9,7 @@
 using namespace DirectX;
 
 GameApp::GameApp(HINSTANCE hInstance)
-	: D3DApp(hInstance)
+	: D3DApp(hInstance), _FirstDraw(true)
 {
 }
 
@@ -43,8 +43,8 @@ void GameApp::UpdateScene(float dt)
 	BasePassConstantBuffer buffer;
 	_ConstantBuffer.GetBuffer(buffer);
 	buffer.World = XMMatrixTranspose(XMMatrixRotationX(phi) * XMMatrixRotationY(theta));
-	_ConstantBuffer.SetBuffer(buffer);
-	_ConstantBuffer.Apply(_pd3dDeviceContext.Get());
+	//_ConstantBuffer.SetBuffer(buffer);
+	//_ConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }
 
 void GameApp::DrawScene()
@@ -55,6 +55,11 @@ void GameApp::DrawScene()
 	_pd3dDeviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
 	_pd3dDeviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	if (_FirstDraw)
+	{
+		_RenderTexture.BeginRender(_pd3dDeviceContext.Get());
+	}
+
 	_BasePassShader.Use(_pd3dDeviceContext.Get());
 	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
 
@@ -62,6 +67,13 @@ void GameApp::DrawScene()
 	_SamplerState.PSBind(_pd3dDeviceContext.Get());
 
 	_pRenderer->RenderCube(_pd3dDeviceContext.Get());
+
+	if (_FirstDraw)
+	{
+		_RenderTexture.EndRender(_pd3dDeviceContext.Get());
+		_TextireView.Declare(&_RenderTexture);
+		//_FirstDraw = false;
+	}
 
 	HR(_pSwapChain->Present(0, 0));
 }
@@ -89,6 +101,9 @@ void GameApp::InitResource()
 	_Texture.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"texture.png");
 	_TextireView.Declare(&_Texture);
 
+	_RenderTexture.Declare(_pd3dDevice.Get(), 512, 512, DXGI_FORMAT_R8G8B8A8_UNORM, false);
+	_RenderTexture.SetDebugName("RenderTexture", "RenderTextureView");
+
 	D3D11_SAMPLER_DESC desc;
 	_SamplerState.GetDesc(desc);
 	_SamplerState.Delcare(_pd3dDevice.Get(), desc);
@@ -103,6 +118,7 @@ void GameApp::InitResource()
 	));
 	buffer.Projection = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));
 	_ConstantBuffer.SetBuffer(buffer);
+	_ConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
 	_ConstantBuffer.SetDebugName("ConstantBuffer");
 	_BasePassShader.VSSetDebugName("CUBE_VS");

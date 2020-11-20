@@ -15,12 +15,12 @@ public:
 	virtual UINT GetHeight() const = 0;
 	virtual DXGI_FORMAT GetFormat() const = 0;
 
-	template<UINT TNameLength>
-	void SetDebugName(_In_ const char(&name)[TNameLength])
+	template<UINT TNameLength, UINT TNameLength1>
+	void SetDebugName(_In_ const char(&name)[TNameLength], _In_ const char(&viewName)[TNameLength1] )
 	{
 		assert(_pResource);
 		D3D11SetDebugObjectName(_pResource.Get(), name);
-		if (_pResourceView) D3D11SetDebugObjectName(_pResourceView.Get(), std::strcat(name, "_View"));
+		if (_pResourceView) D3D11SetDebugObjectName(_pResourceView.Get(), viewName);
 	}
 protected:
 	Texture() : _pResource(nullptr), _pResourceView(nullptr) {}
