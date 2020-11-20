@@ -14,6 +14,9 @@ public:
 	~Texture2D();
 
 	HRESULT Declare(ID3D11Device* device, UINT width, UINT height, DXGI_FORMAT format, bool useMipmap);
+	HRESULT DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, DirectX::DDS_ALPHA_MODE* alphaMode = nullptr);
+	HRESULT DeclareWithWIC(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName);
+
 	void GetDesc(D3D11_TEXTURE2D_DESC& desc) { desc = _Desc; }
 
 	virtual UINT GetWidth() const override;
@@ -23,8 +26,6 @@ public:
 	void SetColors(const DirectX::XMFLOAT4* colors, UINT numColors);
 	void Apply(ID3D11DeviceContext* deviceContext);
 	void GetColors(DirectX::XMFLOAT4** output) const;
-protected:
-	friend class TextureLoader;
 private:
 	bool _IsDeclared;
 	D3D11_TEXTURE2D_DESC _Desc;

@@ -153,7 +153,6 @@
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture2D.cpp" />
-    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,7 +171,6 @@
     <ClInclude Include="includes\Shader.h" />
     <ClInclude Include="includes\Texture.h" />
     <ClInclude Include="includes\Texture2D.h" />
-    <ClInclude Include="includes\TextureLoader.h" />
     <ClInclude Include="includes\TextureView.h" />
     <ClInclude Include="includes\VertexLayoutCommon.h" />
     <ClInclude Include="includes\WICTextureLoader.h" />

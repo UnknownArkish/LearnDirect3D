@@ -86,7 +86,8 @@ void GameApp::InitShader()
 
 void GameApp::InitResource()
 {
-	TextureLoader::LoadFromWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"texture.png", &_Texture, &_TextireView);
+	_Texture.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"texture.png");
+	_TextireView.Declare(&_Texture);
 
 	D3D11_SAMPLER_DESC desc;
 	_SamplerState.GetDesc(desc);

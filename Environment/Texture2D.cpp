@@ -57,6 +57,44 @@ HRESULT Texture2D::Declare(ID3D11Device* device, UINT width, UINT height, DXGI_F
 	return result;
 }
 
+HRESULT Texture2D::DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, DirectX::DDS_ALPHA_MODE* alphaMode)
+{
+	assert(!_IsDeclared);
+	assert(device);
+
+	HRESULT result = DirectX::CreateDDSTextureFromFile(device, fileName, _pResource.GetAddressOf(), _pResourceView.GetAddressOf(), 0, alphaMode);
+	if (SUCCEEDED(result))
+	{
+		ComPtr<ID3D11Texture2D> pTexture2D;
+		_pResource.As(&pTexture2D);
+		pTexture2D->GetDesc(&_Desc);
+
+		_CanWrite = false;
+		_Datas = nullptr;
+		_IsDeclared = true;
+	}
+	return result;
+}
+
+HRESULT Texture2D::DeclareWithWIC(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName)
+{
+	assert(!_IsDeclared);
+	assert(device);
+
+	HRESULT result = DirectX::CreateWICTextureFromFile(device, deviceContext, fileName, _pResource.ReleaseAndGetAddressOf(), _pResourceView.GetAddressOf(), 0);
+	if (SUCCEEDED(result))
+	{
+		ComPtr<ID3D11Texture2D> pTexture2D;
+		_pResource.As(&pTexture2D);
+		pTexture2D->GetDesc(&_Desc);
+
+		_CanWrite = false;
+		_Datas = nullptr;
+		_IsDeclared = true;
+	}
+	return result;
+}
+
 UINT Texture2D::GetWidth() const
 {
 	assert(_IsDeclared);
