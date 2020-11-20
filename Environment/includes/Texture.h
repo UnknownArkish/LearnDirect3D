@@ -29,3 +29,5 @@ protected:
 	ComPtr<ID3D11Resource> _pResource;
 	ComPtr<ID3D11ShaderResourceView> _pResourceView;
 };
+
+#include "TextureView.h"

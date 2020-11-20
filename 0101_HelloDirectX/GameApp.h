@@ -7,8 +7,8 @@
 #include <ConstantBufferObjectCommon.h>
 
 #include <SamplerState.h>
-#include <Texture2D.h>
 #include <TextureView.h>
+#include <Texture2D.h>
 
 class GameApp : public D3DApp
 {
