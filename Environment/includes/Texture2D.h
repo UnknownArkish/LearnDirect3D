@@ -17,6 +17,8 @@ public:
 	HRESULT DeclareWithDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName, DirectX::DDS_ALPHA_MODE* alphaMode = nullptr);
 	HRESULT DeclareWithWIC(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const wchar_t* fileName);
 
+	void GetDesc(D3D11_TEXTURE2D_DESC& desc) { desc = _Desc; }
+
 	virtual UINT GetWidth() const override;
 	virtual UINT GetHeight() const override;
 	virtual DXGI_FORMAT GetFormat() const override;

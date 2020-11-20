@@ -57,6 +57,10 @@ void GameApp::DrawScene()
 
 	_BasePassShader.Use(_pd3dDeviceContext.Get());
 	_ConstantBuffer.VSBind(_pd3dDeviceContext.Get());
+
+	_TextireView.PSBind(_pd3dDeviceContext.Get());
+	_SamplerState.PSBind(_pd3dDeviceContext.Get());
+
 	_pRenderer->RenderCube(_pd3dDeviceContext.Get());
 
 	HR(_pSwapChain->Present(0, 0));
@@ -83,7 +87,11 @@ void GameApp::InitShader()
 void GameApp::InitResource()
 {
 	_Texture.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"texture.png");
+	_TextireView.Declare(&_Texture);
 
+	D3D11_SAMPLER_DESC desc;
+	_SamplerState.GetDesc(desc);
+	_SamplerState.Delcare(_pd3dDevice.Get(), desc);
 
 	_ConstantBuffer.Declare(_pd3dDevice.Get());
 	BasePassConstantBuffer buffer;

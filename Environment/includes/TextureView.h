@@ -2,49 +2,70 @@
 
 #include <d3d11.h>
 #include "Common.h"
+#include <assert.h>
 
-class Texture;
 #include "Texture.h"
 
-template<UINT slot>
-class TextureView
+class ITextureView
 {
 public:
-	friend class Texture;
+	virtual void VSBind(ID3D11DeviceContext* deviceContext) = 0;
+	virtual void GSBind(ID3D11DeviceContext* deviceContext) = 0;
+	virtual void PSBind(ID3D11DeviceContext* deviceContext) = 0;
+	virtual void Declare(Texture* texture) = 0;
+protected:
+	ID3D11ShaderResourceView** GetShaderResourceViews()
+	{
+		return _Texture != NULL ?
+			_Texture->_pResourceView.GetAddressOf() :
+			nullptr;
+	}
+protected:
+	Texture* _Texture;
+};
 
-	void VSBind(ID3D11DeviceContext* deviceContext);
-	void GSBind(ID3D11DeviceContext* deviceContext);
-	void PSBind(ID3D11DeviceContext* deviceContext);
+template<UINT slot>
+class TextureView : public ITextureView
+{
 public:
-	HRESULT Declare(ID3D11Device* device, const D3D11_SHADER_RESOURCE_VIEW_DESC& desc, const Texture* texture);
-private:
-	ComPtr<ID3D11ShaderResourceView> _ResourceView;
+	virtual void VSBind(ID3D11DeviceContext* deviceContext) override;
+	virtual void GSBind(ID3D11DeviceContext* deviceContext) override;
+	virtual void PSBind(ID3D11DeviceContext* deviceContext) override;
+	virtual void Declare(Texture* texture) override;
 };
 
 template<UINT slot>
 inline void TextureView<slot>::VSBind(ID3D11DeviceContext* deviceContext)
 {
 	assert(deviceContext);
-	deviceContext->VSSetShaderResources(slot, 1, _ResourceView.Get());
+	if (_Texture)
+	{
+		deviceContext->VSSetShaderResources(slot, 1, GetShaderResourceViews());
+	}
 }
 
 template<UINT slot>
 inline void TextureView<slot>::GSBind(ID3D11DeviceContext* deviceContext)
 {
 	assert(deviceContext);
-	deviceContext->GSSetShaderResources(slot, 1, _ResourceView.Get());
+	if (_Texture)
+	{
+		deviceContext->GSSetShaderResources(slot, 1, GetShaderResourceViews());
+	}
 }
 
 template<UINT slot>
 inline void TextureView<slot>::PSBind(ID3D11DeviceContext* deviceContext)
 {
 	assert(deviceContext);
-	deviceContext->PSSetShaderResources(slot, 1, _ResourceView.Get());
+	if (_Texture)
+	{
+		deviceContext->PSSetShaderResources(slot, 1, GetShaderResourceViews());
+	}
 }
 
 template<UINT slot>
-inline HRESULT TextureView<slot>::Declare(ID3D11Device* device, const D3D11_SHADER_RESOURCE_VIEW_DESC& desc, const Texture* texture)
+inline void TextureView<slot>::Declare(Texture* texture)
 {
-	assert(device);
-	device->CreateShaderResourceView(texture->_pResource.Get(), desc, _ResourceView.ReleaseAndGetAddressOf());
+	_Texture = texture;
 }

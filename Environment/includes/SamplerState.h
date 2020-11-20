@@ -8,7 +8,19 @@ template<UINT slot>
 class SamplerState
 {
 public:
-	SamplerState() :_Desc() { ZeroMemory(&_Desc, sizeof(D3D11_SAMPLER_DESC)); }
+	SamplerState() :_Desc() 
+	{ 
+		ZeroMemory(&_Desc, sizeof(D3D11_SAMPLER_DESC)); 
+		_Desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		_Desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_Desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_Desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		_Desc.MinLOD = 0;
+		_Desc.MaxAnisotropy = 1;
+		_Desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		_Desc.MinLOD = 0;
+		_Desc.MaxLOD = D3D11_FLOAT32_MAX;
+	}
 
 	HRESULT Delcare(ID3D11Device* device, const D3D11_SAMPLER_DESC& desc);
 	void GetDesc(D3D11_SAMPLER_DESC& output) const { output = _Desc; }
@@ -33,7 +45,7 @@ inline HRESULT SamplerState<slot>::Delcare(ID3D11Device* device, const D3D11_SAM
 {
 	assert(device);
 	_Desc = desc;
-	return device->CreateSamplerState(desc, _pSamplerState.ReleaseAndGetAddressOf());
+	return device->CreateSamplerState(&desc, _pSamplerState.ReleaseAndGetAddressOf());
 }
 
 template<UINT slot>
