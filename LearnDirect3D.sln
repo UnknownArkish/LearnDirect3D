@@ -17,6 +17,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SODemo", "SODemo\SODemo.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deformation_RenderTexture", "Deformation_RenderTexture\Deformation_RenderTexture.vcxproj", "{3FB3E730-F2F8-4067-9736-C9561CBEB79D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0303_Tessellation", "0303_Tessellation\0303_Tessellation.vcxproj", "{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6958FD2-D109-4B69-93BE-ECB36F56BA36} = {E6958FD2-D109-4B69-93BE-ECB36F56BA36}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -57,6 +62,14 @@ Global
 		{3FB3E730-F2F8-4067-9736-C9561CBEB79D}.Release|x64.Build.0 = Release|x64
 		{3FB3E730-F2F8-4067-9736-C9561CBEB79D}.Release|x86.ActiveCfg = Release|Win32
 		{3FB3E730-F2F8-4067-9736-C9561CBEB79D}.Release|x86.Build.0 = Release|Win32
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Debug|x64.ActiveCfg = Debug|x64
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Debug|x64.Build.0 = Debug|x64
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Debug|x86.ActiveCfg = Debug|Win32
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Debug|x86.Build.0 = Debug|Win32
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Release|x64.ActiveCfg = Release|x64
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Release|x64.Build.0 = Release|x64
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Release|x86.ActiveCfg = Release|Win32
+		{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

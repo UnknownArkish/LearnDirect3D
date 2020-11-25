@@ -4,12 +4,12 @@
 // d3dUtil.h by X_Jun(MKXJun) (C) 2018-2020 All Rights Reserved.
 // Licensed under the MIT License.
 //
-// D3DÊµÓÃ¹¤¾ß¼¯
+// D3Då®ç”¨å·¥å…·é›†
 // Direct3D utility tools.
 //***************************************************************************************
 
-#include <d3d11_1.h>			// ÒÑ°üº¬Windows.h
-#include <DirectXCollision.h>	// ÒÑ°üº¬DirectXMath.h
+#include <d3d11_1.h>			// å·²åŒ…å«Windows.h
+#include <DirectXCollision.h>	// å·²åŒ…å«DirectXMath.h
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <d3dcompiler.h>
@@ -17,28 +17,28 @@
 #include <string>
 
 //
-// ºêÏà¹Ø
+// å®ç›¸å…³
 //
 
-// Ä¬ÈÏ¿ªÆôÍ¼ĞÎµ÷ÊÔÆ÷¾ßÃû»¯
-// Èç¹û²»ĞèÒª¸ÃÏî¹¦ÄÜ£¬¿ÉÍ¨¹ıÈ«¾ÖÎÄ±¾Ìæ»»½«ÆäÖµÉèÖÃÎª0
+// é»˜è®¤å¼€å¯å›¾å½¢è°ƒè¯•å™¨å…·ååŒ–
+// å¦‚æœä¸éœ€è¦è¯¥é¡¹åŠŸèƒ½ï¼Œå¯é€šè¿‡å…¨å±€æ–‡æœ¬æ›¿æ¢å°†å…¶å€¼è®¾ç½®ä¸º0
 #ifndef GRAPHICS_DEBUGGER_OBJECT_NAME
 #define GRAPHICS_DEBUGGER_OBJECT_NAME (1)
 #endif
 
-// °²È«COM×é¼şÊÍ·Åºê
+// å®‰å…¨COMç»„ä»¶é‡Šæ”¾å®
 #define SAFE_RELEASE(p) { if ((p)) { (p)->Release(); (p) = nullptr; } }
 
 //
-// ¸¨Öúµ÷ÊÔÏà¹Øº¯Êı
+// è¾…åŠ©è°ƒè¯•ç›¸å…³å‡½æ•°
 //
 
 // ------------------------------
-// D3D11SetDebugObjectNameº¯Êı
+// D3D11SetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªD3DÉè±¸´´½¨³öÀ´µÄ¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÉèÖÃ¶ÔÏóÃû
-// [In]resource				D3D11Éè±¸´´½¨³öµÄ¶ÔÏó
-// [In]name					¶ÔÏóÃû
+// ä¸ºD3Dè®¾å¤‡åˆ›å»ºå‡ºæ¥çš„å¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­è®¾ç½®å¯¹è±¡å
+// [In]resource				D3D11è®¾å¤‡åˆ›å»ºå‡ºçš„å¯¹è±¡
+// [In]name					å¯¹è±¡å
 template<UINT TNameLength>
 inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ const char(&name)[TNameLength])
 {
@@ -51,12 +51,12 @@ inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ const
 }
 
 // ------------------------------
-// D3D11SetDebugObjectNameº¯Êı
+// D3D11SetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªD3DÉè±¸´´½¨³öÀ´µÄ¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÉèÖÃ¶ÔÏóÃû
-// [In]resource				D3D11Éè±¸´´½¨³öµÄ¶ÔÏó
-// [In]name					¶ÔÏóÃû
-// [In]length				×Ö·û´®³¤¶È
+// ä¸ºD3Dè®¾å¤‡åˆ›å»ºå‡ºæ¥çš„å¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­è®¾ç½®å¯¹è±¡å
+// [In]resource				D3D11è®¾å¤‡åˆ›å»ºå‡ºçš„å¯¹è±¡
+// [In]name					å¯¹è±¡å
+// [In]length				å­—ç¬¦ä¸²é•¿åº¦
 inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ LPCSTR name, _In_ UINT length)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -69,11 +69,11 @@ inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ LPCST
 }
 
 // ------------------------------
-// D3D11SetDebugObjectNameº¯Êı
+// D3D11SetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªD3DÉè±¸´´½¨³öÀ´µÄ¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÉèÖÃ¶ÔÏóÃû
-// [In]resource				D3D11Éè±¸´´½¨³öµÄ¶ÔÏó
-// [In]name					¶ÔÏóÃû
+// ä¸ºD3Dè®¾å¤‡åˆ›å»ºå‡ºæ¥çš„å¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­è®¾ç½®å¯¹è±¡å
+// [In]resource				D3D11è®¾å¤‡åˆ›å»ºå‡ºçš„å¯¹è±¡
+// [In]name					å¯¹è±¡å
 inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ const std::string& name)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -85,10 +85,10 @@ inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ const
 }
 
 // ------------------------------
-// D3D11SetDebugObjectNameº¯Êı
+// D3D11SetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªD3DÉè±¸´´½¨³öÀ´µÄ¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÇå¿Õ¶ÔÏóÃû
-// [In]resource				D3D11Éè±¸´´½¨³öµÄ¶ÔÏó
+// ä¸ºD3Dè®¾å¤‡åˆ›å»ºå‡ºæ¥çš„å¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­æ¸…ç©ºå¯¹è±¡å
+// [In]resource				D3D11è®¾å¤‡åˆ›å»ºå‡ºçš„å¯¹è±¡
 inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ std::nullptr_t)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -99,11 +99,11 @@ inline void D3D11SetDebugObjectName(_In_ ID3D11DeviceChild* resource, _In_ std::
 }
 
 // ------------------------------
-// DXGISetDebugObjectNameº¯Êı
+// DXGISetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªDXGI¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÉèÖÃ¶ÔÏóÃû
-// [In]object				DXGI¶ÔÏó
-// [In]name					¶ÔÏóÃû
+// ä¸ºDXGIå¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­è®¾ç½®å¯¹è±¡å
+// [In]object				DXGIå¯¹è±¡
+// [In]name					å¯¹è±¡å
 template<UINT TNameLength>
 inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ const char(&name)[TNameLength])
 {
@@ -116,12 +116,12 @@ inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ const char(&na
 }
 
 // ------------------------------
-// DXGISetDebugObjectNameº¯Êı
+// DXGISetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªDXGI¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÉèÖÃ¶ÔÏóÃû
-// [In]object				DXGI¶ÔÏó
-// [In]name					¶ÔÏóÃû
-// [In]length				×Ö·û´®³¤¶È
+// ä¸ºDXGIå¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­è®¾ç½®å¯¹è±¡å
+// [In]object				DXGIå¯¹è±¡
+// [In]name					å¯¹è±¡å
+// [In]length				å­—ç¬¦ä¸²é•¿åº¦
 inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ LPCSTR name, _In_ UINT length)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -134,11 +134,11 @@ inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ LPCSTR name, _
 }
 
 // ------------------------------
-// DXGISetDebugObjectNameº¯Êı
+// DXGISetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªDXGI¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÉèÖÃ¶ÔÏóÃû
-// [In]object				DXGI¶ÔÏó
-// [In]name					¶ÔÏóÃû
+// ä¸ºDXGIå¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­è®¾ç½®å¯¹è±¡å
+// [In]object				DXGIå¯¹è±¡
+// [In]name					å¯¹è±¡å
 inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ const std::string& name)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -150,10 +150,10 @@ inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ const std::str
 }
 
 // ------------------------------
-// DXGISetDebugObjectNameº¯Êı
+// DXGISetDebugObjectNameå‡½æ•°
 // ------------------------------
-// ÎªDXGI¶ÔÏóÔÚÍ¼ĞÎµ÷ÊÔÆ÷ÖĞÇå¿Õ¶ÔÏóÃû
-// [In]object				DXGI¶ÔÏó
+// ä¸ºDXGIå¯¹è±¡åœ¨å›¾å½¢è°ƒè¯•å™¨ä¸­æ¸…ç©ºå¯¹è±¡å
+// [In]object				DXGIå¯¹è±¡
 inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ std::nullptr_t)
 {
 #if (defined(DEBUG) || defined(_DEBUG)) && (GRAPHICS_DEBUGGER_OBJECT_NAME)
@@ -164,12 +164,31 @@ inline void DXGISetDebugObjectName(_In_ IDXGIObject* object, _In_ std::nullptr_t
 }
 
 // ------------------------------
-// CreateShaderFromFileº¯Êı
+// CreateShaderFromFileå‡½æ•°
 // ------------------------------
-// [In]csoFileNameInOut ±àÒëºÃµÄ×ÅÉ«Æ÷¶ş½øÖÆÎÄ¼ş(.cso)£¬ÈôÓĞÖ¸¶¨ÔòÓÅÏÈÑ°ÕÒ¸ÃÎÄ¼ş²¢¶ÁÈ¡
-// [In]hlslFileName     ×ÅÉ«Æ÷´úÂë£¬ÈôÎ´ÕÒµ½×ÅÉ«Æ÷¶ş½øÖÆÎÄ¼şÔò±àÒë×ÅÉ«Æ÷´úÂë
-// [In]entryPoint       Èë¿Úµã(Ö¸¶¨¿ªÊ¼µÄº¯Êı)
-// [In]shaderModel      ×ÅÉ«Æ÷Ä£ĞÍ£¬¸ñÊ½Îª"*s_5_0"£¬*¿ÉÒÔÎªc,d,g,h,p,vÖ®Ò»
-// [Out]ppBlobOut       Êä³ö×ÅÉ«Æ÷¶ş½øÖÆĞÅÏ¢
+// [In]csoFileNameInOut ç¼–è¯‘å¥½çš„ç€è‰²å™¨äºŒè¿›åˆ¶æ–‡ä»¶(.cso)ï¼Œè‹¥æœ‰æŒ‡å®šåˆ™ä¼˜å…ˆå¯»æ‰¾è¯¥æ–‡ä»¶å¹¶è¯»å–
+// [In]hlslFileName     ç€è‰²å™¨ä»£ç ï¼Œè‹¥æœªæ‰¾åˆ°ç€è‰²å™¨äºŒè¿›åˆ¶æ–‡ä»¶åˆ™ç¼–è¯‘ç€è‰²å™¨ä»£ç 
+// [In]entryPoint       å…¥å£ç‚¹(æŒ‡å®šå¼€å§‹çš„å‡½æ•°)
+// [In]shaderModel      ç€è‰²å™¨æ¨¡å‹ï¼Œæ ¼å¼ä¸º"*s_5_0"ï¼Œ*å¯ä»¥ä¸ºc,d,g,h,p,vä¹‹ä¸€
+// [Out]ppBlobOut       è¾“å‡ºç€è‰²å™¨äºŒè¿›åˆ¶ä¿¡æ¯
 extern HRESULT CreateShaderFromFile(const WCHAR* csoFileNameInOut, const WCHAR* hlslFileName,
 	LPCSTR entryPoint, LPCSTR shaderModel, ID3DBlob** ppBlobOut);
+
+
+// ------------------------------
+// CreateVertexBufferå‡½æ•°
+// ------------------------------
+// [In]d3dDevice			D3Dè®¾å¤‡
+// [In]data					åˆå§‹åŒ–æ•°æ®
+// [In]byteWidth			ç¼“å†²åŒºå­—èŠ‚æ•°
+// [Out]vertexBuffer		è¾“å‡ºçš„é¡¶ç‚¹ç¼“å†²åŒº
+// [InOpt]dynamic			æ˜¯å¦éœ€è¦CPUç»å¸¸æ›´æ–°
+// [InOpt]streamOutput		æ˜¯å¦è¿˜ç”¨äºæµè¾“å‡ºé˜¶æ®µ(ä¸èƒ½ä¸dynamicåŒæ—¶è®¾ä¸ºtrue)
+extern HRESULT CreateVertexBuffer(
+	ID3D11Device* d3dDevice,
+	void* data,
+	UINT byteWidth,
+	ID3D11Buffer** vertexBuffer,
+	/* å¯é€‰æ‰©å±•éƒ¨åˆ† */
+	bool dynamic = false,
+	bool streamOutput = false);

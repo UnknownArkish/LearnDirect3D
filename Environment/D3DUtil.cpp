@@ -1,11 +1,35 @@
 #include "includes/D3DUtil.h"
 
+// ------------------------------
+// CreateBufferå‡½æ•°
+// ------------------------------
+// åˆ›å»ºç¼“å†²åŒº
+// [In]d3dDevice			D3Dè®¾å¤‡
+// [In]data					åˆå§‹åŒ–ç»“æž„åŒ–æ•°æ®
+// [In]byteWidth			ç¼“å†²åŒºå­—èŠ‚æ•°
+// [Out]structuredBuffer	è¾“å‡ºçš„ç»“æž„åŒ–ç¼“å†²åŒº
+// [In]usage				èµ„æºç”¨é€”
+// [In]bindFlags			èµ„æºç»‘å®šæ ‡ç­¾
+// [In]cpuAccessFlags		èµ„æºCPUè®¿é—®æƒé™æ ‡ç­¾
+// [In]structuredByteStride æ¯ä¸ªç»“æž„ä½“çš„å­—èŠ‚æ•°
+// [In]miscFlags			èµ„æºæ‚é¡¹æ ‡ç­¾
+static HRESULT CreateBuffer(
+	ID3D11Device* d3dDevice,
+	void* data,
+	UINT byteWidth,
+	ID3D11Buffer** buffer,
+	D3D11_USAGE usage,
+	UINT bindFlags,
+	UINT cpuAccessFlags,
+	UINT structureByteStride,
+	UINT miscFlags);
+
 HRESULT CreateShaderFromFile(const WCHAR* csoFileNameInOut, const WCHAR* hlslFileName,
 	LPCSTR entryPoint, LPCSTR shaderModel, ID3DBlob** ppBlobOut)
 {
 	HRESULT hr = S_OK;
 
-	// Ñ°ÕÒÊÇ·ñÓÐÒÑ¾­±àÒëºÃµÄ¶¥µã×ÅÉ«Æ÷
+	// å¯»æ‰¾æ˜¯å¦æœ‰å·²ç»ç¼–è¯‘å¥½çš„é¡¶ç‚¹ç€è‰²å™¨
 	if (csoFileNameInOut && D3DReadFileToBlob(csoFileNameInOut, ppBlobOut) == S_OK)
 	{
 		return hr;
@@ -14,11 +38,11 @@ HRESULT CreateShaderFromFile(const WCHAR* csoFileNameInOut, const WCHAR* hlslFil
 	{
 		DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
-		// ÉèÖÃ D3DCOMPILE_DEBUG ±êÖ¾ÓÃÓÚ»ñÈ¡×ÅÉ«Æ÷µ÷ÊÔÐÅÏ¢¡£¸Ã±êÖ¾¿ÉÒÔÌáÉýµ÷ÊÔÌåÑé£¬
-		// µ«ÈÔÈ»ÔÊÐí×ÅÉ«Æ÷½øÐÐÓÅ»¯²Ù×÷
+		// è®¾ç½® D3DCOMPILE_DEBUG æ ‡å¿—ç”¨äºŽèŽ·å–ç€è‰²å™¨è°ƒè¯•ä¿¡æ¯ã€‚è¯¥æ ‡å¿—å¯ä»¥æå‡è°ƒè¯•ä½“éªŒï¼Œ
+		// ä½†ä»ç„¶å…è®¸ç€è‰²å™¨è¿›è¡Œä¼˜åŒ–æ“ä½œ
 		dwShaderFlags |= D3DCOMPILE_DEBUG;
 
-		// ÔÚDebug»·¾³ÏÂ½ûÓÃÓÅ»¯ÒÔ±ÜÃâ³öÏÖÒ»Ð©²»ºÏÀíµÄÇé¿ö
+		// åœ¨DebugçŽ¯å¢ƒä¸‹ç¦ç”¨ä¼˜åŒ–ä»¥é¿å…å‡ºçŽ°ä¸€äº›ä¸åˆç†çš„æƒ…å†µ
 		dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 		ID3DBlob* errorBlob = nullptr;
@@ -34,7 +58,7 @@ HRESULT CreateShaderFromFile(const WCHAR* csoFileNameInOut, const WCHAR* hlslFil
 			return hr;
 		}
 
-		// ÈôÖ¸¶¨ÁËÊä³öÎÄ¼þÃû£¬Ôò½«×ÅÉ«Æ÷¶þ½øÖÆÐÅÏ¢Êä³ö
+		// è‹¥æŒ‡å®šäº†è¾“å‡ºæ–‡ä»¶åï¼Œåˆ™å°†ç€è‰²å™¨äºŒè¿›åˆ¶ä¿¡æ¯è¾“å‡º
 		if (csoFileNameInOut)
 		{
 			return D3DWriteBlobToFile(*ppBlobOut, csoFileNameInOut, FALSE);
@@ -42,4 +66,72 @@ HRESULT CreateShaderFromFile(const WCHAR* csoFileNameInOut, const WCHAR* hlslFil
 	}
 
 	return hr;
+}
+
+HRESULT CreateBuffer(
+	ID3D11Device* d3dDevice,
+	void* data,
+	UINT byteWidth,
+	ID3D11Buffer** buffer,
+	D3D11_USAGE usage,
+	UINT bindFlags,
+	UINT cpuAccessFlags,
+	UINT structureByteStride,
+	UINT miscFlags)
+{
+	D3D11_BUFFER_DESC bufferDesc;
+	bufferDesc.Usage = usage;
+	bufferDesc.ByteWidth = byteWidth;
+	bufferDesc.BindFlags = bindFlags;
+	bufferDesc.CPUAccessFlags = cpuAccessFlags;
+	bufferDesc.StructureByteStride = structureByteStride;
+	bufferDesc.MiscFlags = miscFlags;
+
+	if (data)
+	{
+		D3D11_SUBRESOURCE_DATA initData;
+		ZeroMemory(&initData, sizeof(initData));
+		initData.pSysMem = data;
+		return d3dDevice->CreateBuffer(&bufferDesc, &initData, buffer);
+	}
+	else
+	{
+		return d3dDevice->CreateBuffer(&bufferDesc, nullptr, buffer);
+	}
+
+
+}
+
+HRESULT CreateVertexBuffer(
+	ID3D11Device* d3dDevice,
+	void* data,
+	UINT byteWidth,
+	ID3D11Buffer** vertexBuffer,
+	bool dynamic,
+	bool streamOutput)
+{
+	UINT bindFlags = D3D11_BIND_VERTEX_BUFFER;
+	D3D11_USAGE usage;
+	UINT cpuAccessFlags = 0;
+	if (dynamic && streamOutput)
+	{
+		return E_INVALIDARG;
+	}
+	else if (!dynamic && !streamOutput)
+	{
+		usage = D3D11_USAGE_IMMUTABLE;
+	}
+	else if (dynamic)
+	{
+		usage = D3D11_USAGE_DYNAMIC;
+		cpuAccessFlags |= D3D11_CPU_ACCESS_WRITE;
+	}
+	else
+	{
+		bindFlags |= D3D11_BIND_STREAM_OUTPUT;
+		usage = D3D11_USAGE_DEFAULT;
+	}
+
+	return CreateBuffer(d3dDevice, data, byteWidth, vertexBuffer,
+		usage, bindFlags, cpuAccessFlags, 0, 0);
 }
