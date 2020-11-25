@@ -48,5 +48,8 @@
     <FxCompile Include="shaders\CalculateOffsetPassPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
+    <FxCompile Include="..\Environment\shaders\VertexLayout.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

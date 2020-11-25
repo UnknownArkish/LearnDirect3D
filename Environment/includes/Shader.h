@@ -20,6 +20,10 @@ public:
 	void Use(ID3D11DeviceContext* deviceContext);
 
 	HRESULT VSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
+
+	HRESULT HSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
+	HRESULT DSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
+
 	HRESULT GSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
 	HRESULT GSDeclareWithStreamOut(ID3D11Device* device, const ShaderDeclareDesc& desc, const D3D11_SO_DECLARATION_ENTRY* pSODeclaration, UINT numEntries);
 	HRESULT PSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
@@ -40,6 +44,8 @@ private:
 	}
 private:
 	ComPtr<ID3D11VertexShader> _pVertexShader;
+	ComPtr<ID3D11HullShader> _pHullShader;
+	ComPtr<ID3D11DomainShader> _pDomainShader;
 	ComPtr<ID3D11GeometryShader> _pGeometryShader;
 	ComPtr<ID3D11PixelShader> _pPixelShader;
 };
