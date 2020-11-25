@@ -31,9 +31,6 @@
     <FxCompile Include="..\Environment\shaders\VertexLayout.hlsl">
       <Filter>Source Files</Filter>
     </FxCompile>
-    <FxCompile Include="BassPaseVS.hlsl">
-      <Filter>Source Files</Filter>
-    </FxCompile>
     <FxCompile Include="BasePassHS.hlsl">
       <Filter>Source Files</Filter>
     </FxCompile>
@@ -43,5 +40,13 @@
     <FxCompile Include="BasePassPS.hlsl">
       <Filter>Source Files</Filter>
     </FxCompile>
+    <FxCompile Include="BasePassVS.hlsl">
+      <Filter>Source Files</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tessellation.hlsli">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

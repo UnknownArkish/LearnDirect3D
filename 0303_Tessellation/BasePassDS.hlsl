@@ -18,7 +18,7 @@ struct HS_CONSTANT_DATA_OUTPUT
 	// TODO: change/add other stuff
 };
 
-#define NUM_CONTROL_POINTS 3
+#define NUM_CONTROL_POINTS 6
 
 [domain("tri")]
 DS_OUTPUT main(
@@ -29,7 +29,7 @@ DS_OUTPUT main(
 	DS_OUTPUT Output;
 
 	Output.vPosition = float4(
-		patch[0].vPosition*domain.x+patch[1].vPosition*domain.y+patch[2].vPosition*domain.z,1);
+		patch[3].vPosition*domain.x+patch[4].vPosition*domain.y+patch[5].vPosition*domain.z,1);
 
 	return Output;
 }

@@ -1,9 +1,6 @@
-// Input control point
-struct VS_CONTROL_POINT_OUTPUT
-{
-	float3 vPosition : WORLDPOS;
-	// TODO: change/add other stuff
-};
+
+
+#include "Tessellation.hlsli"
 
 // Output control point
 struct HS_CONTROL_POINT_OUTPUT
@@ -23,16 +20,16 @@ struct HS_CONSTANT_DATA_OUTPUT
 
 // Patch Constant Function
 HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
-	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip,
+	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> ip,
 	uint PatchID : SV_PrimitiveID)
 {
 	HS_CONSTANT_DATA_OUTPUT Output;
 
 	// Insert code to compute Output here
-	Output.EdgeTessFactor[0] = 
-		Output.EdgeTessFactor[1] = 
-		Output.EdgeTessFactor[2] = 
-		Output.InsideTessFactor = 15; // e.g. could calculate dynamic tessellation factors instead
+	Output.EdgeTessFactor[0] =
+		Output.EdgeTessFactor[1] =
+		Output.EdgeTessFactor[2] = 2;
+	Output.InsideTessFactor = 15; // e.g. could calculate dynamic tessellation factors instead
 
 	return Output;
 }
@@ -40,17 +37,24 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [domain("tri")]
 [partitioning("fractional_odd")]
 [outputtopology("triangle_cw")]
-[outputcontrolpoints(3)]
+[outputcontrolpoints(6)]
 [patchconstantfunc("CalcHSPatchConstants")]
 HS_CONTROL_POINT_OUTPUT main( 
-	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip, 
-	uint i : SV_OutputControlPointID,
+	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> ip ,	// 对应vs的输出
+	uint i : SV_OutputControlPointID,			// 对应 controlpoint 的个数
 	uint PatchID : SV_PrimitiveID )
 {
 	HS_CONTROL_POINT_OUTPUT Output;
 
+	float factor = 1.0f;
 	// Insert code to compute Output here
-	Output.vPosition = ip[i].vPosition;
+	[branch]
+	if (i >= 3)
+	{
+		i -= 3;
+		factor = 0.5f;
+	}
+	Output.vPosition = ip[i].posWS * factor;
 
 	return Output;
 }

@@ -41,6 +41,20 @@ void GameApp::DrawScene()
 	_pd3dDeviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
 	_pd3dDeviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	// VertexBuffer
+	UINT stride = sizeof(DirectX::XMFLOAT3), offset = 0;
+	_pd3dDeviceContext->IASetVertexBuffers(0, 1, _pTriangleVertexBuffer.GetAddressOf(), &stride, &offset);
+	_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	//_pd3dDeviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	_pd3dDeviceContext->IASetInputLayout(_pInputLayout.Get());
+	// Shader
+	_BasePassShader.Use(_pd3dDeviceContext.Get());
+	// Rasterizer State
+	_pd3dDeviceContext->RSSetState(_pRasterizerState.Get());
+
+
+	_pd3dDeviceContext->Draw(3, 0);
+
 
 	HR(_pSwapChain->Present(0, 0));
 }
@@ -48,11 +62,26 @@ void GameApp::DrawScene()
 void GameApp::InitShader()
 {
 	ShaderDeclareDesc desc;
-	desc.CsoName = L"";
-	desc.FileName = L"";
-	desc.EntryPoint = "";
-	desc.ShaderModel = "";
-	_BasePassShader.VSDeclare(_pd3dDevice->)
+	desc.CsoName = L"BasePassVS.cso";
+	desc.FileName = L"BasePassVS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "vs_5_0";
+	HR(_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc));
+	desc.CsoName = L"BasePassHS.cso";
+	desc.FileName = L"BasePassHS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "hs_5_0";
+	_BasePassShader.HSDeclare(_pd3dDevice.Get(), desc);
+	desc.CsoName = L"BasePassDS.cso";
+	desc.FileName = L"BasePassDS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "ds_5_0";
+	_BasePassShader.DSDeclare(_pd3dDevice.Get(), desc);
+	desc.CsoName = L"BasePassPS.cso";
+	desc.FileName = L"BasePassPS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "ps_5_0";
+	HR(_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc));
 }
 
 void GameApp::InitResource()
@@ -81,6 +110,6 @@ void GameApp::InitResource()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	ComPtr<ID3DBlob> blob;
-	CreateShaderFromFile(L"BasePassVS.cso", L"BasePassVS.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf());
+	HR(CreateShaderFromFile(L"BasePaseVS.cso", L"BasePassVS.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(_pd3dDevice->CreateInputLayout(inputElemDesc, 1, blob->GetBufferPointer(), blob->GetBufferSize(), _pInputLayout.ReleaseAndGetAddressOf()));
 }
