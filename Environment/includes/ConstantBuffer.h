@@ -19,6 +19,8 @@ public:
 	void GetBuffer(T& output) { output = _Data; }
 
 	void VSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void HSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void DSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 	void GSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 	void PSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 
@@ -54,18 +56,35 @@ inline HRESULT ConstantBuffer<T>::Declare(ID3D11Device* device)
 template<class T>
 inline void ConstantBuffer<T>::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
+	assert(deviceContext);
 	deviceContext->VSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
+}
+
+template<class T>
+inline void ConstantBuffer<T>::HSBind(ID3D11DeviceContext* deviceContext, UINT slot)
+{
+	assert(deviceContext);
+	deviceContext->HSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
+}
+
+template<class T>
+inline void ConstantBuffer<T>::DSBind(ID3D11DeviceContext* deviceContext, UINT slot)
+{
+	assert(deviceContext);
+	deviceContext->DSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
 }
 
 template<class T>
 inline void ConstantBuffer<T>::GSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
+	assert(deviceContext);
 	deviceContext->GSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
 }
 
 template<class T>
 inline void ConstantBuffer<T>::PSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
+	assert(deviceContext);
 	deviceContext->PSSetConstantBuffers(slot, 1, _Buffer.GetAddressOf());
 }
 

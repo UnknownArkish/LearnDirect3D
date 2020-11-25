@@ -25,6 +25,8 @@ public:
 	void GetDesc(D3D11_SAMPLER_DESC& output) const { output = _Desc; }
 
 	void VSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void HSBind(ID3D11DeviceContext* deviceContext, UINT slot);
+	void DSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 	void GSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 	void PSBind(ID3D11DeviceContext* deviceContext, UINT slot);
 
@@ -50,6 +52,18 @@ inline void SamplerState::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
 	deviceContext->VSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());
+}
+
+inline void SamplerState::HSBind(ID3D11DeviceContext* deviceContext, UINT slot)
+{
+	assert(deviceContext);
+	deviceContext->HSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());
+}
+
+inline void SamplerState::DSBind(ID3D11DeviceContext* deviceContext, UINT slot)
+{
+	assert(deviceContext);
+	deviceContext->DSSetSamplers(slot, 1, _pSamplerState.GetAddressOf());
 }
 
 inline void SamplerState::GSBind(ID3D11DeviceContext* deviceContext, UINT slot)
