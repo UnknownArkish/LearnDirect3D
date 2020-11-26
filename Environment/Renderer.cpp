@@ -55,7 +55,7 @@ void Renderer::InitVertexLayout(ID3D11Device* device)
 	ComPtr<ID3DBlob> blob;
 
 	HR(CreateShaderFromFile(L"VertexLayout.cso", L"shaders/VertexLayout.hlsl", "main", "vs_5_0", blob.ReleaseAndGetAddressOf()));
-	HR(device->CreateInputLayout(UNIVERSAL_INPUT_LAYOUT, 3, blob->GetBufferPointer(), blob->GetBufferSize(), _pUniversalInputLayout.ReleaseAndGetAddressOf()));
+	HR(device->CreateInputLayout(UNIVERSAL_INPUT_LAYOUT, 5, blob->GetBufferPointer(), blob->GetBufferSize(), _pUniversalInputLayout.ReleaseAndGetAddressOf()));
 
 	D3D11SetDebugObjectName(_pUniversalInputLayout.Get(), "UniversalInputLayout");
 }
@@ -64,20 +64,30 @@ void Renderer::InitQuadResource(ID3D11Device* device)
 {
 	UniversalVertexLayout vertices[4];
 
-	vertices[0].pos = XMFLOAT3(-1.0f, 1.0f, 0.0f);
-	vertices[1].pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[0].pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[1].pos = XMFLOAT3(-1.0f, 1.0f, 0.0f);
 	vertices[2].pos = XMFLOAT3(1.0f, 1.0f, 0.0f);
 	vertices[3].pos = XMFLOAT3(1.0f, -1.0f, 0.0f);
 
 	vertices[0].uvs = XMFLOAT2(0.0f, 1.0f);
 	vertices[1].uvs = XMFLOAT2(0.0f, 0.0f);
-	vertices[2].uvs = XMFLOAT2(1.0f, 1.0f);
-	vertices[3].uvs = XMFLOAT2(1.0f, 0.0f);
+	vertices[2].uvs = XMFLOAT2(1.0f, 0.0f);
+	vertices[3].uvs = XMFLOAT2(1.0f, 1.0f);
 
 	vertices[0].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertices[1].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertices[3].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	vertices[0].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[1].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	vertices[3].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+
+	vertices[0].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[1].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[3].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
@@ -91,8 +101,8 @@ void Renderer::InitQuadResource(ID3D11Device* device)
 	HR(device->CreateBuffer(&vbd, &initData, _QuadResource.pVertexBuffer.ReleaseAndGetAddressOf()));
 
 	DWORD indices[] = {
-		0, 2, 1,
-		1, 2, 3
+		0, 1, 2,
+		2, 3, 0
 	};
 	D3D11_BUFFER_DESC ibd;
 	ZeroMemory(&ibd, sizeof(D3D11_BUFFER_DESC));
@@ -152,28 +162,28 @@ void Renderer::InitCubeResource(ID3D11Device* device)
 	for (UINT i = 0; i < 4; ++i)
 	{
 		// 右面(+X面)
-		//vertices[i].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
-		//vertices[i].tangent = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+		vertices[i].normal = XMFLOAT3(1.0f, 0.0f, 0.0f);
+		vertices[i].tangent = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 		vertices[i].color = color;
 		// 左面(-X面)
-		//vertices[i + 4].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
-		//vertices[i + 4].tangent = XMFLOAT4(0.0f, 0.0f, -1.0f, 1.0f);
+		vertices[i + 4].normal = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+		vertices[i + 4].tangent = XMFLOAT4(0.0f, 0.0f, -1.0f, 1.0f);
 		vertices[i + 4].color = color;
 		// 顶面(+Y面)
-		//vertices[i + 8].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		//vertices[i + 8].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+		vertices[i + 8].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[i + 8].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 		vertices[i + 8].color = color;
 		// 底面(-Y面)
-		//vertices[i + 12].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-		//vertices[i + 12].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
+		vertices[i + 12].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
+		vertices[i + 12].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
 		vertices[i + 12].color = color;
 		// 背面(+Z面)
-		//vertices[i + 16].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
-		//vertices[i + 16].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
+		vertices[i + 16].normal = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		vertices[i + 16].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
 		vertices[i + 16].color = color;
 		// 正面(-Z面)
-		//vertices[i + 20].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-		//vertices[i + 20].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+		vertices[i + 20].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		vertices[i + 20].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 		vertices[i + 20].color = color;
 	
 	}for (UINT i = 0; i < 6; ++i)

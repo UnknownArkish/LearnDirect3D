@@ -3,7 +3,6 @@
 #include <d3d11.h>
 #include "Common.h"
 #include <assert.h>
-#include <string>
 
 class ITextureView;
 

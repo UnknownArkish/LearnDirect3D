@@ -4,7 +4,6 @@
 #include "DDSTextureLoader.h"
 #include "WICTextureLoader.h"
 
-#include <memory>
 #include <DirectXMath.h>
 
 class Texture2D : public Texture
