@@ -116,6 +116,9 @@
     <ClInclude Include="includes\Mouse.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="includes\Lighting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\VertexLayoutCommon.hlsli">
