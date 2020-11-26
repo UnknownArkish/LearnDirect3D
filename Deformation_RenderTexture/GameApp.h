@@ -10,6 +10,7 @@
 #include <RenderTexture.h>
 #include <TextureView.h>
 #include <SamplerState.h>
+#include <Lighting.h>
 
 struct OffsetMapConstantBuffer
 {
@@ -46,6 +47,7 @@ private:
 	Shader _BasePassShader;
 	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
+	ConstantBuffer<PointLight> _LightConstantBuffer;
 	Texture2D _MainTex;
 	Texture2D _NormalTex;
 	SamplerState _MainTexSampler;

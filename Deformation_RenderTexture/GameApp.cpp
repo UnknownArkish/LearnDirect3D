@@ -89,6 +89,7 @@ void GameApp::DrawScene()
 
 		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
 		_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
+		_LightConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 2);
 		_MainTexView.PSBind(_pd3dDeviceContext.Get(), 0);
 		_MainTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 
@@ -142,6 +143,14 @@ void GameApp::InitResource()
 	_ViewConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
 	HR(_ObjectConstantBuffer.Declare(_pd3dDevice.Get()));
+
+	HR(_LightConstantBuffer.Declare(_pd3dDevice.Get()));
+	PointLight lightData;
+	ZeroMemory(&lightData, sizeof(PointLight));
+	lightData.SetColor(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+	lightData.SetPosition(DirectX::XMFLOAT3(0.0f, 1.0f, -3.0f));
+	_LightConstantBuffer.SetBuffer(lightData);
+	_LightConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
 	_DebugView.Declare(&_ParallelMap);
 }
