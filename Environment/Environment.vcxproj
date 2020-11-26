@@ -181,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\ConstantBufferCommon.hlsli" />
+    <None Include="shaders\ConstantBufferCommon0.hlsli" />
     <None Include="shaders\VertexLayoutCommon.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
