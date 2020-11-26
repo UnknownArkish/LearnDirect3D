@@ -18,8 +18,8 @@ struct OffsetMapConstantBuffer
 
 struct DeformationConstantBuffer
 {
-	DirectX::XMFLOAT4 ForwardWS;
-	DirectX::XMFLOAT4 OriginWS;
+	DirectX::XMFLOAT3 ForwardWS; float _pad_0;
+	DirectX::XMFLOAT3 OriginWS; float _pad_1;
 
 	// x : Width, y : Height
 	DirectX::XMFLOAT4 Params;
@@ -47,8 +47,10 @@ private:
 	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
 	Texture2D _MainTex;
+	Texture2D _NormalTex;
 	SamplerState _MainTexSampler;
 	TextureView _MainTexView;
+	TextureView _DebugView;
 
 
 	Shader _CalculateOffsetMapShader;
@@ -63,6 +65,7 @@ private:
 	RenderTexture _ParallelMap;
 	TextureView _ParallelMapView;
 	SamplerState _ParallelMapSampler;
+	ComPtr<ID3D11RasterizerState> _ParallelMapRasterizerState;
 
 	// ParallelMap的ConstantBuffer
 	ConstantBuffer<DeformationConstantBuffer> _DeformationConstantBuffer;

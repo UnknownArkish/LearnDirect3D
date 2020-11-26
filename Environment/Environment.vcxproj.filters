@@ -127,5 +127,8 @@
     <None Include="shaders\ConstantBufferCommon0.hlsli">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="Lighting.hlsli">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

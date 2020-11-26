@@ -1,6 +1,9 @@
 #include "VertexLayout.hlsli"
 #include "ConstantBufferCommon0.hlsli"
 
+CONSTANT_BUFFER_VIEW(0)
+CONSTANT_BUFFER_OBJECT(1)
+
 CalculateParallelMapVS2PS main(UniversalIA2VS input)
 {
     CalculateParallelMapVS2PS result;
