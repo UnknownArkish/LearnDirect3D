@@ -9,6 +9,10 @@ cbuffer LightConstantBuffer : register(b2)
 {
     PointLightRaw gPointLight;
 };
+cbuffer ParallelConstantBuffer : register(b3)
+{
+    float gParallelIntensity;
+}
 
 Texture2D _MainTex : register(t0);
 SamplerState _MainTexSampler : register(s0);
@@ -19,11 +23,9 @@ SamplerState normalTexSampler : register(s1);
 Texture2D parallelMap : register(t2);
 SamplerState parallelMapSampler : register(s2);
 
-Texture2D debugTex : register(t3);
-
 float2 ParallelMapping(float2 uvs, float3 viewDir)
 {
-    const float layers = 10;
+    const float layers = 36;
     int interator = 0;
 
     float deltaDepth = 1.0f / layers;
@@ -43,6 +45,7 @@ float2 ParallelMapping(float2 uvs, float3 viewDir)
         
         interator++;
     }
+    return currentUVs;
 
     float2 prevUVs = currentUVs + deltaUVs;
     float prevDepth = currentDepth - deltaDepth;
@@ -78,12 +81,13 @@ float4 main(BasePassVS2PS input) : SV_TARGET
     float3 posLS = input.posLS;
 
     float3 lightDirLS = lightLS - posLS;
-    float3 viewDirLS = viewLS - posLS;
+    float3 viewDirLS = normalize(viewLS - posLS);
 
     float3 lightDirTS = mul(float4(lightDirLS, 0.0f), local2Tangent).xyz;
     float3 viewDirTS = mul(float4(viewDirLS, 0.0f), local2Tangent).xyz;
 
     float2 parallelUVs = ParallelMapping(input.uvs, viewDirTS);
 
-    return _MainTex.Sample(_MainTexSampler, input.uvs);
+    return _MainTex.Sample(_MainTexSampler, parallelUVs);
+    //return parallelMap.Sample(parallelMapSampler, input.uvs);
 }

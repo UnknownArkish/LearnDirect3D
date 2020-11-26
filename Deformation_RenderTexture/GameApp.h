@@ -49,10 +49,11 @@ private:
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
 	ConstantBuffer<PointLight> _LightConstantBuffer;
 	Texture2D _MainTex;
-	Texture2D _NormalTex;
-	SamplerState _MainTexSampler;
 	TextureView _MainTexView;
-	TextureView _DebugView;
+	SamplerState _MainTexSampler;
+	Texture2D _NormalTex;
+	TextureView _NormalTexView;
+	SamplerState _NormalTexSampler;
 
 
 	Shader _CalculateOffsetMapShader;

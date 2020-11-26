@@ -27,7 +27,7 @@ bool GameApp::Init()
 void GameApp::UpdateScene(float dt)
 {
 	static float phi = 0.0f, theta = 0.0f;
-	//phi += 0.0001f, theta += 0.00015f;
+	phi += 0.0000f, theta += 0.0001f;
 
 	ObjectConstantBuffer buffer;
 	_ObjectConstantBuffer.GetBuffer(buffer);
@@ -43,7 +43,7 @@ void GameApp::DrawScene()
 {
 	assert(_pd3dDeviceContext);
 	assert(_pSwapChain);
-	static float blue[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	static float blue[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	_pd3dDeviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), blue);
 	_pd3dDeviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -91,10 +91,16 @@ void GameApp::DrawScene()
 		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
 		_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
 		_LightConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 2);
+
 		_MainTexView.PSBind(_pd3dDeviceContext.Get(), 0);
 		_MainTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 
-		_DebugView.PSBind(_pd3dDeviceContext.Get(), 3);
+		_NormalTexView.PSBind(_pd3dDeviceContext.Get(), 1);
+		_NormalTexSampler.PSBind(_pd3dDeviceContext.Get(), 1);
+
+		_ParallelMapView.PSBind(_pd3dDeviceContext.Get(), 2);
+		_ParallelMapSampler.PSBind(_pd3dDeviceContext.Get(), 2);
+
 
 		_BasePassShader.Use(_pd3dDeviceContext.Get());
 		_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
@@ -124,21 +130,27 @@ void GameApp::InitShader()
 void GameApp::InitResource()
 {
 	D3D11_SAMPLER_DESC desc;
+
 	HR(_MainTex.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"maintex.png"));
-	HR(_NormalTex.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"normalTex.png"));
+	_MainTexView.Declare(&_MainTex);
 	_MainTexSampler.GetDesc(desc);
 	HR(_MainTexSampler.Delcare(_pd3dDevice.Get(), desc));
-	_MainTexView.Declare(&_MainTex);
+
+	HR(_NormalTex.DeclareWithWIC(_pd3dDevice.Get(), _pd3dDeviceContext.Get(), L"normalTex.png"));
+	_NormalTexView.Declare(&_NormalTex);
+	_NormalTexSampler.GetDesc(desc);
+	HR(_NormalTexSampler.Delcare(_pd3dDevice.Get(), desc));
 
 	HR(_ViewConstantBuffer.Declare(_pd3dDevice.Get()));
 	ViewConstantBuffer viewData;
 	viewData.World2View = DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		));
 	viewData.View2Proj = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));;
+	viewData.ViewPosWS = DirectX::XMFLOAT3(0.0f, 0.0f, -2.0f);
 	HR(_ViewConstantBuffer.Declare(_pd3dDevice.Get()));
 	_ViewConstantBuffer.SetBuffer(viewData);
 	_ViewConstantBuffer.Apply(_pd3dDeviceContext.Get());
@@ -152,8 +164,6 @@ void GameApp::InitResource()
 	lightData.SetPosition(DirectX::XMFLOAT3(0.0f, 1.0f, -3.0f));
 	_LightConstantBuffer.SetBuffer(lightData);
 	_LightConstantBuffer.Apply(_pd3dDeviceContext.Get());
-
-	_DebugView.Declare(&_ParallelMap);
 }
 
 void GameApp::InitForDeformation()
@@ -171,7 +181,7 @@ void GameApp::InitForDeformation()
 	ZeroMemory(&data, sizeof(DeformationConstantBuffer));
 	data.ForwardWS = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 	data.OriginWS = DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f);
-	data.Params = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f);
+	data.Params = DirectX::XMFLOAT4(2.0f, 2.0f, 0.0f, 0.0f);
 	_DeformationConstantBuffer.SetBuffer(data);
 	_DeformationConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
