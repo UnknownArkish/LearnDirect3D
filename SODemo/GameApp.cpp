@@ -155,7 +155,7 @@ void GameApp::InitVertexBuffer()
 void GameApp::InitShader()
 {
 	SHADER_DECLARE_DESC desc;
-	ZeroMemory(&desc, sizeof ShaderDeclareDesc);
+	ZeroMemory(&desc, sizeof SHADER_DECLARE_DESC);
 	desc.EntryPoint = "main";
 
 	desc.CsoName = L"BasePassVS.cso";

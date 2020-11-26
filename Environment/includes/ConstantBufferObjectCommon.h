@@ -19,6 +19,7 @@ struct ViewConstantBuffer
 struct ObjectConstantBuffer
 {
 	DirectX::XMMATRIX Local2World;
+	DirectX::XMMATRIX World2Local;
 
 	DirectX::XMFLOAT3 ObjectPosWS;
 	float _pad_0;

@@ -32,6 +32,7 @@ void GameApp::UpdateScene(float dt)
 	ObjectConstantBuffer buffer;
 	_ObjectConstantBuffer.GetBuffer(buffer);
 	buffer.Local2World = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
+	buffer.World2Local = XMMatrixInverse(nullptr, buffer.Local2World);
 	_ObjectConstantBuffer.SetBuffer(buffer);
 	_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }

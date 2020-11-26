@@ -21,6 +21,40 @@ SamplerState parallelMapSampler : register(s2);
 
 Texture2D debugTex : register(t3);
 
+float2 ParallelMapping(float2 uvs, float3 viewDir)
+{
+    const float layers = 10;
+    int interator = 0;
+
+    float deltaDepth = 1.0f / layers;
+    float2 P = viewDir.xy / viewDir.z;
+    float2 deltaUVs = P / layers;
+
+    float2 currentUVs = uvs;
+
+    float currentDepth = 0.0f;
+    float currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r;
+    [unroll]
+    while (currentDepth < currentParallel && interator < layers)
+    {
+        currentUVs -= deltaUVs;
+        currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r;
+        currentDepth += deltaDepth;
+        
+        interator++;
+    }
+
+    float2 prevUVs = currentUVs + deltaUVs;
+    float prevDepth = currentDepth - deltaDepth;
+
+    float currentDepthDiff = currentParallel - currentDepth;
+    float prevDepthDiff = parallelMap.Sample(parallelMapSampler, prevUVs).r - prevDepth;
+    float factor = currentDepthDiff / (currentDepthDiff - prevDepthDiff);
+
+    float2 result = prevUVs * factor + currentUVs * (1 - factor);
+    return result;
+}
+
 float4 main(BasePassVS2PS input) : SV_TARGET
 {
     float3 normalLS = normalize(input.normalLS);
@@ -46,8 +80,10 @@ float4 main(BasePassVS2PS input) : SV_TARGET
     float3 lightDirLS = lightLS - posLS;
     float3 viewDirLS = viewLS - posLS;
 
-    float3 lightDirTS = mul(float4(lightDirLS, 0.0f), local2Tangent);
-    float3 viewDirTS = mul(float4(viewDirLS, 0.0f), local2Tangent);
+    float3 lightDirTS = mul(float4(lightDirLS, 0.0f), local2Tangent).xyz;
+    float3 viewDirTS = mul(float4(viewDirLS, 0.0f), local2Tangent).xyz;
 
-    return debugTex.Sample(_MainTexSampler, input.uvs);
+    float2 parallelUVs = ParallelMapping(input.uvs, viewDirTS);
+
+    return _MainTex.Sample(_MainTexSampler, input.uvs);
 }
