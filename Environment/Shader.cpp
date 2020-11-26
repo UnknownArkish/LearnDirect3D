@@ -17,7 +17,7 @@ void Shader::Use(ID3D11DeviceContext* deviceContext)
 	deviceContext->PSSetShader(_pPixelShader.Get(), nullptr, 0);
 }
 
-HRESULT Shader::VSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
+HRESULT Shader::VSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
 {
 	HRESULT result = E_FAIL;
 	if (device == nullptr) return result;
@@ -31,7 +31,7 @@ HRESULT Shader::VSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
 	return result;
 }
 
-HRESULT Shader::HSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
+HRESULT Shader::HSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
 {
 	HRESULT result = E_FAIL;
 	if (device == nullptr) return result;
@@ -45,7 +45,7 @@ HRESULT Shader::HSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
 	return result;
 }
 
-HRESULT Shader::DSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
+HRESULT Shader::DSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
 {
 	HRESULT result = E_FAIL;
 	if (device == nullptr) return result;
@@ -59,7 +59,7 @@ HRESULT Shader::DSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
 	return result;
 }
 
-HRESULT Shader::GSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
+HRESULT Shader::GSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
 {
 	HRESULT result = E_FAIL;
 	if (device == nullptr) return result;
@@ -74,7 +74,7 @@ HRESULT Shader::GSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
 }
 
 HRESULT Shader::GSDeclareWithStreamOut(
-	ID3D11Device* device, const ShaderDeclareDesc& desc, 
+	ID3D11Device* device, const SHADER_DECLARE_DESC& desc, 
 	const D3D11_SO_DECLARATION_ENTRY* pSODeclaration, UINT numEntries
 )
 {
@@ -95,7 +95,7 @@ HRESULT Shader::GSDeclareWithStreamOut(
 	return E_NOTIMPL;
 }
 
-HRESULT Shader::PSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc)
+HRESULT Shader::PSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
 {
 	HRESULT result = E_FAIL;
 	if (device == nullptr) return result;

@@ -154,7 +154,7 @@ void GameApp::InitVertexBuffer()
 
 void GameApp::InitShader()
 {
-	ShaderDeclareDesc desc;
+	SHADER_DECLARE_DESC desc;
 	ZeroMemory(&desc, sizeof ShaderDeclareDesc);
 	desc.EntryPoint = "main";
 

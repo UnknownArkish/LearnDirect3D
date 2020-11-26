@@ -82,8 +82,8 @@ void GameApp::InitShader()
 {
 	ComPtr<ID3DBlob> blob;
 
-	ShaderDeclareDesc desc;
-	ZeroMemory(&desc, sizeof(ShaderDeclareDesc));
+	SHADER_DECLARE_DESC desc;
+	ZeroMemory(&desc, sizeof(SHADER_DECLARE_DESC));
 	desc.CsoName = L"BasePassVS.cso";
 	desc.FileName = L"shaders/BasePassVS.hlsl";
 	desc.EntryPoint = "main";

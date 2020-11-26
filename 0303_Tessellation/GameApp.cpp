@@ -61,7 +61,7 @@ void GameApp::DrawScene()
 
 void GameApp::InitShader()
 {
-	ShaderDeclareDesc desc;
+	SHADER_DECLARE_DESC desc;
 	desc.CsoName = L"BasePassVS.cso";
 	desc.FileName = L"BasePassVS.hlsl";
 	desc.EntryPoint = "main";

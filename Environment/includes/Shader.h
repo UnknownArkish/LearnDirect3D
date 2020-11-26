@@ -4,7 +4,7 @@
 #include "D3DUtil.h"
 #include "Common.h"
 
-struct ShaderDeclareDesc
+struct SHADER_DECLARE_DESC
 {
 	const WCHAR* CsoName;
 	const WCHAR* FileName;
@@ -19,14 +19,14 @@ public:
 
 	void Use(ID3D11DeviceContext* deviceContext);
 
-	HRESULT VSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
+	HRESULT VSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc);
 
-	HRESULT HSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
-	HRESULT DSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
+	HRESULT HSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc);
+	HRESULT DSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc);
 
-	HRESULT GSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
-	HRESULT GSDeclareWithStreamOut(ID3D11Device* device, const ShaderDeclareDesc& desc, const D3D11_SO_DECLARATION_ENTRY* pSODeclaration, UINT numEntries);
-	HRESULT PSDeclare(ID3D11Device* device, const ShaderDeclareDesc& desc);
+	HRESULT GSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc);
+	HRESULT GSDeclareWithStreamOut(ID3D11Device* device, const SHADER_DECLARE_DESC& desc, const D3D11_SO_DECLARATION_ENTRY* pSODeclaration, UINT numEntries);
+	HRESULT PSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc);
 
 	template<UINT TNameLength>
 	void VSSetDebugName(_In_ const char(&name)[TNameLength]) { SetDebugNameInternal(_pVertexShader.Get(), name); }

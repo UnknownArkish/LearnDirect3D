@@ -1,6 +1,6 @@
 #include "VertexLayoutCommon.hlsli"
 
-cbuffer OffsetConstantBuffer : register(b1)
+cbuffer OffsetConstantBuffer : register(b0)
 {
     float4 data;
 }

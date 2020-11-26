@@ -43,5 +43,16 @@
     <FxCompile Include="shaders\BasePassVS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
+    <FxCompile Include="CalculateParallelMapVS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="CalculateParallelMapPS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VertexLayout.hlsli">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -16,6 +16,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SODemo", "SODemo\SODemo.vcx
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deformation_RenderTexture", "Deformation_RenderTexture\Deformation_RenderTexture.vcxproj", "{3FB3E730-F2F8-4067-9736-C9561CBEB79D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6958FD2-D109-4B69-93BE-ECB36F56BA36} = {E6958FD2-D109-4B69-93BE-ECB36F56BA36}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0303_Tessellation", "0303_Tessellation\0303_Tessellation.vcxproj", "{FA71742F-12CA-40CC-9E8F-1D6EF8EE51FF}"
 	ProjectSection(ProjectDependencies) = postProject
