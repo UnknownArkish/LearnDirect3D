@@ -8,9 +8,9 @@ class Renderer
 private:
 	struct RendererResource
 	{
-		RendererResource() : _pVertexBuffer(nullptr), _pIndexBuffer(nullptr) {}
-		ComPtr<ID3D11Buffer> _pVertexBuffer;
-		ComPtr<ID3D11Buffer> _pIndexBuffer;
+		RendererResource() : pVertexBuffer(nullptr), pIndexBuffer(nullptr) {}
+		ComPtr<ID3D11Buffer> pVertexBuffer;
+		ComPtr<ID3D11Buffer> pIndexBuffer;
 	};
 
 public:
@@ -18,6 +18,7 @@ public:
 
 	void Init(ID3D11Device* device);
 	void RenderQuad(ID3D11DeviceContext* deviceContext);
+	void RenderQuadPoint(ID3D11DeviceContext* deviceContext);
 	void RenderCube(ID3D11DeviceContext* deviceContext);
 	void RenderCubePoint(ID3D11DeviceContext* deviceContext);
 private:

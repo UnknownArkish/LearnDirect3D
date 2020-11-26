@@ -19,6 +19,18 @@ void Renderer::Init(ID3D11Device* device)
 
 void Renderer::RenderQuad(ID3D11DeviceContext* deviceContext)
 {
+	deviceContext->IASetInputLayout(_pUniversalInputLayout.Get());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	BindRendererResource(deviceContext, _QuadResource);
+	deviceContext->DrawIndexed(6, 0, 0);
+}
+
+void Renderer::RenderQuadPoint(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->IASetInputLayout(_pUniversalInputLayout.Get());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	BindRendererResource(deviceContext, _QuadResource);
+	deviceContext->Draw(4, 0);
 }
 
 void Renderer::RenderCube(ID3D11DeviceContext* deviceContext)
@@ -50,9 +62,49 @@ void Renderer::InitVertexLayout(ID3D11Device* device)
 
 void Renderer::InitQuadResource(ID3D11Device* device)
 {
+	UniversalVertexLayout vertices[4];
 
+	vertices[0].pos = XMFLOAT3(-1.0f, 1.0f, 0.0f);
+	vertices[1].pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[2].pos = XMFLOAT3(1.0f, 1.0f, 0.0f);
+	vertices[3].pos = XMFLOAT3(1.0f, -1.0f, 0.0f);
 
+	vertices[0].uvs = XMFLOAT2(0.0f, 1.0f);
+	vertices[1].uvs = XMFLOAT2(0.0f, 0.0f);
+	vertices[2].uvs = XMFLOAT2(1.0f, 1.0f);
+	vertices[3].uvs = XMFLOAT2(1.0f, 0.0f);
 
+	vertices[0].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[1].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[3].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	D3D11_BUFFER_DESC vbd;
+	ZeroMemory(&vbd, sizeof(vbd));
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(vertices);
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	D3D11_SUBRESOURCE_DATA initData;
+	ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+	initData.pSysMem = vertices;
+	HR(device->CreateBuffer(&vbd, &initData, _QuadResource.pVertexBuffer.ReleaseAndGetAddressOf()));
+
+	DWORD indices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+	D3D11_BUFFER_DESC ibd;
+	ZeroMemory(&ibd, sizeof(D3D11_BUFFER_DESC));
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(indices);
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	initData.pSysMem = indices;
+	HR(device->CreateBuffer(&ibd, &initData, _QuadResource.pIndexBuffer.ReleaseAndGetAddressOf()));
+
+	D3D11SetDebugObjectName(_QuadResource.pVertexBuffer.Get(), "QuadVertexBuffer");
+	D3D11SetDebugObjectName(_QuadResource.pIndexBuffer.Get(), "QuadIndexBuffer");
 }
 
 void Renderer::InitCubeResource(ID3D11Device* device)
@@ -143,7 +195,7 @@ void Renderer::InitCubeResource(ID3D11Device* device)
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = vertices;
-	HR(device->CreateBuffer(&vbd, &InitData, _CubeResource._pVertexBuffer.ReleaseAndGetAddressOf()));
+	HR(device->CreateBuffer(&vbd, &InitData, _CubeResource.pVertexBuffer.ReleaseAndGetAddressOf()));
 
 	DWORD indices[] = {
 		0, 1, 2, 2, 3, 0,		// 右面(+X面)
@@ -162,16 +214,16 @@ void Renderer::InitCubeResource(ID3D11Device* device)
 	ibd.CPUAccessFlags = 0;
 	// 新建索引缓冲区
 	InitData.pSysMem = indices;
-	HR(device->CreateBuffer(&ibd, &InitData, _CubeResource._pIndexBuffer.ReleaseAndGetAddressOf()));
+	HR(device->CreateBuffer(&ibd, &InitData, _CubeResource.pIndexBuffer.ReleaseAndGetAddressOf()));
 
-	D3D11SetDebugObjectName(_CubeResource._pVertexBuffer.Get(), "CubeVeruvsBuffer");
-	D3D11SetDebugObjectName(_CubeResource._pIndexBuffer.Get(), "CubeIndexBuffer");
+	D3D11SetDebugObjectName(_CubeResource.pVertexBuffer.Get(), "CubeVeruvsBuffer");
+	D3D11SetDebugObjectName(_CubeResource.pIndexBuffer.Get(), "CubeIndexBuffer");
 }
 
 void Renderer::BindRendererResource(ID3D11DeviceContext* deviceContext, const RendererResource& resource)
 {
 	UINT stride = sizeof(UniversalVertexLayout);
 	UINT offset = 0;
-	deviceContext->IASetIndexBuffer(resource._pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	deviceContext->IASetVertexBuffers(0, 1, resource._pVertexBuffer.GetAddressOf(), &stride, &offset);
+	deviceContext->IASetIndexBuffer(resource.pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetVertexBuffers(0, 1, resource.pVertexBuffer.GetAddressOf(), &stride, &offset);
 }
