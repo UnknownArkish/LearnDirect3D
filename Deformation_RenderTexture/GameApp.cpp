@@ -87,6 +87,8 @@ void GameApp::DrawScene()
 		_pd3dDeviceContext->RSSetState(nullptr);
 
 
+		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+		_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
 		_MainTexView.PSBind(_pd3dDeviceContext.Get(), 0);
 		_MainTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 
@@ -106,12 +108,12 @@ void GameApp::InitShader()
 	desc.FileName = L"shaders/BasePassVS.hlsl";
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "vs_5_0";
-	_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc);
+	HR(_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc));
 	desc.CsoName = L"BasePassPS.cso";
 	desc.FileName = L"shaders/BasePassPS.hlsl";
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "ps_5_0";
-	_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc);
+	HR(_BasePassShader.PSDeclare(_pd3dDevice.Get(), desc));
 
 	_BasePassShader.VSSetDebugName("BasePassVS");
 	_BasePassShader.PSSetDebugName("BasePassPS");

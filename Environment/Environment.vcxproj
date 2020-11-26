@@ -180,9 +180,9 @@
     <ClInclude Include="includes\WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Lighting.hlsli" />
     <None Include="shaders\ConstantBufferCommon.hlsli" />
     <None Include="shaders\ConstantBufferCommon0.hlsli" />
+    <None Include="shaders\Lighting.hlsli" />
     <None Include="shaders\VertexLayoutCommon.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,6 +10,7 @@ struct UniversalIA2VS
 struct UniversalVS2PS
 {
     float4 posH : SV_POSITION;
+    float3 posWS : POSITION;
     float4 color : COLOR;
     float2 uvs : TEXCOORD;
 };

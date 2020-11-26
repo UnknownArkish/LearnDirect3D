@@ -1,4 +1,4 @@
-#include "VertexLayoutCommon.hlsli"
+#include "VertexLayout.hlsli"
 #include "ConstantBufferCommon0.hlsli"
 
 CONSTANT_BUFFER_VIEW(0)
@@ -12,9 +12,9 @@ cbuffer OffsetConstantBuffer : register(b2)
 Texture2D offsetMap : register(t0);
 SamplerState offsetMapSampler : register(s0);
 
-UniversalVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
+BasePassVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
 {
-    UniversalVS2PS result;
+    BasePassVS2PS result;
     
     float col = vertexID % data.x + 0.5f;
     float row = floor(vertexID / data.x) + 0.5f;
@@ -22,12 +22,16 @@ UniversalVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
     float2 offsetUVs = float2(col / data.x, 1.0f - row / data.y);
     float4 offset = offsetMap.SampleLevel(offsetMapSampler, offsetUVs, 0);
 
-    result.posH = float4(input.pos, 1.0f);
-    result.posH = mul(result.posH, gLocal2World) + float4(offset.xyz, 0.0f);
-    result.posH = mul(result.posH, gWorld2View);
-    result.posH = mul(result.posH, gView2Proj);
-    result.color = input.color;
+    result.posHS = float4(input.pos.xyz, 1.0f);
+    result.posHS = mul(result.posHS, gLocal2World) + float4(offset.xyz, 0.0f);
+    result.posLS = mul(result.posHS, gWorld2Local).xyz;
+
+    result.posHS = mul(result.posHS, gWorld2View);
+    result.posHS = mul(result.posHS, gView2Proj);
     result.uvs = input.uvs;
+
+    result.normalLS = input.normal;
+    result.tangentLS = input.tangent;
     
     return result;
 }

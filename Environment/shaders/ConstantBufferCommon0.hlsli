@@ -14,6 +14,7 @@ cbuffer ViewConstantBuffer : register(b##slot)   \
 cbuffer ObjectConstantBuffer : register(b##slot)    \
 {                                                   \
     matrix gLocal2World;                            \
+    matrix gWorld2Local;                            \
                                                     \
     float3 gObjectPosWS;                            \
     float _pad_b1_0;                                \
