@@ -27,7 +27,13 @@ bool GameApp::Init()
 void GameApp::UpdateScene(float dt)
 {
 	static float phi = 0.0f, theta = 0.0f;
-	phi += 0.0000f, theta += 0.0001f;
+	static float intensity = 5.0f;
+	if (_pInput->IsButtonDown(Input::LeftButton))
+	{
+		DirectX::XMFLOAT2 mouseOffset = _pInput->GetMousePositionOffset();
+		phi += mouseOffset.y * dt * intensity;
+		theta += mouseOffset.x * dt * intensity;
+	}
 
 	ObjectConstantBuffer buffer;
 	_ObjectConstantBuffer.GetBuffer(buffer);
