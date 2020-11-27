@@ -5,6 +5,8 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "comctl32.lib")
+#pragma comment(lib, "usp10.lib")
 
 
 #include <wrl/client.h>

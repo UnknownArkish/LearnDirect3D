@@ -90,6 +90,21 @@
     <ClCompile Include="DXUT\Core\DXUTDevice11.cpp">
       <Filter>源文件\DXUT\Core</Filter>
     </ClCompile>
+    <ClCompile Include="DXUT\Optional\DXUTsettingsdlg.cpp">
+      <Filter>源文件\DXUT\Optional</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Optional\SDKmesh.cpp">
+      <Filter>源文件\DXUT\Optional</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Optional\SDKmisc.cpp">
+      <Filter>源文件\DXUT\Optional</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Optional\DXUTgui.cpp">
+      <Filter>源文件\DXUT\Optional</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Optional\DXUTres.cpp">
+      <Filter>源文件\DXUT\Optional</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\DXTrace.h">
@@ -172,6 +187,21 @@
     </ClInclude>
     <ClInclude Include="includes\DXUT\Core\DXUTDevice11.h">
       <Filter>头文件\DXUT\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Optional\SDKmesh.h">
+      <Filter>头文件\DXUT\Optional</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Optional\SDKmisc.h">
+      <Filter>头文件\DXUT\Optional</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Optional\DXUTres.h">
+      <Filter>头文件\DXUT\Optional</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Optional\DXUTgui.h">
+      <Filter>头文件\DXUT\Optional</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Optional\DXUTsettingsdlg.h">
+      <Filter>头文件\DXUT\Optional</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

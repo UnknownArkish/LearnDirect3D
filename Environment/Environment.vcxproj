@@ -156,6 +156,11 @@
     <ClCompile Include="DXUT\Core\DXUTDevice11.cpp" />
     <ClCompile Include="DXUT\Core\DXUTmisc.cpp" />
     <ClCompile Include="DXUT\Core\ScreenGrab.cpp" />
+    <ClCompile Include="DXUT\Optional\DXUTgui.cpp" />
+    <ClCompile Include="DXUT\Optional\DXUTres.cpp" />
+    <ClCompile Include="DXUT\Optional\DXUTsettingsdlg.cpp" />
+    <ClCompile Include="DXUT\Optional\SDKmesh.cpp" />
+    <ClCompile Include="DXUT\Optional\SDKmisc.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="includes\VertexLayoutCommon.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -180,6 +185,11 @@
     <ClInclude Include="includes\DXUT\Core\DXUTDevice11.h" />
     <ClInclude Include="includes\DXUT\Core\DXUTmisc.h" />
     <ClInclude Include="includes\DXUT\Core\ScreenGrab.h" />
+    <ClInclude Include="includes\DXUT\Optional\DXUTgui.h" />
+    <ClInclude Include="includes\DXUT\Optional\DXUTres.h" />
+    <ClInclude Include="includes\DXUT\Optional\DXUTsettingsdlg.h" />
+    <ClInclude Include="includes\DXUT\Optional\SDKmesh.h" />
+    <ClInclude Include="includes\DXUT\Optional\SDKmisc.h" />
     <ClInclude Include="includes\GameTimer.h" />
     <ClInclude Include="includes\Input.h" />
     <ClInclude Include="includes\Keyboard.h" />
