@@ -31,5 +31,17 @@ BasePassVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
     result.normalLS = input.normal;
     result.tangentLS = input.tangent;
     
+    float3 normalLS = normalize(input.normal);
+    float4 tangentLS = normalize(input.tangent);
+    float3 binormalLS = normalize(cross(normalLS, tangentLS.xyz) * tangentLS.w);
+    matrix local2Tangent = transpose(
+        matrix(
+            tangentLS.xyz, 0.0f,
+            binormalLS.xyz, 0.0f,
+            normalLS.xyz, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        )
+    );
+    
     return result;
 }
