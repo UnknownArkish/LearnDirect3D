@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\DXUT">
+      <UniqueIdentifier>{8adbdb99-06f5-40a3-9107-f4171cd9a677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\DXUT\Core">
+      <UniqueIdentifier>{6533c1d4-f5f1-4a4e-bc1e-fe3b4ad1d746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\DXUT\Optional">
+      <UniqueIdentifier>{fcaf1389-a8a4-42a4-bd87-2d47af06adef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\DXUT">
+      <UniqueIdentifier>{f7e9b664-fe4d-418a-a477-63e433a72591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\DXUT\Core">
+      <UniqueIdentifier>{34e4b236-0129-4fc9-8b30-f5d38530cb81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\DXUT\Optional">
+      <UniqueIdentifier>{f2cc7435-258d-497e-96ee-612c75c87590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameTimer.cpp">
@@ -56,6 +74,21 @@
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Core\DXUT.cpp">
+      <Filter>源文件\DXUT\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Core\DXUTmisc.cpp">
+      <Filter>源文件\DXUT\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Core\ScreenGrab.cpp">
+      <Filter>源文件\DXUT\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Core\dxerr.cpp">
+      <Filter>源文件\DXUT\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\Core\DXUTDevice11.cpp">
+      <Filter>源文件\DXUT\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +157,21 @@
     </ClInclude>
     <ClInclude Include="includes\Input.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Core\DXUTmisc.h">
+      <Filter>头文件\DXUT\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Core\ScreenGrab.h">
+      <Filter>头文件\DXUT\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Core\DXUT.h">
+      <Filter>头文件\DXUT\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Core\dxerr.h">
+      <Filter>头文件\DXUT\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DXUT\Core\DXUTDevice11.h">
+      <Filter>头文件\DXUT\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -73,18 +73,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)lib\</OutDir>
+    <IncludePath>.\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)lib\</OutDir>
+    <IncludePath>.\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)lib\</OutDir>
+    <IncludePath>.\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)lib\</OutDir>
+    <IncludePath>.\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -147,6 +151,11 @@
     <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DXTrace.cpp" />
+    <ClCompile Include="DXUT\Core\dxerr.cpp" />
+    <ClCompile Include="DXUT\Core\DXUT.cpp" />
+    <ClCompile Include="DXUT\Core\DXUTDevice11.cpp" />
+    <ClCompile Include="DXUT\Core\DXUTmisc.cpp" />
+    <ClCompile Include="DXUT\Core\ScreenGrab.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="includes\VertexLayoutCommon.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -166,6 +175,11 @@
     <ClInclude Include="includes\D3DUtil.h" />
     <ClInclude Include="includes\DDSTextureLoader.h" />
     <ClInclude Include="includes\DXTrace.h" />
+    <ClInclude Include="includes\DXUT\Core\dxerr.h" />
+    <ClInclude Include="includes\DXUT\Core\DXUT.h" />
+    <ClInclude Include="includes\DXUT\Core\DXUTDevice11.h" />
+    <ClInclude Include="includes\DXUT\Core\DXUTmisc.h" />
+    <ClInclude Include="includes\DXUT\Core\ScreenGrab.h" />
     <ClInclude Include="includes\GameTimer.h" />
     <ClInclude Include="includes\Input.h" />
     <ClInclude Include="includes\Keyboard.h" />
