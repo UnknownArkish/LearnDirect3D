@@ -149,6 +149,7 @@
     <ClCompile Include="DXTrace.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="includes\VertexLayoutCommon.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="includes\DDSTextureLoader.h" />
     <ClInclude Include="includes\DXTrace.h" />
     <ClInclude Include="includes\GameTimer.h" />
+    <ClInclude Include="includes\Input.h" />
     <ClInclude Include="includes\Keyboard.h" />
     <ClInclude Include="includes\Lighting.h" />
     <ClInclude Include="includes\Macros.h" />

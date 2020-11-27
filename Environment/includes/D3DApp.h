@@ -16,6 +16,7 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 #include <memory>
+#include "Input.h"
 
 #include "Common.h"
 
@@ -78,8 +79,5 @@ protected:
 	int m_ClientHeight;                                  // 视口高度
 
 	// 键鼠输入
-	std::unique_ptr<DirectX::Mouse> _pMouse;					// 鼠标
-	DirectX::Mouse::ButtonStateTracker _MouseTracker;			// 鼠标状态追踪器
-	std::unique_ptr<DirectX::Keyboard> _pKeyboard;				// 键盘
-	DirectX::Keyboard::KeyboardStateTracker _KeyboardTracker;	// 键盘状态追踪器
+	std::unique_ptr<Input> _pInput;
 };

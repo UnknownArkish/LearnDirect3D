@@ -91,6 +91,8 @@ int D3DApp::Run()
 				CalculateFrameStats();
 				UpdateScene(m_Timer.DeltaTime());
 				DrawScene();
+
+				_pInput->UpdateInput();
 			}
 			else
 			{
@@ -112,9 +114,8 @@ bool D3DApp::Init()
 
 	_pRenderer->Init(_pd3dDevice.Get());
 
-	_pMouse = std::make_unique<DirectX::Mouse>();
-	_pKeyboard = std::make_unique<DirectX::Keyboard>();
-	_pMouse->SetWindow(m_hMainWnd);
+	_pInput = std::make_unique<Input>();
+	_pInput->Init(m_hMainWnd);
 
 	return true;
 }
@@ -306,15 +307,23 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
 		return 0;
 
+	case WM_INPUT:
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		return 0;
+	case WM_XBUTTONDOWN:
 	case WM_LBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
-		return 0;
+	case WM_XBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_MOUSEHOVER:
 	case WM_MOUSEMOVE:
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		_pInput->ProcessMessage(msg, wParam, lParam);
 		return 0;
 	}
 
