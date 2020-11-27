@@ -27,7 +27,7 @@ SamplerState parallelMapSampler : register(s2);
 
 float2 ParallelMapping(float2 uvs, float3 viewDir)
 {
-    const float layers = 32;
+    const float layers = 64;
     int interator = 0;
 
     float deltaDepth = 1.0f / layers;
@@ -89,13 +89,16 @@ float4 main(BasePassVS2PS input) : SV_TARGET
     float3 viewDirTS = mul(float4(viewDirLS, 0.0f), local2Tangent).xyz;
 
     float2 parallelUVs = ParallelMapping(input.uvs, viewDirTS);
+    //parallelUVs = input.uvs;
     
     float3 normalTS = normalize(normalTex.Sample(normalTexSampler, parallelUVs));
     float NdotL = max(dot(normalTS, lightDirTS), 0.0f);
+    //NdotL = 1.0f;
     
+    float3 ambientColor = float3(0.1f, 0.1f, 0.1f) * 0;
     float3 baseColor = _MainTex.Sample(_MainTexSampler, parallelUVs).xyz;
     
-    float3 finalColor = baseColor * NdotL * pointLight.color;
+    float3 finalColor = ambientColor + baseColor * NdotL * pointLight.color;
 
     return float4(finalColor.xyz, 1.0f);
     //return parallelMap.Sample(parallelMapSampler, input.uvs);

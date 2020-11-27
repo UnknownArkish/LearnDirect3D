@@ -203,6 +203,9 @@
     <ClInclude Include="includes\DXUT\Optional\DXUTsettingsdlg.h">
       <Filter>头文件\DXUT\Optional</Filter>
     </ClInclude>
+    <ClInclude Include="includes\MathUtil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\VertexLayoutCommon.hlsli">

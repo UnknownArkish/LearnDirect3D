@@ -17,6 +17,9 @@ public:
 	Renderer() :_bInit(false), _QuadResource(), _CubeResource() {}
 
 	void Init(ID3D11Device* device);
+
+	void IASetInputLayout(ID3D11DeviceContext* deviceContext);
+
 	void RenderQuad(ID3D11DeviceContext* deviceContext);
 	void RenderQuadPoint(ID3D11DeviceContext* deviceContext);
 	void RenderCube(ID3D11DeviceContext* deviceContext);

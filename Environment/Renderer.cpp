@@ -17,6 +17,13 @@ void Renderer::Init(ID3D11Device* device)
 	_bInit = true;
 }
 
+void Renderer::IASetInputLayout(ID3D11DeviceContext* deviceContext)
+{
+	assert(deviceContext);
+	assert(_pUniversalInputLayout);
+	deviceContext->IASetInputLayout(_pUniversalInputLayout.Get());
+}
+
 void Renderer::RenderQuad(ID3D11DeviceContext* deviceContext)
 {
 	deviceContext->IASetInputLayout(_pUniversalInputLayout.Get());

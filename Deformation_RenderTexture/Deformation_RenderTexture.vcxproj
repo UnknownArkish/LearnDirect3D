@@ -180,10 +180,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="源.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h" />
+    <ClInclude Include="Plane.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Environment\shaders\VertexLayout.hlsl">

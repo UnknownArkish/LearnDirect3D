@@ -22,10 +22,8 @@ BasePassVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
     float2 offsetUVs = float2(col / data.x, 1.0f - row / data.y);
     float4 offset = offsetMap.SampleLevel(offsetMapSampler, offsetUVs, 0);
 
-    result.posHS = float4(input.pos.xyz, 1.0f);
-    result.posHS = mul(result.posHS, gLocal2World) + float4(offset.xyz, 0.0f);
-    result.posLS = mul(result.posHS, gWorld2Local).xyz;
-
+    result.posLS = input.pos.xyz + offset.xyz * data.z;
+    result.posHS = mul(float4(result.posLS.xyz, 1.0f), gLocal2World);
     result.posHS = mul(result.posHS, gWorld2View);
     result.posHS = mul(result.posHS, gView2Proj);
     result.uvs = input.uvs;

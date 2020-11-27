@@ -41,7 +41,7 @@ float4 main(CalculateParallelMapVS2PS input) : SV_TARGET
     if(posDSNormalized.x >= 0.0f && posDSNormalized.x <= 1.0f &&
         posDSNormalized.y >= 0.0f && posDSNormalized.y <= 1.0f)
     {
-        float height = deformationMap.Sample(deformationMapSampler, posDSNormalized).r;
+        float height = deformationMap.Sample(deformationMapSampler, posDSNormalized).r * Params.z;
         return float4(height, height, height, 1.0f);
     }
     else

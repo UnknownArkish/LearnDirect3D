@@ -66,13 +66,17 @@ CalculateOffsetMapVS2PS main(UniversalIA2VS input, uint vertexID : SV_VertexID)
     if (posDSNormalized.x >= 0.0f && posDSNormalized.x <= 1.0f &&
         posDSNormalized.y >= 0.0f && posDSNormalized.y <= 1.0f)
     {
+        posDSNormalized.y = 1.0f - posDSNormalized.y;
         float height = deformationMap.SampleLevel(deformationMapSampler, posDSNormalized, 0).r * Params.z;
         
-        float4 newPosWS = posDS - float4(0.0, 0.0, height, 0.0f);
+        float4 newPosWS = float4(posDS.xyz + float3(0.0, 0.0, height), 1.0f);
         newPosWS = mul(newPosWS, deformation2World);
         
-        float3 offset = newPosWS.xyz - posWS.xyz;
+        float4 newPosLS = mul(newPosWS, gWorld2Local);
+        
+        float3 offset = newPosLS.xyz - input.pos.xyz;
         result.offset = offset;
+        //result.offset = float3(0.0f, 0.0f, 1.0f);
     }
     else
     {

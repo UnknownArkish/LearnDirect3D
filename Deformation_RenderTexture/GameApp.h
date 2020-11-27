@@ -12,6 +12,8 @@
 #include <SamplerState.h>
 #include <Lighting.h>
 
+#include "Plane.h"
+
 struct OffsetMapConstantBuffer
 {
 	DirectX::XMFLOAT4 Data;
@@ -51,6 +53,8 @@ private:
 	void InitForOffsetMap();
 	void InitForParallelMap();
 private:
+	Plane _Plane;
+
 	Shader _BasePassShader;
 	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
@@ -62,6 +66,7 @@ private:
 	Texture2D _NormalTex;
 	TextureView _NormalTexView;
 	SamplerState _NormalTexSampler;
+	ComPtr<ID3D11RasterizerState> _pRasterizerState;
 
 
 	Shader _CalculateOffsetMapShader;
