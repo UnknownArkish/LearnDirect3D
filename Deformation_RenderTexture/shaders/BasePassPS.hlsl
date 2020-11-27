@@ -11,7 +11,9 @@ cbuffer LightConstantBuffer : register(b2)
 };
 cbuffer ParallelConstantBuffer : register(b3)
 {
+    float gParallelStepScale;
     float gParallelIntensity;
+    float2 _pad_b3_0;
 }
 
 Texture2D _MainTex : register(t0);
@@ -25,22 +27,22 @@ SamplerState parallelMapSampler : register(s2);
 
 float2 ParallelMapping(float2 uvs, float3 viewDir)
 {
-    const float layers = 36;
+    const float layers = 32;
     int interator = 0;
 
     float deltaDepth = 1.0f / layers;
-    float2 P = viewDir.xy / viewDir.z;
+    float2 P = viewDir.xy / viewDir.z * gParallelStepScale;
     float2 deltaUVs = P / layers;
 
     float2 currentUVs = uvs;
 
     float currentDepth = 0.0f;
-    float currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r;
+    float currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r * gParallelIntensity;
     [unroll]
     while (currentDepth < currentParallel && interator < layers)
     {
         currentUVs -= deltaUVs;
-        currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r;
+        currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r * gParallelIntensity;
         currentDepth += deltaDepth;
         
         interator++;
@@ -51,7 +53,7 @@ float2 ParallelMapping(float2 uvs, float3 viewDir)
     float prevDepth = currentDepth - deltaDepth;
 
     float currentDepthDiff = currentParallel - currentDepth;
-    float prevDepthDiff = parallelMap.Sample(parallelMapSampler, prevUVs).r - prevDepth;
+    float prevDepthDiff = parallelMap.Sample(parallelMapSampler, prevUVs).r * gParallelIntensity - prevDepth;
     float factor = currentDepthDiff / (currentDepthDiff - prevDepthDiff);
 
     float2 result = prevUVs * factor + currentUVs * (1 - factor);
@@ -87,7 +89,14 @@ float4 main(BasePassVS2PS input) : SV_TARGET
     float3 viewDirTS = mul(float4(viewDirLS, 0.0f), local2Tangent).xyz;
 
     float2 parallelUVs = ParallelMapping(input.uvs, viewDirTS);
+    
+    float3 normalTS = normalize(normalTex.Sample(normalTexSampler, parallelUVs));
+    float NdotL = max(dot(normalTS, lightDirTS), 0.0f);
+    
+    float3 baseColor = _MainTex.Sample(_MainTexSampler, parallelUVs).xyz;
+    
+    float3 finalColor = baseColor * NdotL * pointLight.color;
 
-    return _MainTex.Sample(_MainTexSampler, parallelUVs);
+    return float4(finalColor.xyz, 1.0f);
     //return parallelMap.Sample(parallelMapSampler, input.uvs);
 }

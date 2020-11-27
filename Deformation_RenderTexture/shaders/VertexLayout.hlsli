@@ -1,5 +1,11 @@
 #include "VertexLayoutCommon.hlsli"
 
+struct CalculateOffsetMapVS2PS
+{
+    float4 posHS : SV_POSITION;
+    float3 offset : POSITION;
+};
+
 struct CalculateParallelMapVS2PS
 {
     float4 posHS : SV_POSITION;

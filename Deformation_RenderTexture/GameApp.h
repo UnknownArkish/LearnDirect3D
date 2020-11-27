@@ -22,8 +22,15 @@ struct DeformationConstantBuffer
 	DirectX::XMFLOAT3 ForwardWS; float _pad_0;
 	DirectX::XMFLOAT3 OriginWS; float _pad_1;
 
-	// x : Width, y : Height
+	// x : Width, y : Height z : Intensity
 	DirectX::XMFLOAT4 Params;
+};
+
+struct ParallelMapConstantBuffer
+{
+	float ParallelStepScale;
+	float ParallelIntensity;
+	XMFLOAT2 _Pad_0;
 };
 
 class GameApp : public D3DApp
@@ -48,6 +55,7 @@ private:
 	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
 	ConstantBuffer<PointLight> _LightConstantBuffer;
+	ConstantBuffer<ParallelMapConstantBuffer> _ParallelMapConstantBuffer;
 	Texture2D _MainTex;
 	TextureView _MainTexView;
 	SamplerState _MainTexSampler;

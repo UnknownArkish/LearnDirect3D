@@ -1,6 +1,6 @@
-#include "VertexLayoutCommon.hlsli"
+#include "VertexLayout.hlsli"
 
-float4 main(UniversalVS2PS input) : SV_TARGET
+float4 main(CalculateOffsetMapVS2PS input) : SV_TARGET
 {
-	return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    return float4(input.offset, 1.0f);
 }

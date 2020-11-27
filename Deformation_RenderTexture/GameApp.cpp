@@ -57,7 +57,14 @@ void GameApp::DrawScene()
 	{
 		_OffsetMap.BeginRender(_pd3dDeviceContext.Get());
 		{
-			_OffsetMapConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
+			_ViewConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
+			_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
+			_DeformationConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 2);
+			_OffsetMapConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 3);
+
+			_DeformationMapView.PSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationMapSampler.PSBind(_pd3dDeviceContext.Get(), 0);
+
 			_CalculateOffsetMapShader.Use(_pd3dDeviceContext.Get());
 			_pRenderer->RenderQuadPoint(_pd3dDeviceContext.Get());
 		}
@@ -97,6 +104,7 @@ void GameApp::DrawScene()
 		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
 		_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
 		_LightConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 2);
+		_ParallelMapConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 3);
 
 		_MainTexView.PSBind(_pd3dDeviceContext.Get(), 0);
 		_MainTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
@@ -151,12 +159,12 @@ void GameApp::InitResource()
 	ViewConstantBuffer viewData;
 	viewData.World2View = DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 0.0f, -2.25f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		));
 	viewData.View2Proj = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));;
-	viewData.ViewPosWS = DirectX::XMFLOAT3(0.0f, 0.0f, -2.0f);
+	viewData.ViewPosWS = DirectX::XMFLOAT3(0.0f, 0.0f, -2.25f);
 	HR(_ViewConstantBuffer.Declare(_pd3dDevice.Get()));
 	_ViewConstantBuffer.SetBuffer(viewData);
 	_ViewConstantBuffer.Apply(_pd3dDeviceContext.Get());
@@ -167,9 +175,17 @@ void GameApp::InitResource()
 	PointLight lightData;
 	ZeroMemory(&lightData, sizeof(PointLight));
 	lightData.SetColor(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
-	lightData.SetPosition(DirectX::XMFLOAT3(0.0f, 1.0f, -3.0f));
+	lightData.SetPosition(DirectX::XMFLOAT3(1.5f, 1.0f, -3.0f));
 	_LightConstantBuffer.SetBuffer(lightData);
 	_LightConstantBuffer.Apply(_pd3dDeviceContext.Get());
+
+	HR(_ParallelMapConstantBuffer.Declare(_pd3dDevice.Get()));
+	ParallelMapConstantBuffer parallelMapData;
+	ZeroMemory(&parallelMapData, sizeof(ParallelMapConstantBuffer));
+	parallelMapData.ParallelStepScale = 0.3f;
+	parallelMapData.ParallelIntensity = 0.8f;
+	_ParallelMapConstantBuffer.SetBuffer(parallelMapData);
+	_ParallelMapConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }
 
 void GameApp::InitForDeformation()
@@ -187,7 +203,7 @@ void GameApp::InitForDeformation()
 	ZeroMemory(&data, sizeof(DeformationConstantBuffer));
 	data.ForwardWS = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 	data.OriginWS = DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f);
-	data.Params = DirectX::XMFLOAT4(2.0f, 2.0f, 0.0f, 0.0f);
+	data.Params = DirectX::XMFLOAT4(2.0f, 2.0f, 1.0f, 0.0f);
 	_DeformationConstantBuffer.SetBuffer(data);
 	_DeformationConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
