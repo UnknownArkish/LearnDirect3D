@@ -4,7 +4,7 @@
 
 using namespace DirectX;
 
-const UINT VERTEX_NUM_PER_ROW_COL = 32;
+const UINT VERTEX_NUM_PER_ROW_COL = 2;
 
 GameApp::GameApp(HINSTANCE hInstance) : D3DApp(hInstance)
 {
