@@ -55,6 +55,12 @@
     <FxCompile Include="shaders\CalculateParallelMapPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\CalculateDeformationMapVS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CalculateDeformationMapPS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\VertexLayout.hlsli">

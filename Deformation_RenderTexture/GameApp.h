@@ -49,9 +49,8 @@ private:
 	void InitShader();
 	void InitResource();
 
-	void InitForDeformation();
-	void InitForOffsetMap();
-	void InitForParallelMap();
+	void InitForDeformationTex();
+	void InitForDeformationMap();
 private:
 	Plane _Plane;
 
@@ -68,24 +67,30 @@ private:
 	SamplerState _NormalTexSampler;
 	ComPtr<ID3D11RasterizerState> _pRasterizerState;
 
-
-	Shader _CalculateOffsetMapShader;
-	RenderTexture _OffsetMap;
-	TextureView _OffsetMapView;
-	SamplerState _OffsetMapSampler;
-	ConstantBuffer<OffsetMapConstantBuffer> _OffsetMapConstantBuffer;
-	OffsetMapConstantBuffer _OffsetMapData;
-
-
-	Shader _CalculateParallelMapShader;
-	RenderTexture _ParallelMap;
-	TextureView _ParallelMapView;
-	SamplerState _ParallelMapSampler;
-	ComPtr<ID3D11RasterizerState> _ParallelMapRasterizerState;
-
-	// ParallelMap的ConstantBuffer
+	// 变形贴图和变形参数
 	ConstantBuffer<DeformationConstantBuffer> _DeformationConstantBuffer;
-	Texture2D _DeformationMap;
+	Texture2D _DeformationTex;
+	TextureView _DeformationTexView;
+	SamplerState _DeformationTexSampler;
+
+	// 变形Map
+	RenderTexture _DeformationMap;
 	TextureView _DeformationMapView;
 	SamplerState _DeformationMapSampler;
+
+
+	//Shader _CalculateOffsetMapShader;
+	//RenderTexture _OffsetMap;
+	//TextureView _OffsetMapView;
+	//SamplerState _OffsetMapSampler;
+	//ConstantBuffer<OffsetMapConstantBuffer> _OffsetMapConstantBuffer;
+	//OffsetMapConstantBuffer _OffsetMapData;
+
+
+	//Shader _CalculateParallelMapShader;
+	//RenderTexture _ParallelMap;
+	//TextureView _ParallelMapView;
+	//SamplerState _ParallelMapSampler;
+	//ComPtr<ID3D11RasterizerState> _ParallelMapRasterizerState;
+
 };
