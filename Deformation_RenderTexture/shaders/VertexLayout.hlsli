@@ -22,9 +22,15 @@ struct BasePassVS2PS
     float3 normalLS : NORMAL;
 };
 
+struct BasePassVS2HS
+{
+    
+};
+
 struct CalculateDeformationMapVS2PS
 {
     float4 posHS : SV_POSITION;
     float3 posWS : POSITION;            // 世界位置坐标
-    float3 offsetTS : COLOR;            // 切线空间的偏移
+    float3 normalLS : NORMAL;
+    float4 tangentLS : TANGENT;
 };

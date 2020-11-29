@@ -61,6 +61,12 @@
     <FxCompile Include="shaders\CalculateDeformationMapPS.hlsl">
       <Filter>资源文件</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\BasePassHS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\BasePassDS.hlsl">
+      <Filter>资源文件</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\VertexLayout.hlsli">

@@ -4,7 +4,7 @@
 
 using namespace DirectX;
 
-const UINT VERTEX_NUM_PER_ROW_COL = 128;
+const UINT VERTEX_NUM_PER_ROW_COL = 2;
 const float DEFORMATION_TEX_WIDTH = 2;
 const float DEFORMATION_TEX_HEIGHT = 2;
 const float DEFORMATION_TEX_INTENSITY = 1;
@@ -73,15 +73,15 @@ void GameApp::DrawScene()
 	{
 		_DeformationMap.BeginRender(_pd3dDeviceContext.Get());
 		{
-			_ViewConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
-			_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
-			_DeformationConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 2);
+			_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 			_DeformationTexView.VSBind(_pd3dDeviceContext.Get(), 0);
 			_DeformationTexSampler.VSBind(_pd3dDeviceContext.Get(), 0);
 
 			_pd3dDeviceContext->RSSetState(_DeformationMapRatserizerState.Get());
 				
-			_DeformationConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+			_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
 			_DeformationTexView.PSBind(_pd3dDeviceContext.Get(), 0);
 			_DeformationTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 			
