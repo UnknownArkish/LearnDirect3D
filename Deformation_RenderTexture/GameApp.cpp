@@ -4,7 +4,7 @@
 
 using namespace DirectX;
 
-const UINT VERTEX_NUM_PER_ROW_COL = 2;
+const UINT VERTEX_NUM_PER_ROW_COL = 128;
 const float DEFORMATION_TEX_WIDTH = 2;
 const float DEFORMATION_TEX_HEIGHT = 2;
 const float DEFORMATION_TEX_INTENSITY = 1;

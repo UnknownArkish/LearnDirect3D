@@ -40,7 +40,7 @@ float2 ParallelMapping(float2 uvs, float3 viewDir)
     float3 offsetTS = deformationMapValue.xyz;
     float height = deformationMapValue.w;
     float stepScale = max(abs(abs(offsetTS.z) - height), 0.01f);
-    stepScale = 0.3f;
+    //stepScale = 0.3f;
 
     const float layers = 128;
     int interator = 0;

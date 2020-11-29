@@ -11,7 +11,7 @@ BasePassVS2PS main(UniversalIA2VS input)
 {
     BasePassVS2PS result;
 
-    // ¼ÆËãÇĞÏß×ø±êÏµ->±¾µØ×ø±êÏµµÄ¾ØÕó
+    // è®¡ç®—åˆ‡çº¿åæ ‡ç³»->æœ¬åœ°åæ ‡ç³»çš„çŸ©é˜µ
     float3 normalLS = normalize(input.normal);
     float4 tangentLS = normalize(input.tangent);
     float3 binormalLS = normalize(cross(normalLS, tangentLS.xyz) * tangentLS.w);
@@ -21,10 +21,10 @@ BasePassVS2PS main(UniversalIA2VS input)
         normalLS.xyz, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     );
-    // ´ÓDeformationMap²ÉÑùxyz£¬¼´TSÏÂµÄoffset
+    // ä»DeformationMapé‡‡æ ·xyzï¼Œå³TSä¸‹çš„offset
     float3 offsetTS = deformationMap.SampleLevel(deformationMapSampler, input.uvs, 0).xyz;
     float3 offsetLS = mul(float4(offsetTS, 0.0f), tangent2Local).xyz;
-    offsetLS = float3(0.0f, 0.0f, 0.0f);
+    //offsetLS = float3(0.0f, 0.0f, 0.0f);
 
     result.posLS = input.pos.xyz + offsetLS;
     result.posHS = mul(float4(result.posLS.xyz, 1.0f), gLocal2World);
