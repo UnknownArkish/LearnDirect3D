@@ -35,7 +35,7 @@ float4 main(CalculateDeformationMapVS2PS input) : SV_TARGET
     
     float2 deformationSize = float2(Params.x, Params.y);
     float2 deformationHalfSize = deformationSize / 2;
-    float2 posDSNormalized = (posDS.xy - deformationHalfSize) / deformationSize;
+    float2 posDSNormalized = (posDS.xy + deformationHalfSize) / deformationSize;
     
     [branch]
     if (posDSNormalized.x >= 0.0f && posDSNormalized.x <= 1.0f &&

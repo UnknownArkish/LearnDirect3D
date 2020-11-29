@@ -22,27 +22,42 @@ SamplerState _MainTexSampler : register(s0);
 Texture2D normalTex : register(t1);
 SamplerState normalTexSampler : register(s1);
 
-Texture2D parallelMap : register(t2);
-SamplerState parallelMapSampler : register(s2);
+Texture2D deformationMap : register(t2);
+SamplerState deformationMapSampler : register(s2);
+
+float SampleDeformation(float2 uvs)
+{
+    float4 deformationMapValue = deformationMap.Sample(deformationMapSampler, uvs);
+    float3 offsetTS = deformationMapValue.xyz;
+    float height = deformationMapValue.w;
+    return max(abs(offsetTS.z), height);
+    //return abs(offsetTS.z);
+}
 
 float2 ParallelMapping(float2 uvs, float3 viewDir)
 {
-    const float layers = 64;
+    float4 deformationMapValue = deformationMap.Sample(deformationMapSampler, uvs);
+    float3 offsetTS = deformationMapValue.xyz;
+    float height = deformationMapValue.w;
+    float stepScale = max(abs(abs(offsetTS.z) - height), 0.01f);
+    stepScale = 0.3f;
+
+    const float layers = 128;
     int interator = 0;
 
     float deltaDepth = 1.0f / layers;
-    float2 P = viewDir.xy / viewDir.z * gParallelStepScale;
+    float2 P = viewDir.xy / viewDir.z * stepScale;
     float2 deltaUVs = P / layers;
 
     float2 currentUVs = uvs;
 
     float currentDepth = 0.0f;
-    float currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r * gParallelIntensity;
+    float currentParallel = SampleDeformation(currentUVs);
     [unroll]
     while (currentDepth < currentParallel && interator < layers)
     {
         currentUVs -= deltaUVs;
-        currentParallel = parallelMap.Sample(parallelMapSampler, currentUVs).r * gParallelIntensity;
+        currentParallel = SampleDeformation(currentUVs);
         currentDepth += deltaDepth;
         
         interator++;
@@ -53,7 +68,7 @@ float2 ParallelMapping(float2 uvs, float3 viewDir)
     float prevDepth = currentDepth - deltaDepth;
 
     float currentDepthDiff = currentParallel - currentDepth;
-    float prevDepthDiff = parallelMap.Sample(parallelMapSampler, prevUVs).r * gParallelIntensity - prevDepth;
+    float prevDepthDiff = SampleDeformation(prevUVs) * gParallelIntensity - prevDepth;
     float factor = currentDepthDiff / (currentDepthDiff - prevDepthDiff);
 
     float2 result = prevUVs * factor + currentUVs * (1 - factor);
@@ -88,15 +103,20 @@ float4 main(BasePassVS2PS input) : SV_TARGET
     float3 lightDirTS = mul(float4(lightDirLS, 0.0f), local2Tangent).xyz;
     float3 viewDirTS = mul(float4(viewDirLS, 0.0f), local2Tangent).xyz;
 
-    float2 parallelUVs = ParallelMapping(input.uvs, viewDirTS);
-    //parallelUVs = input.uvs;
+    float2 newUVs = input.uvs;
+    float4 deformationMapValue = deformationMap.Sample(deformationMapSampler, input.uvs);
+    //[branch]
+    //if (abs(abs(deformationMapValue.z) - deformationMapValue.w) > 0.01f)
+    {
+        newUVs = ParallelMapping(input.uvs, viewDirTS);
+    }
     
-    float3 normalTS = normalize(normalTex.Sample(normalTexSampler, parallelUVs));
+    float3 normalTS = normalize(normalTex.Sample(normalTexSampler, newUVs).xyz);
     float NdotL = max(dot(normalTS, lightDirTS), 0.0f);
     //NdotL = 1.0f;
     
     float3 ambientColor = float3(0.1f, 0.1f, 0.1f) * 0;
-    float3 baseColor = _MainTex.Sample(_MainTexSampler, parallelUVs).xyz;
+    float3 baseColor = _MainTex.Sample(_MainTexSampler, newUVs).xyz;
     
     float3 finalColor = ambientColor + baseColor * NdotL * pointLight.color;
 

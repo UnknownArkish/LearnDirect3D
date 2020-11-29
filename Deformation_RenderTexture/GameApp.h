@@ -73,10 +73,12 @@ private:
 	TextureView _DeformationTexView;
 	SamplerState _DeformationTexSampler;
 
-	// 变形Map
+	// DeformationMap
 	RenderTexture _DeformationMap;
 	TextureView _DeformationMapView;
 	SamplerState _DeformationMapSampler;
+	Shader _CalculateDeformationMapShader;
+	ComPtr<ID3D11RasterizerState> _DeformationMapRatserizerState;
 
 
 	//Shader _CalculateOffsetMapShader;

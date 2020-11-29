@@ -22,7 +22,7 @@ cbuffer DeformationConstantBuffer : register(b2)
 Texture2D deformationMap : register(t0);
 SamplerState deformationMapSampler : register(s0);
 
-CalculateDeformationMapVS2PS main(UniversalIA2VS input : POSITION)
+CalculateDeformationMapVS2PS main(UniversalIA2VS input)
 {
     CalculateDeformationMapVS2PS result;
 	
@@ -75,7 +75,7 @@ CalculateDeformationMapVS2PS main(UniversalIA2VS input : POSITION)
             )
         );
         
-        posDSNormalized.y = 1.0f - posDSNormalized.y;
+        //posDSNormalized.y = 1.0f - posDSNormalized.y;
         float height = deformationMap.SampleLevel(deformationMapSampler, posDSNormalized, 0).r * Params.z;
         
         float4 offsetDS = float4(0.0f, 0.0f, height, 0.0f);
@@ -83,6 +83,7 @@ CalculateDeformationMapVS2PS main(UniversalIA2VS input : POSITION)
         float4 offsetLS = mul(offsetWS, gWorld2Local);
         
         offsetTS = mul(offsetLS, local2Tangent).xyz;
+        //offsetTS = offsetLS.xyz;
     }
     else
     {
