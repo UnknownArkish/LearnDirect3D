@@ -79,6 +79,7 @@ private:
 	SamplerState _DeformationMapSampler;
 	Shader _CalculateDeformationMapShader;
 	ComPtr<ID3D11RasterizerState> _DeformationMapRatserizerState;
+	ComPtr<ID3D11BlendState> _DeformationMapBlendState;
 
 
 	//Shader _CalculateOffsetMapShader;

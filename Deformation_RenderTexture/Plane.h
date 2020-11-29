@@ -13,6 +13,7 @@ public:
 
 	void Render(ID3D11DeviceContext* deviceContext);
 	void RenderPoint(ID3D11DeviceContext* deviceContext);
+	void RenderControlPoint(ID3D11DeviceContext* deviceContext);
 private:
 	bool _IsDeclared;
 

@@ -8,7 +8,7 @@ bool GameApp::Init()
 {
 	if (!D3DApp::Init()) return false;
 
-	_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+	//_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 
 	InitShader();
 	InitResource();

@@ -4,7 +4,7 @@
 
 using namespace DirectX;
 
-const UINT VERTEX_NUM_PER_ROW_COL = 2;
+const UINT VERTEX_NUM_PER_ROW_COL = 16;
 const float DEFORMATION_TEX_WIDTH = 2;
 const float DEFORMATION_TEX_HEIGHT = 2;
 const float DEFORMATION_TEX_INTENSITY = 1;
@@ -79,12 +79,43 @@ void GameApp::DrawScene()
 			_DeformationTexSampler.VSBind(_pd3dDeviceContext.Get(), 0);
 
 			_pd3dDeviceContext->RSSetState(_DeformationMapRatserizerState.Get());
-				
+
 			_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
 			_DeformationConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
 			_DeformationTexView.PSBind(_pd3dDeviceContext.Get(), 0);
 			_DeformationTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
-			
+
+			_pd3dDeviceContext->OMSetBlendState(_DeformationMapBlendState.Get(), nullptr, 0xffffffff);
+
+			_CalculateDeformationMapShader.Use(_pd3dDeviceContext.Get());
+			_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
+			_Plane.Render(_pd3dDeviceContext.Get());
+		}
+		_DeformationMap.EndRender(_pd3dDeviceContext.Get());
+
+		_DeformationMap.BeginRender(_pd3dDeviceContext.Get(), false, true);
+		{
+			DeformationConstantBuffer data;
+			ZeroMemory(&data, sizeof(DeformationConstantBuffer));
+			_DeformationConstantBuffer.GetBuffer(data);
+			data.Params = DirectX::XMFLOAT4(DEFORMATION_TEX_WIDTH / 2, DEFORMATION_TEX_HEIGHT / 2, DEFORMATION_TEX_INTENSITY, 0.0f);
+			_DeformationConstantBuffer.SetBuffer(data);
+			_DeformationConstantBuffer.Apply(_pd3dDeviceContext.Get());
+
+			_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
+			_DeformationTexView.VSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationTexSampler.VSBind(_pd3dDeviceContext.Get(), 0);
+
+			_pd3dDeviceContext->RSSetState(_DeformationMapRatserizerState.Get());
+
+			_ObjectConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
+			_DeformationTexView.PSBind(_pd3dDeviceContext.Get(), 0);
+			_DeformationTexSampler.PSBind(_pd3dDeviceContext.Get(), 0);
+
+			_pd3dDeviceContext->OMSetBlendState(_DeformationMapBlendState.Get(), nullptr, 0xffffffff);
+
 			_CalculateDeformationMapShader.Use(_pd3dDeviceContext.Get());
 			_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
 			_Plane.Render(_pd3dDeviceContext.Get());
@@ -95,10 +126,10 @@ void GameApp::DrawScene()
 	}
 	else
 	{
-		_ViewConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
-		_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
-		_DeformationMapView.VSBind(_pd3dDeviceContext.Get(), 0);
-		_DeformationMapSampler.VSBind(_pd3dDeviceContext.Get(), 0);
+		_ViewConstantBuffer.DSBind(_pd3dDeviceContext.Get(), 0);
+		_ObjectConstantBuffer.DSBind(_pd3dDeviceContext.Get(), 1);
+		_DeformationMapView.DSBind(_pd3dDeviceContext.Get(), 0);
+		_DeformationMapSampler.DSBind(_pd3dDeviceContext.Get(), 0);
 
 		_pd3dDeviceContext->RSSetState(_pRasterizerState.Get());
 
@@ -114,9 +145,11 @@ void GameApp::DrawScene()
 		_DeformationMapView.PSBind(_pd3dDeviceContext.Get(), 2);
 		_DeformationMapSampler.PSBind(_pd3dDeviceContext.Get(), 2);
 
+		_pd3dDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+
 		_BasePassShader.Use(_pd3dDeviceContext.Get());
 		_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
-		_Plane.Render(_pd3dDeviceContext.Get());
+		_Plane.RenderControlPoint(_pd3dDeviceContext.Get());
 	}
 
 	HR(_pSwapChain->Present(0, 0));
@@ -130,6 +163,16 @@ void GameApp::InitShader()
 	desc.EntryPoint = "main";
 	desc.ShaderModel = "vs_5_0";
 	HR(_BasePassShader.VSDeclare(_pd3dDevice.Get(), desc));
+	desc.CsoName = L"BasePassHS.cso";
+	desc.FileName = L"shaders/BasePassHS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "hs_5_0";
+	HR(_BasePassShader.HSDeclare(_pd3dDevice.Get(), desc));
+	desc.CsoName = L"BasePassDS.cso";
+	desc.FileName = L"shaders/BasePassDS.hlsl";
+	desc.EntryPoint = "main";
+	desc.ShaderModel = "ds_5_0";
+	HR(_BasePassShader.DSDeclare(_pd3dDevice.Get(), desc));
 	desc.CsoName = L"BasePassPS.cso";
 	desc.FileName = L"shaders/BasePassPS.hlsl";
 	desc.EntryPoint = "main";
@@ -228,7 +271,7 @@ void GameApp::InitForDeformationTex()
 
 void GameApp::InitForDeformationMap()
 {
-	HR(_DeformationMap.Declare(_pd3dDevice.Get(), 512, 512, DXGI_FORMAT_R32G32B32A32_FLOAT, false));
+	HR(_DeformationMap.Declare(_pd3dDevice.Get(), 1024, 1024, DXGI_FORMAT_R32G32B32A32_FLOAT, false));
 	_DeformationMapView.Declare(&_DeformationMap);
 	
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -257,4 +300,18 @@ void GameApp::InitForDeformationMap()
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	HR(_pd3dDevice->CreateRasterizerState(&rasterizerDesc, _DeformationMapRatserizerState.ReleaseAndGetAddressOf()));
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.IndependentBlendEnable = false;
+	blendDesc.RenderTarget[0].BlendEnable = true;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	HR(_pd3dDevice->CreateBlendState(&blendDesc, _DeformationMapBlendState.ReleaseAndGetAddressOf()));
 }

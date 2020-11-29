@@ -1,38 +1,19 @@
-// Input control point
-struct VS_CONTROL_POINT_OUTPUT
-{
-	float3 vPosition : WORLDPOS;
-	// TODO: change/add other stuff
-};
 
-// Output control point
-struct HS_CONTROL_POINT_OUTPUT
-{
-	float3 vPosition : WORLDPOS; 
-};
-
-// Output patch constant data.
-struct HS_CONSTANT_DATA_OUTPUT
-{
-	float EdgeTessFactor[3]			: SV_TessFactor; // e.g. would be [4] for a quad domain
-	float InsideTessFactor			: SV_InsideTessFactor; // e.g. would be Inside[2] for a quad domain
-	// TODO: change/add other stuff
-};
+#include "VertexLayout.hlsli"
 
 #define NUM_CONTROL_POINTS 3
 
 // Patch Constant Function
-HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
-	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip,
+BasePassHS2DS_ConstantData CalcHSPatchConstants(
+	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> ip,
 	uint PatchID : SV_PrimitiveID)
 {
-	HS_CONSTANT_DATA_OUTPUT Output;
+    BasePassHS2DS_ConstantData Output;
 
-	// Insert code to compute Output here
-	Output.EdgeTessFactor[0] = 
-		Output.EdgeTessFactor[1] = 
-		Output.EdgeTessFactor[2] = 
-		Output.InsideTessFactor = 15; // e.g. could calculate dynamic tessellation factors instead
+    Output.EdgeTessFactor[0] =
+		Output.EdgeTessFactor[1] =
+		Output.EdgeTessFactor[2] = 5;
+	Output.InsideTessFactor = 5;
 
 	return Output;
 }
@@ -42,15 +23,17 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(3)]
 [patchconstantfunc("CalcHSPatchConstants")]
-HS_CONTROL_POINT_OUTPUT main( 
-	InputPatch<VS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> ip, 
+BasePassHS2DS main(
+	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> input,
 	uint i : SV_OutputControlPointID,
 	uint PatchID : SV_PrimitiveID )
 {
-	HS_CONTROL_POINT_OUTPUT Output;
+    BasePassHS2DS Output;
 
-	// Insert code to compute Output here
-	Output.vPosition = ip[i].vPosition;
+    Output.posLS = input[i].posLS;
+    Output.tangentLS = input[i].tangentLS;
+    Output.normalLS = input[i].normalLS;
+    Output.uvs = input[i].uvs;
 
 	return Output;
 }

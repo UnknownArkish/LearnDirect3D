@@ -109,7 +109,7 @@ DXGI_FORMAT RenderTexture::GetFormat() const
 	return _Desc.Format;
 }
 
-void RenderTexture::BeginRender(ID3D11DeviceContext* deviceContext)
+void RenderTexture::BeginRender(ID3D11DeviceContext* deviceContext, bool clearColor, bool clearDepth)
 {
 	assert(_IsDeclared);
 	assert(deviceContext);
@@ -121,8 +121,8 @@ void RenderTexture::BeginRender(ID3D11DeviceContext* deviceContext)
 
 
 	float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	deviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), black);
-	deviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	if (clearColor) deviceContext->ClearRenderTargetView(_pRenderTargetView.Get(), black);
+	if (clearDepth)	deviceContext->ClearDepthStencilView(_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	deviceContext->OMSetRenderTargets(1, _pRenderTargetView.GetAddressOf(), _pDepthStencilView.Get());
 	deviceContext->RSSetViewports(1, &_ViewPort);
 

@@ -14,7 +14,7 @@ public:
 	virtual DXGI_FORMAT GetFormat() const override;
 	void GetDesc(D3D11_TEXTURE2D_DESC& output)const { output = _Desc; }
 
-	void BeginRender(ID3D11DeviceContext* deviceContext);
+	void BeginRender(ID3D11DeviceContext* deviceContext, bool clearColor = true, bool clearDepth = true);
 	void EndRender(ID3D11DeviceContext* deviceContext);
 private:
 	bool _IsDeclared;

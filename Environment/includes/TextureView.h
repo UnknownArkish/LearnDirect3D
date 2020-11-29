@@ -10,6 +10,8 @@ class ITextureView
 {
 public:
 	virtual void VSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
+	virtual void HSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
+	virtual void DSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
 	virtual void GSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
 	virtual void PSBind(ID3D11DeviceContext* deviceContext, UINT slot) = 0;
 	virtual void Declare(Texture* texture) = 0;
@@ -28,6 +30,8 @@ class TextureView : public ITextureView
 {
 public:
 	virtual void VSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
+	virtual void HSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
+	virtual void DSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
 	virtual void GSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
 	virtual void PSBind(ID3D11DeviceContext* deviceContext, UINT slot) override;
 	virtual void Declare(Texture* texture) override;
@@ -40,6 +44,22 @@ inline void TextureView::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 	if (_Texture)
 	{
 		deviceContext->VSSetShaderResources(slot, 1, GetShaderResourceViews());
+	}
+}
+inline void TextureView::HSBind(ID3D11DeviceContext* deviceContext, UINT slot)
+{
+	assert(deviceContext);
+	if (_Texture)
+	{
+		deviceContext->HSSetShaderResources(slot, 1, GetShaderResourceViews());
+	}
+}
+inline void TextureView::DSBind(ID3D11DeviceContext* deviceContext, UINT slot)
+{
+	assert(deviceContext);
+	if (_Texture)
+	{
+		deviceContext->DSSetShaderResources(slot, 1, GetShaderResourceViews());
 	}
 }
 

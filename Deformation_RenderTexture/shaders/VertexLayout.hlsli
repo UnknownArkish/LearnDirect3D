@@ -12,19 +12,35 @@ struct CalculateParallelMapVS2PS
     float3 posWS : POSITION;
 };
 
-struct BasePassVS2PS
+struct BasePassVS2HS
 {
-    float4 posHS : SV_POSITION;
-
-    float2 uvs : TEXCOORD;
     float3 posLS : POSITION;
     float4 tangentLS : TANGENT;
     float3 normalLS : NORMAL;
+    float2 uvs : TEXCOORD;
 };
 
-struct BasePassVS2HS
+struct BasePassHS2DS
 {
+    float3 posLS : POSITION;
+    float4 tangentLS : TANGENT;
+    float3 normalLS : NORMAL;
+    float2 uvs : TEXCOORD;
+};
+struct BasePassHS2DS_ConstantData
+{
+    float EdgeTessFactor[3] : SV_TessFactor; // e.g. would be [4] for a quad domain
+    float InsideTessFactor : SV_InsideTessFactor; // e.g. would be Inside[2] for a quad domain
+};
+
+struct BasePassDS2PS
+{
+    float4 posHS : SV_POSITION;
     
+    float3 posLS : POSITION;
+    float4 tangentLS : TANGENT;
+    float3 normalLS : NORMAL;
+    float2 uvs : TEXCOORD;
 };
 
 struct CalculateDeformationMapVS2PS

@@ -115,6 +115,18 @@ void Plane::RenderPoint(ID3D11DeviceContext* deviceContext)
 	UINT offset = 0;
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	deviceContext->IASetVertexBuffers(0, 1, _pVertexBuffer.GetAddressOf(), &stride, &offset);
-	deviceContext->IASetIndexBuffer(_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	deviceContext->Draw(_VertexNum, 0);
+}
+
+void Plane::RenderControlPoint(ID3D11DeviceContext* deviceContext)
+{
+	assert(deviceContext);
+	assert(_IsDeclared);
+
+	UINT stride = sizeof(UniversalVertexLayout);
+	UINT offset = 0;
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	deviceContext->IASetVertexBuffers(0, 1, _pVertexBuffer.GetAddressOf(), &stride, &offset);
+	deviceContext->IASetIndexBuffer(_pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->DrawIndexed(_IndexNum, 0, 0);
 }

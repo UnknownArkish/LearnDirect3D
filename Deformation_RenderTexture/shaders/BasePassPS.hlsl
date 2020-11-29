@@ -75,7 +75,7 @@ SamplerState normalTexSampler : register(s1);
 //    return result;
 //}
 
-float4 main(BasePassVS2PS input) : SV_TARGET
+float4 main(BasePassDS2PS input) : SV_TARGET
 {
     float3 normalLS = normalize(input.normalLS);
     float4 tangentLS = normalize(input.tangentLS);
