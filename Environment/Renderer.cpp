@@ -14,6 +14,7 @@ void Renderer::Init(ID3D11Device* device)
 	InitVertexLayout(device);
 	InitQuadResource(device);
 	InitCubeResource(device);
+	InitCylinderResource(device);
 	_bInit = true;
 }
 
