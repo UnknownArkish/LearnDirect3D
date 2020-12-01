@@ -22,7 +22,7 @@ struct LightConstantBufferData
 class GameApp : public D3DApp
 {
 public:
-	GameApp(HINSTANCE hInstance);
+	GameApp(HINSTANCE hInstance, int width, int height);
 	~GameApp();
 
 	virtual bool Init() override;
@@ -36,5 +36,5 @@ private:
 	Shader _ShaderHair;
 	ConstantBuffer<ViewConstantBuffer> _ConstantBufferView;
 	ConstantBuffer<ObjectConstantBuffer> _ConstantBufferObject;
-	ConstantBuffer<LightConstantBufferData> _ConstantBufferLight;
+	ConstantBuffer<PointLight> _ConstantBufferLight;
 };

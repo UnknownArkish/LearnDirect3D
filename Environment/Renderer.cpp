@@ -112,10 +112,10 @@ void Renderer::InitQuadResource(ID3D11Device* device)
 	vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	vertices[3].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	vertices[0].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	vertices[1].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	vertices[2].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	vertices[3].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[0].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[1].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[2].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[3].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
@@ -287,7 +287,7 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 
 		vertexs[i].pos = XMFLOAT3(radius * cosf(theta), h2, radius * sinf(theta));
 		vertexs[i].normal = XMFLOAT3(cosf(theta), 0.0f, sinf(theta));
-		vertexs[i].tangent= XMFLOAT4(-sinf(theta), 0.0f, cosf(theta), 1.0f);
+		vertexs[i].tangent= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 		vertexs[i].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertexs[i].uvs = XMFLOAT2(theta / XM_2PI, 0.0f);
 	}
@@ -299,7 +299,7 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 		UINT tempIndex = (slices + 1) + i;
 		vertexs[tempIndex].pos = XMFLOAT3(radius * cosf(theta), -h2, radius * sinf(theta));
 		vertexs[tempIndex].normal = XMFLOAT3(cosf(theta), 0.0f, sinf(theta));
-		vertexs[tempIndex].tangent = XMFLOAT4(-sinf(theta), 0.0f, cosf(theta), 1.0f);
+		vertexs[tempIndex].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 		vertexs[tempIndex].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertexs[tempIndex].uvs = XMFLOAT2(theta / XM_2PI, 1.0f);
 	}
@@ -310,7 +310,7 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 	// 顶端圆心
 	vertexs[vIndex].pos = XMFLOAT3(0.0f, h2, 0.0f);
 	vertexs[vIndex].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	vertexs[vIndex].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertexs[vIndex].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 	vertexs[vIndex].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertexs[vIndex].uvs = XMFLOAT2(0.5f, 0.5f);
 	vIndex++;
@@ -321,7 +321,7 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 
 		vertexs[vIndex].pos = XMFLOAT3(radius * cosf(theta), h2, radius * sinf(theta));
 		vertexs[vIndex].normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		vertexs[vIndex].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+		vertexs[vIndex].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 		vertexs[vIndex].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertexs[vIndex].uvs = XMFLOAT2(cosf(theta) / 2 + 0.5f, sinf(theta) / 2 + 0.5f);
 		vIndex++;
@@ -329,7 +329,7 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 	// 底端圆心
 	vertexs[vIndex].pos = XMFLOAT3(0.0f, -h2, 0.0f);
 	vertexs[vIndex].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	vertexs[vIndex].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
+	vertexs[vIndex].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 	vertexs[vIndex].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertexs[vIndex].uvs = XMFLOAT2(0.5f, 0.5f);
 	vIndex++;
@@ -340,7 +340,7 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 
 		vertexs[vIndex].pos = XMFLOAT3(radius * cosf(theta), -h2, radius * sinf(theta));
 		vertexs[vIndex].normal = XMFLOAT3(0.0f, -1.0f, 0.0f);
-		vertexs[vIndex].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
+		vertexs[vIndex].tangent = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 		vertexs[vIndex].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertexs[vIndex].uvs = XMFLOAT2(cosf(theta) / 2 + 0.5f, sinf(theta) / 2 + 0.5f);
 		vIndex++;

@@ -20,6 +20,12 @@ float StrandShading(float3 T, float3 V, float3 L, float exponent)
 	return dirAtten * pow(sinTH, exponent);
 }
 
+float PhoneShading(float3 N, float3 V, float3 L, float exponent)
+{
+    float3 H = normalize(L + V);
+    float NdotH = dot(N, H);
+    return pow(NdotH, exponent);
+}
 
 float4 main(HairPassVS2PS input) : SV_TARGET
 {
@@ -35,8 +41,9 @@ float4 main(HairPassVS2PS input) : SV_TARGET
 	float3 lightDirLS = normalize(lightPosLS - input.posLS);
 	
 	float3 specularColor = float3(1.0f, 1.0f, 1.0f);
-	float3 specular = specularColor * StrandShading(tangentLS.xyz, viewDirLS, lightDirLS, 2.0f);
+    float3 specular = specularColor * StrandShading(tangentLS.xyz, viewDirLS, lightDirLS, 24.0f);
+    //float3 specular = specularColor * PhoneShading(normalLS.xyz, viewDirLS, lightDirLS, 24.0f);
 	
-	return float4(specularColor, 1.0f);
+    return float4(specular, 1.0f);
 
 }

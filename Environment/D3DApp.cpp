@@ -19,11 +19,11 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return g_pd3dApp->MsgProc(hwnd, msg, wParam, lParam);
 }
 
-D3DApp::D3DApp(HINSTANCE hInstance)
+D3DApp::D3DApp(HINSTANCE hInstance, int width, int height)
 	: m_hAppInst(hInstance),
 	m_MainWndCaption(L"DirectX11 Initialization"),
-	m_ClientWidth(800),
-	m_ClientHeight(600),
+	m_ClientWidth(width),
+	m_ClientHeight(height),
 	m_hMainWnd(nullptr),
 	m_AppPaused(false),
 	m_Minimized(false),

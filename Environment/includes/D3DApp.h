@@ -25,7 +25,7 @@
 class D3DApp
 {
 public:
-	D3DApp(HINSTANCE hInstance);              // 在构造函数的初始化列表应当设置好初始参数
+	D3DApp(HINSTANCE hInstance, int width = 800, int height = 600);              // 在构造函数的初始化列表应当设置好初始参数
 	virtual ~D3DApp();
 
 	HINSTANCE AppInst()const;                 // 获取应用实例的句柄
