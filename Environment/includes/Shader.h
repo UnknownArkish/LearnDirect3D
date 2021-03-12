@@ -49,3 +49,12 @@ private:
 	ComPtr<ID3D11GeometryShader> _pGeometryShader;
 	ComPtr<ID3D11PixelShader> _pPixelShader;
 };
+
+class ComputeShader
+{
+public:
+	void Use(ID3D11DeviceContext* deviceContext);
+	HRESULT Declare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc);
+private:
+	ComPtr<ID3D11ComputeShader> _pComputeShader;
+};

@@ -108,3 +108,24 @@ HRESULT Shader::PSDeclare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
 	}
 	return result;
 }
+
+void ComputeShader::Use(ID3D11DeviceContext* deviceContext)
+{
+	assert(deviceContext);
+
+	deviceContext->CSSetShader(_pComputeShader.Get(), nullptr, 0);
+}
+
+HRESULT ComputeShader::Declare(ID3D11Device* device, const SHADER_DECLARE_DESC& desc)
+{
+	HRESULT result = E_FAIL;
+	if (device == nullptr) return result;
+
+	ComPtr<ID3DBlob> blob;
+	result = CreateShaderFromFile(desc.CsoName, desc.FileName, desc.EntryPoint, desc.ShaderModel, blob.GetAddressOf());
+	if (SUCCEEDED(result))
+	{
+		result = device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, _pComputeShader.ReleaseAndGetAddressOf());
+	}
+	return result;
+}

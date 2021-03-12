@@ -5,6 +5,7 @@
 #include <assert.h>
 
 class ITextureView;
+class UnorderedAccessView;
 
 class Texture
 {
@@ -25,8 +26,10 @@ protected:
 	Texture() : _pResource(nullptr), _pResourceView(nullptr) {}
 protected:
 	friend class ITextureView;
+	friend class UnorderedAccessView;
 	ComPtr<ID3D11Resource> _pResource;
 	ComPtr<ID3D11ShaderResourceView> _pResourceView;
+	ComPtr<ID3D11UnorderedAccessView> _pUnordedAccessView;
 };
 
 #include "TextureView.h"

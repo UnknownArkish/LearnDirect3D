@@ -40,8 +40,8 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [outputcontrolpoints(6)]
 [patchconstantfunc("CalcHSPatchConstants")]
 HS_CONTROL_POINT_OUTPUT main( 
-	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> ip ,	// ¶ÔÓ¦vsµÄÊä³ö
-	uint i : SV_OutputControlPointID,			// ¶ÔÓ¦ controlpoint µÄ¸öÊý
+	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> ip ,	// å¯¹åº”vsçš„è¾“å‡º
+	uint i : SV_OutputControlPointID,			// å¯¹åº” controlpoint çš„ä¸ªæ•°
 	uint PatchID : SV_PrimitiveID )
 {
 	HS_CONTROL_POINT_OUTPUT Output;

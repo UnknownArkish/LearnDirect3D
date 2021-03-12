@@ -33,7 +33,7 @@ HRESULT Texture2D::Declare(ID3D11Device* device, UINT width, UINT height, DXGI_F
 	_Desc.SampleDesc.Count = 1;
 	_Desc.SampleDesc.Quality = 0;
 	_Desc.Usage = D3D11_USAGE_DEFAULT;			// GPU read/ write
-	_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | (useMipmap ? D3D11_BIND_RENDER_TARGET : 0);
+	_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS | (useMipmap ? D3D11_BIND_RENDER_TARGET : 0);
 	_Desc.CPUAccessFlags = 0;					// CPU not read/ write
 	if (useMipmap) _Desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 

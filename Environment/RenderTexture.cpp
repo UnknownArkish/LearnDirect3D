@@ -48,7 +48,7 @@ HRESULT RenderTexture::Declare(ID3D11Device* device, UINT width, UINT height, DX
 	srvDesc.Format = _Desc.Format;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.TextureCube.MipLevels = -1;    // 使用所有的mip等级
+	srvDesc.Texture2D.MipLevels = -1;    // 使用所有的mip等级
 	result = device->CreateShaderResourceView(_pResource.Get(), &srvDesc, _pResourceView.GetAddressOf());
 	if (FAILED(result)) return result;
 

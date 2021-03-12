@@ -3,6 +3,7 @@
 
 #define NUM_CONTROL_POINTS 3
 
+// Per-Patch
 // Patch Constant Function
 BasePassHS2DS_ConstantData CalcHSPatchConstants(
 	InputPatch<BasePassVS2HS, NUM_CONTROL_POINTS> ip,
@@ -18,6 +19,7 @@ BasePassHS2DS_ConstantData CalcHSPatchConstants(
 	return Output;
 }
 
+// Per-Control Point
 [domain("tri")]
 [partitioning("fractional_odd")]
 [outputtopology("triangle_cw")]

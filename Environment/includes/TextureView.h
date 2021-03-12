@@ -88,3 +88,13 @@ inline void TextureView::Declare(Texture* texture)
 {
 	_Texture = texture;
 }
+
+
+class UnorderedAccessView
+{
+public:
+	void Declare(Texture* texture);
+	void Bind(ID3D11DeviceContext* deviceContext, UINT slot);
+private:
+	ComPtr<ID3D11UnorderedAccessView> _UAV;
+};
