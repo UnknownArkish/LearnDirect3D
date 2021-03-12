@@ -41,6 +41,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0206_ComputeShader", "0206_
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeferredShading", "DeferredShading\DeferredShading.vcxproj", "{0F5A630B-92AB-4280-8CC5-C1266D5289B9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6958FD2-D109-4B69-93BE-ECB36F56BA36} = {E6958FD2-D109-4B69-93BE-ECB36F56BA36}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

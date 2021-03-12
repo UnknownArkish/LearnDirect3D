@@ -21,6 +21,7 @@ bool GameApp::Init()
 	InitShader();
 	InitResource();
 	InitGBuffer();
+	InitLighting();
 
 	return true;
 }
@@ -66,8 +67,7 @@ void GameApp::DrawScene()
 		_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 
 		_BasePassShader.Use(_pd3dDeviceContext.Get());
-		_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
-		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
+		_pRenderer->RenderSphere(_pd3dDeviceContext.Get());
 	}
 	UnsetGBufferAsRenderTarget();
 	// 恢复屏幕RT
@@ -79,10 +79,12 @@ void GameApp::DrawScene()
 	// 2. DeferredPass
 	SetGBufferAsResourceView();
 	{
+		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+		_LightingConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
+
 		GBuffer.GBufferSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 
 		_DeferredPassShader.Use(_pd3dDeviceContext.Get());
-		_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
 		_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
 	}
 	UnsetGBufferAsResourceView();
@@ -115,6 +117,11 @@ void GameApp::InitShader()
 	Desc.EntryPoint = "main";
 	Desc.ShaderModel = "ps_4_0";
 	HR(_DeferredPassShader.PSDeclare(_pd3dDevice.Get(), Desc));
+
+	_BasePassShader.VSSetDebugName("BasePassVS");
+	_BasePassShader.PSSetDebugName("BasePassPS");
+	_DeferredPassShader.VSSetDebugName("BasePassVS");
+	_DeferredPassShader.PSSetDebugName("BasePassPS");
 }
 
 void GameApp::InitResource()
@@ -132,10 +139,10 @@ void GameApp::InitResource()
 	_ViewConstantBuffer.SetBuffer(viewData);
 	_ViewConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
-
 	HR(_ObjectConstantBuffer.Declare(_pd3dDevice.Get()));
 
-	HR(_LightingConstantBuffer.Declare(_pd3dDevice.Get()));
+	_ViewConstantBuffer.SetDebugName("ViewConstantBuffer");
+	_ObjectConstantBuffer.SetDebugName("ObjectConstantBuffer");
 }
 
 void GameApp::InitGBuffer()
@@ -145,14 +152,19 @@ void GameApp::InitGBuffer()
 
 void GameApp::InitLighting()
 {
+	HR(_LightingConstantBuffer.Declare(_pd3dDevice.Get()));
 	LightingConstantBuffer LightingData;
 	_LightingConstantBuffer.GetBuffer(LightingData);
 
-	LightingData.DirectionLights[0].SetColor(DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f));
-	LightingData.DirectionLights[0].SetDirection(DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f));
+	LightingData.DirectionLights[0].SetColor(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+	LightingData.DirectionLights[0].SetDirection(DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f));
 
 	LightingData.NumDirectionLight = 1;
 	LightingData.NumPointLight = 0;
+	_LightingConstantBuffer.SetBuffer(LightingData);
+	_LightingConstantBuffer.Apply(_pd3dDeviceContext.Get());
+
+	_LightingConstantBuffer.SetDebugName("LightingConstantBuffer");
 }
 
 void GameApp::SetGBufferAsRenderTarget()
@@ -302,7 +314,8 @@ void GBufferSheets::Load(std::vector<GBufferSheet*>& Sheets)
 
 #define DECLARE_GBUFFER_SHEET( Sheet, Device, Width, Height )	\
 	Result = Sheet.Declare( Device, Width, Height );			\
-	if(FAILED(Result)) goto GBUFFER_SHEETS_DECLARE_END;
+	if(FAILED(Result)) goto GBUFFER_SHEETS_DECLARE_END;			\
+	Sheet.SetDebugName(#Sheet, #Sheet"SRV");
 
 HRESULT GBufferSheets::Declare(ID3D11Device* Device, UINT Width, UINT Height)
 {
@@ -354,6 +367,7 @@ HRESULT GBufferSheets::Declare(ID3D11Device* Device, UINT Width, UINT Height)
 
 	D3D11_SAMPLER_DESC SamplerDesc;
 	GBufferSampler.GetDesc(SamplerDesc);
+	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	Result = GBufferSampler.Delcare(Device, SamplerDesc);
 
 GBUFFER_SHEETS_DECLARE_END:

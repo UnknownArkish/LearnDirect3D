@@ -37,8 +37,10 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
     [unroll(16)]
     for (int i = 0; i < gLightingData.NumDirectionLight; i++)
     {
-        DirectionLight Lighting = CookDirectionLight(gLightingData.DirectionLights[i]);
+        DirectionLight LightingData = CookDirectionLight(gLightingData.DirectionLights[i]);
+        float NoL = max(dot(Data.NormalWS, -LightingData.DirectionWS), 0);
         
+        FinalColor += Data.BaseColor * LightingData.Color * NoL;
     }
     [unroll(16)]
     for (int i = 0; i < gLightingData.NumPointLight; i++)
@@ -46,7 +48,7 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
         PointLight LightingData = CookPointLight(gLightingData.PointLights[i]);
     }
     
-    FinalColor = Data.NormalWS * 0.5 + 0.5;
+    //FinalColor = Data.NormalWS * 0.5 + 0.5;
     
     return float4(FinalColor.xyz, 1.0f);
 }

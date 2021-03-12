@@ -22,7 +22,7 @@ BasePassPSOutput main( UniversalVS2PS Input)
     
     Data.PositionWS = Input.posWS;
     Data.DepthCS = (posHS.xyz / posHS.w).z;
-    Data.NormalWS = Input.normalWS;
+    Data.NormalWS = normalize(Input.normalWS);
     Data.BaseColor = float3(1.0f, 1.0f, 1.0f);
     
     GBufferDataEncode Encode;
