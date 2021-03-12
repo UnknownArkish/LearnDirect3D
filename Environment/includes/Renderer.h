@@ -29,6 +29,8 @@ public:
 	void RenderCubePoint(ID3D11DeviceContext* deviceContext);
 	void RenderCylinder(ID3D11DeviceContext* deviceContext);
 	void RenderCylinderPoint(ID3D11DeviceContext* deviceContext);
+	void RenderSphere(ID3D11DeviceContext* DeviceContext);
+	void RenderSpherePoint(ID3D11DeviceContext* DeviceContext);
 private:
 	void Render_Internal(ID3D11DeviceContext* deviceContext, const RendererResource& resource);
 	void RenderPoint_Internal(ID3D11DeviceContext* deviceContext, const RendererResource& resource);
@@ -37,6 +39,7 @@ private:
 	void InitQuadResource(ID3D11Device* device);
 	void InitCubeResource(ID3D11Device* device);
 	void InitCylinderResource(ID3D11Device* device);
+	void InitSphereResource(ID3D11Device* device);
 
 	void BindRendererResource(ID3D11DeviceContext* deviceContext, const RendererResource& resource);
 private:
@@ -47,4 +50,5 @@ private:
 	RendererResource _QuadResource;
 	RendererResource _CubeResource;
 	RendererResource _CylinderResource;
+	RendererResource _SphereResource;
 };

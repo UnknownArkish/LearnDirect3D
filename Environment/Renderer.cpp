@@ -15,6 +15,7 @@ void Renderer::Init(ID3D11Device* device)
 	InitQuadResource(device);
 	InitCubeResource(device);
 	InitCylinderResource(device);
+	InitSphereResource(device);
 	_bInit = true;
 }
 
@@ -53,6 +54,16 @@ void Renderer::RenderCylinder(ID3D11DeviceContext* deviceContext)
 void Renderer::RenderCylinderPoint(ID3D11DeviceContext* deviceContext)
 {
 	RenderPoint_Internal(deviceContext, _CylinderResource);
+}
+
+void Renderer::RenderSphere(ID3D11DeviceContext* DeviceContext)
+{
+	Render_Internal(DeviceContext, _SphereResource);
+}
+
+void Renderer::RenderSpherePoint(ID3D11DeviceContext* DeviceContext)
+{
+	RenderPoint_Internal(DeviceContext, _SphereResource);
 }
 
 void Renderer::Render_Internal(ID3D11DeviceContext* deviceContext, const RendererResource& resource)
@@ -402,6 +413,127 @@ void Renderer::InitCylinderResource(ID3D11Device* device)
 
 	D3D11SetDebugObjectName(_CylinderResource.pVertexBuffer.Get(), "CylinderVertexBuffer");
 	D3D11SetDebugObjectName(_CylinderResource.pIndexBuffer.Get(), "CylinderIndexBuffer");
+}
+
+void Renderer::InitSphereResource(ID3D11Device* device)
+{
+
+	float radius = 1.0f;
+	UINT levels = 24;
+	UINT slices = 20;
+
+	UWORD vertexTotalCount = 2 + (levels - 1) * (slices + 1);
+	UINT indexTotalCount = 6 * (levels - 1) * slices;
+
+	std::vector<UniversalVertexLayout> vertexs(vertexTotalCount);
+	std::vector<DWORD> indexs(indexTotalCount);
+
+	UINT vertexCount = 0;
+
+	float phi = 0.0f, theta = 0.0f;
+	float per_phi = XM_PI / levels;
+	float per_theta = XM_2PI / slices;
+	float x, y, z;
+
+	// 顶端点
+	XMFLOAT3 pos;
+
+	pos = XMFLOAT3(0.0f, radius, 0.0f);
+	vertexs[vertexCount].pos = pos;
+	vertexs[vertexCount].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertexs[vertexCount].normal = pos;	// 法向量是顶点位置减去原点
+	vertexs[vertexCount].tangent = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertexs[vertexCount].uvs = XMFLOAT2(0.0f, 0.0f);
+	vertexCount++;
+
+	for (UINT i = 1; i < levels; i++)
+	{
+		phi = per_phi * i;
+		for (UINT j = 0; j <= slices; j++)
+		{
+			theta = per_theta * j;
+
+			x = radius * sinf(phi) * cosf(theta);
+			y = radius * cosf(phi);
+			z = radius * sinf(phi) * sinf(theta);
+
+			pos = XMFLOAT3(x, y, z);
+			vertexs[vertexCount].pos = pos;
+			vertexs[vertexCount].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertexs[vertexCount].normal = pos;
+			vertexs[vertexCount].tangent = XMFLOAT4(-sinf(theta), 0.0f, cosf(theta), 1.0f);
+			vertexs[vertexCount].uvs = XMFLOAT2(theta / XM_2PI, phi / XM_PI);
+			vertexCount++;
+		}
+	}
+	// 底端点
+	pos = XMFLOAT3(0.0f, -radius, 0.0f);
+	vertexs[vertexCount].pos = pos;
+	vertexs[vertexCount].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertexs[vertexCount].normal = pos;
+	vertexs[vertexCount].tangent = XMFLOAT4(-1.0f, 0.0f, 0.0f, 1.0f);
+	vertexs[vertexCount].uvs = XMFLOAT2(0.0f, 1.0f);
+	vertexCount++;
+
+	// 处理索引
+	UINT indexCount = 0;
+	if (levels > 1)
+	{
+		for (UINT j = 1; j <= slices; ++j)
+		{
+			indexs[indexCount++] = 0;
+			indexs[indexCount++] = j % (slices + 1) + 1;
+			indexs[indexCount++] = j;
+		}
+	}
+	for (UINT i = 1; i < levels - 1; ++i)
+	{
+		for (UINT j = 1; j <= slices; ++j)
+		{
+			indexs[indexCount++] = (i - 1) * (slices + 1) + j;
+			indexs[indexCount++] = (i - 1) * (slices + 1) + j % (slices + 1) + 1;
+			indexs[indexCount++] = i * (slices + 1) + j % (slices + 1) + 1;
+
+			indexs[indexCount++] = i * (slices + 1) + j % (slices + 1) + 1;
+			indexs[indexCount++] = i * (slices + 1) + j;
+			indexs[indexCount++] = (i - 1) * (slices + 1) + j;
+		}
+	}
+	if (levels > 1)
+	{
+		for (UINT j = 1; j <= slices; ++j)
+		{
+			indexs[indexCount++] = (levels - 2) * (slices + 1) + j;
+			indexs[indexCount++] = (levels - 2) * (slices + 1) + j % (slices + 1) + 1;
+			indexs[indexCount++] = (levels - 1) * (slices + 1) + 1;
+		}
+	}
+
+	D3D11_BUFFER_DESC vbd;
+	ZeroMemory(&vbd, sizeof(D3D11_BUFFER_DESC));
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = vertexs.size() * sizeof(UniversalVertexLayout);
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	D3D11_SUBRESOURCE_DATA initData;
+	ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
+	initData.pSysMem = vertexs.data();
+	HR(device->CreateBuffer(&vbd, &initData, _SphereResource.pVertexBuffer.ReleaseAndGetAddressOf()));
+
+	D3D11_BUFFER_DESC ibd;
+	ZeroMemory(&ibd, sizeof(D3D11_BUFFER_DESC));
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = indexs.size() * sizeof(DWORD);
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	initData.pSysMem = indexs.data();
+	HR(device->CreateBuffer(&ibd, &initData, _SphereResource.pIndexBuffer.ReleaseAndGetAddressOf()));
+
+	_SphereResource.NumVertex = vertexs.size();
+	_SphereResource.NumIndex = indexs.size();
+
+	D3D11SetDebugObjectName(_SphereResource.pVertexBuffer.Get(), "CylinderVertexBuffer");
+	D3D11SetDebugObjectName(_SphereResource.pIndexBuffer.Get(), "CylinderIndexBuffer");
 }
 
 void Renderer::BindRendererResource(ID3D11DeviceContext* deviceContext, const RendererResource& resource)
