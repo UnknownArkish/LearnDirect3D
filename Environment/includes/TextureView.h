@@ -41,46 +41,31 @@ public:
 inline void TextureView::VSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
-	if (_Texture)
-	{
-		deviceContext->VSSetShaderResources(slot, 1, GetShaderResourceViews());
-	}
+	deviceContext->VSSetShaderResources(slot, 1, GetShaderResourceViews());
 }
 inline void TextureView::HSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
-	if (_Texture)
-	{
-		deviceContext->HSSetShaderResources(slot, 1, GetShaderResourceViews());
-	}
+	deviceContext->HSSetShaderResources(slot, 1, GetShaderResourceViews());
 }
 inline void TextureView::DSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
-	if (_Texture)
-	{
-		deviceContext->DSSetShaderResources(slot, 1, GetShaderResourceViews());
-	}
+	deviceContext->DSSetShaderResources(slot, 1, GetShaderResourceViews());
 }
 
 
 inline void TextureView::GSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
-	if (_Texture)
-	{
-		deviceContext->GSSetShaderResources(slot, 1, GetShaderResourceViews());
-	}
+	deviceContext->GSSetShaderResources(slot, 1, GetShaderResourceViews());
 }
 
 
 inline void TextureView::PSBind(ID3D11DeviceContext* deviceContext, UINT slot)
 {
 	assert(deviceContext);
-	if (_Texture)
-	{
-		deviceContext->PSSetShaderResources(slot, 1, GetShaderResourceViews());
-	}
+	deviceContext->PSSetShaderResources(slot, 1, GetShaderResourceViews());
 }
 
 

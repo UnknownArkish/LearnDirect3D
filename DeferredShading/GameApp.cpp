@@ -59,16 +59,17 @@ void GameApp::DrawScene()
 
 	// 设置GBuffer为目标
 	SetGBufferAsRenderTarget();
+	{
+		// 1. BasePass
+		_ViewConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
+		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+		_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 
-	// 1. BasePass
-	_ViewConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
-	_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
-	_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
-
-	_BasePassShader.Use(_pd3dDeviceContext.Get());
-	_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
-	_pRenderer->RenderCube(_pd3dDeviceContext.Get());
-
+		_BasePassShader.Use(_pd3dDeviceContext.Get());
+		_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
+		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
+	}
+	UnsetGBufferAsRenderTarget();
 	// 恢复屏幕RT
 	_pd3dDeviceContext->OMSetRenderTargets(1, _pCachedRTV.GetAddressOf(), _pCachedDSV.Get());
 	_pd3dDeviceContext->RSSetViewports(NumViewPort, &_CacheVP);
@@ -77,11 +78,14 @@ void GameApp::DrawScene()
 
 	// 2. DeferredPass
 	SetGBufferAsResourceView();
-	GBuffer.GBufferSampler.PSBind(_pd3dDeviceContext.Get(), 0);
+	{
+		GBuffer.GBufferSampler.PSBind(_pd3dDeviceContext.Get(), 0);
 
-	_DeferredPassShader.Use(_pd3dDeviceContext.Get());
-	_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
-	_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
+		_DeferredPassShader.Use(_pd3dDeviceContext.Get());
+		_pRenderer->IASetInputLayout(_pd3dDeviceContext.Get());
+		_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
+	}
+	UnsetGBufferAsResourceView();
 
 	HR(_pSwapChain->Present(0, 0));
 }
@@ -157,7 +161,6 @@ void GameApp::SetGBufferAsRenderTarget()
 	GBuffer.Load(Sheets);
 
 	std::vector<ID3D11RenderTargetView*> pRenderTargetViews;
-
 	for (GBufferSheet* Sheet : Sheets)
 	{
 		static float black[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -172,6 +175,20 @@ void GameApp::SetGBufferAsRenderTarget()
 	_pd3dDeviceContext->RSSetViewports(1, &GBuffer.Viewport);
 }
 
+void GameApp::UnsetGBufferAsRenderTarget()
+{
+	std::vector<GBufferSheet*> Sheets;
+	GBuffer.Load(Sheets);
+
+	std::vector<ID3D11RenderTargetView*> pRenderTargetViews;
+	for (GBufferSheet* Sheet : Sheets)
+	{
+		pRenderTargetViews.push_back(nullptr);
+	}
+	
+	_pd3dDeviceContext->OMSetRenderTargets(Sheets.size(), pRenderTargetViews.data(), nullptr);
+}
+
 void GameApp::SetGBufferAsResourceView()
 {
 	std::vector<GBufferSheet*> Sheets;
@@ -181,6 +198,17 @@ void GameApp::SetGBufferAsResourceView()
 	{
 		Sheets[i]->View.PSBind(_pd3dDeviceContext.Get(), i);
 	}
+}
+
+void GameApp::UnsetGBufferAsResourceView()
+{
+	std::vector<GBufferSheet*> Sheets;
+	GBuffer.Load(Sheets);
+
+	std::vector<ID3D11ShaderResourceView*> _pSRVs;
+	for (int i = 0; i < Sheets.size(); i++) _pSRVs.push_back(nullptr);
+
+	_pd3dDeviceContext->PSSetShaderResources(0, Sheets.size(), _pSRVs.data());
 }
 
 GBufferSheet::GBufferSheet()

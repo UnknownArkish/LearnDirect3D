@@ -46,7 +46,7 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
         PointLight LightingData = CookPointLight(gLightingData.PointLights[i]);
     }
     
-    //FinalColor = Data.NormalWS * 0.5 + 0.5;
+    FinalColor = Data.NormalWS * 0.5 + 0.5;
     
     return float4(FinalColor.xyz, 1.0f);
 }

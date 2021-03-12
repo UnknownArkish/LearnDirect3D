@@ -74,7 +74,9 @@ private:
 	void InitLighting();
 
 	void SetGBufferAsRenderTarget();
+	void UnsetGBufferAsRenderTarget();
 	void SetGBufferAsResourceView();
+	void UnsetGBufferAsResourceView();
 private:
 	Shader _BasePassShader;
 	Shader _DeferredPassShader;
