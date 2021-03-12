@@ -6,13 +6,17 @@ using namespace DirectX;
 
 struct DirectionLight
 {
-	void SetColor(XMFLOAT3& color) 
+	DirectionLight()
+		: _Param1(0.0f, 0.0f, 0.0f, 0.0f), _Param2(0.0f, 0.0f, 0.0f, 0.0f)
+	{}
+
+	void SetColor(const XMFLOAT3& color) 
 	{
 		_Param1.x = color.x;
 		_Param1.y = color.y;
 		_Param1.z = color.z;
 	}
-	void SetDirection(XMFLOAT3& direction)
+	void SetDirection(const XMFLOAT3& direction)
 	{
 		_Param2.x = direction.x;
 		_Param2.y = direction.y;
@@ -38,6 +42,10 @@ private:
 
 struct PointLight
 {
+	PointLight()
+		: _Param1(0.0f, 0.0f, 0.0f, 0.0f), _Param2(0.0f, 0.0f, 0.0f, 0.0f)
+	{}
+
 	void SetColor(const XMFLOAT3& color)
 	{
 		_Param1.x = color.x;

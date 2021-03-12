@@ -1,5 +1,5 @@
 
-struct DirectionalLightRaw
+struct DirectionLightRaw
 {
     float4 param1;
     float4 param2;
@@ -11,7 +11,7 @@ struct PointLightRaw
     float4 param2;
 };
 
-struct DirectionalLight
+struct DirectionLight
 {
     float3 color;
 
@@ -26,9 +26,9 @@ struct PointLight
     float radius;
 };
 
-DirectionalLight CookDirectionalLight(DirectionalLightRaw rawData)
+DirectionLight CookDirectionLight(DirectionLightRaw rawData)
 {
-    DirectionalLight result;
+    DirectionLight result;
     
     result.color = rawData.param1.xyz;
     result.directionWS = rawData.param2.xyz;

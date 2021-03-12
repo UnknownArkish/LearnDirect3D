@@ -8,6 +8,20 @@
 #include <Texture.h>
 #include <TextureView.h>
 #include <SamplerState.h>
+#include <Lighting.h>
+
+struct LightingConstantBuffer
+{
+	LightingConstantBuffer()
+		: NumDirectionLight(0), NumPointLight(0)
+	{}
+
+	DirectionLight DirectionLights[16];
+	PointLight PointLights[16];
+	int NumDirectionLight;
+	int NumPointLight;
+	float _pad_0; float _pad_1;
+};
 
 class GBufferSheet : public Texture
 {
@@ -30,7 +44,6 @@ public:
 	GBufferSheets();
 	HRESULT Declare(ID3D11Device* Device, UINT Width, UINT Height);
 
-	void Load(std::vector<ID3D11RenderTargetView*>& RTVs);
 	void Load(std::vector<GBufferSheet*>& Sheets);
 public:
 	ComPtr<ID3D11Resource> pDepthStencilResource;
@@ -58,6 +71,7 @@ private:
 	void InitShader();
 	void InitResource();
 	void InitGBuffer();
+	void InitLighting();
 
 	void SetGBufferAsRenderTarget();
 	void SetGBufferAsResourceView();
@@ -67,6 +81,8 @@ private:
 
 	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
+
+	ConstantBuffer<LightingConstantBuffer> _LightingConstantBuffer;
 
 	ComPtr<ID3D11RenderTargetView> _pCachedRTV;
 	ComPtr<ID3D11DepthStencilView> _pCachedDSV;

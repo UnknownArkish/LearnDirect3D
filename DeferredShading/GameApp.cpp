@@ -130,11 +130,25 @@ void GameApp::InitResource()
 
 
 	HR(_ObjectConstantBuffer.Declare(_pd3dDevice.Get()));
+
+	HR(_LightingConstantBuffer.Declare(_pd3dDevice.Get()));
 }
 
 void GameApp::InitGBuffer()
 {
 	HR(GBuffer.Declare(_pd3dDevice.Get(), m_ClientWidth, m_ClientHeight));
+}
+
+void GameApp::InitLighting()
+{
+	LightingConstantBuffer LightingData;
+	_LightingConstantBuffer.GetBuffer(LightingData);
+
+	LightingData.DirectionLights[0].SetColor(DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f));
+	LightingData.DirectionLights[0].SetDirection(DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f));
+
+	LightingData.NumDirectionLight = 1;
+	LightingData.NumPointLight = 0;
 }
 
 void GameApp::SetGBufferAsRenderTarget()
@@ -249,17 +263,7 @@ GBufferSheets::GBufferSheets()
 	: pDepthStencilResource(), pDepthStencilView(),
 	Viewport(),
 	GBufferA(), GBufferB()
-{
-
-}
-
-void GBufferSheets::Load(std::vector<ID3D11RenderTargetView*>& RTVs)
-{
-	RTVs.push_back(GBufferA.pRTV.Get());
-	RTVs.push_back(GBufferB.pRTV.Get());
-	RTVs.push_back(GBufferC.pRTV.Get());
-}
-
+{}
 
 void GBufferSheets::Load(std::vector<GBufferSheet*>& Sheets)
 {
