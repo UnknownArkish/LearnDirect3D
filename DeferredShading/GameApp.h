@@ -96,9 +96,12 @@ private:
 	void UnsetGBuffer0AsRenderTarget();
 	void SetGbuffer0AsResourceView();
 	void UnsetGBuffer0AsResourceView();
+
+	void CacheGBuffer0();
 private:
 	Shader _BasePassShader;
 	Shader _DeferredPassShader;
+	Shader _SSGIPassShader;
 	Shader _EndPassShader;
 
 	ObjectConstantBufferData OCB_Center;
@@ -123,6 +126,7 @@ private:
 
 private:
 	// GBuffer Start
+	GBufferSheet TempGBuffer0;
 	GBufferSheets GBuffer;
 	// GBuffer End
 };

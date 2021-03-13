@@ -104,8 +104,8 @@ void GameApp::DrawScene()
 
 	SetGbuffer0AsRenderTarget();
 	{
-		// 2. DeferredPass
 		SetGBufferAsResourceView();
+		// 2. DeferredPass
 		{
 			_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
 			_LightingConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
@@ -115,6 +115,13 @@ void GameApp::DrawScene()
 			_DeferredPassShader.Use(_pd3dDeviceContext.Get());
 			_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
 		}
+		CacheGBuffer0();
+
+		// 3. SSGI Pass
+		{
+
+		}
+		CacheGBuffer0();
 		UnsetGBufferAsResourceView();
 	}
 	UnsetGBuffer0AsRenderTarget();
@@ -201,6 +208,7 @@ void GameApp::InitResource()
 
 void GameApp::InitGBuffer()
 {
+	HR(TempGBuffer0.Declare(_pd3dDevice.Get(), m_ClientWidth, m_ClientHeight));
 	HR(GBuffer.Declare(_pd3dDevice.Get(), m_ClientWidth, m_ClientHeight));
 }
 
@@ -296,6 +304,7 @@ void GameApp::UnsetGBufferAsRenderTarget()
 void GameApp::SetGbuffer0AsRenderTarget()
 {
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	_pd3dDeviceContext->ClearRenderTargetView(TempGBuffer0.pRTV.Get(), black);
 	_pd3dDeviceContext->ClearRenderTargetView(GBuffer.GBuffer0.pRTV.Get(), black);
 	_pd3dDeviceContext->ClearDepthStencilView(GBuffer.pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -323,10 +332,19 @@ void GameApp::UnsetGBuffer0AsResourceView()
 	_pd3dDeviceContext->PSSetShaderResources(0, 1, _pSRVs.data());
 }
 
+void GameApp::CacheGBuffer0()
+{
+	ID3D11Resource* ToCopy, * ToPaste;
+	GBuffer.GBuffer0.pRTV->GetResource(&ToCopy);
+	TempGBuffer0.pRTV->GetResource(&ToPaste);
+	_pd3dDeviceContext->CopyResource(ToPaste, ToCopy);
+}
+
 
 void GameApp::SetGBufferAsResourceView()
 {
 	std::vector<GBufferSheet*> Sheets;
+	Sheets.push_back(&TempGBuffer0);
 	GBuffer.Load(Sheets);
 
 	for (int i = 0; i < Sheets.size(); i++)
@@ -338,6 +356,7 @@ void GameApp::SetGBufferAsResourceView()
 void GameApp::UnsetGBufferAsResourceView()
 {
 	std::vector<GBufferSheet*> Sheets;
+	Sheets.push_back(&TempGBuffer0);
 	GBuffer.Load(Sheets);
 
 	std::vector<ID3D11ShaderResourceView*> _pSRVs;

@@ -10,9 +10,10 @@ cbuffer LightingConstantBuffer : register(b1)
     LightingConstantBufferData gLightingData;
 }
 
-Texture2D GBufferA : register(t0);
-Texture2D GBufferB : register(t1);
-Texture2D GBufferC : register(t2);
+Texture2D GBuffer0 : register(t0);
+Texture2D GBufferA : register(t1);
+Texture2D GBufferB : register(t2);
+Texture2D GBufferC : register(t3);
 SamplerState GBufferSampler : register(s0);
 
 float4 main(DeferredPassVS2PS Input) : SV_TARGET
