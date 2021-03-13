@@ -13,7 +13,8 @@
 struct LightingConstantBuffer
 {
 	LightingConstantBuffer()
-		: NumDirectionLight(0), NumPointLight(0)
+		: NumDirectionLight(0), NumPointLight(0),
+		_pad_0(), _pad_1()
 	{}
 
 	DirectionLight DirectionLights[16];
@@ -21,6 +22,16 @@ struct LightingConstantBuffer
 	int NumDirectionLight;
 	int NumPointLight;
 	float _pad_0; float _pad_1;
+};
+
+struct MaterialConstantBuffer
+{
+	MaterialConstantBuffer()
+		: BaseColor(0.0f, 0.0f, 0.0f)
+	{}
+
+	DirectX::XMFLOAT3 BaseColor;
+	float _pad_0;
 };
 
 class GBufferSheet : public Texture
@@ -72,6 +83,7 @@ private:
 	void InitResource();
 	void InitGBuffer();
 	void InitLighting();
+	void InitOCB();
 
 	void SetGBufferAsRenderTarget();
 	void UnsetGBufferAsRenderTarget();
@@ -80,6 +92,10 @@ private:
 private:
 	Shader _BasePassShader;
 	Shader _DeferredPassShader;
+
+	ObjectConstantBuffer OCB_Left;
+	ObjectConstantBuffer OCB_Down;
+	ObjectConstantBuffer OCB_Right;
 
 	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;

@@ -22,27 +22,28 @@ bool GameApp::Init()
 	InitResource();
 	InitGBuffer();
 	InitLighting();
+	InitOCB();
 
 	return true;
 }
 
 void GameApp::UpdateScene(float dt)
 {
-	static float phi = 0.0f, theta = 0.0f;
-	static float intensity = 5.0f;
-	if (_pInput->IsButtonDown(Input::LeftButton))
-	{
-		DirectX::XMFLOAT2 mouseOffset = _pInput->GetMousePositionOffset();
-		phi += mouseOffset.y * dt * intensity;
-		theta += mouseOffset.x * dt * intensity;
-	}
+	//static float phi = 0.0f, theta = 0.0f;
+	//static float intensity = 5.0f;
+	//if (_pInput->IsButtonDown(Input::LeftButton))
+	//{
+	//	DirectX::XMFLOAT2 mouseOffset = _pInput->GetMousePositionOffset();
+	//	phi += mouseOffset.y * dt * intensity;
+	//	theta += mouseOffset.x * dt * intensity;
+	//}
 
-	ObjectConstantBuffer buffer;
-	_ObjectConstantBuffer.GetBuffer(buffer);
-	buffer.Local2World = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
-	buffer.World2Local = XMMatrixInverse(nullptr, buffer.Local2World);
-	_ObjectConstantBuffer.SetBuffer(buffer);
-	_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+	//ObjectConstantBuffer buffer;
+	//_ObjectConstantBuffer.GetBuffer(buffer);
+	//buffer.Local2World = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
+	//buffer.World2Local = XMMatrixInverse(nullptr, buffer.Local2World);
+	//_ObjectConstantBuffer.SetBuffer(buffer);
+	//_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
 }
 
 void GameApp::DrawScene()
@@ -67,7 +68,18 @@ void GameApp::DrawScene()
 		_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
 
 		_BasePassShader.Use(_pd3dDeviceContext.Get());
-		_pRenderer->RenderSphere(_pd3dDeviceContext.Get());
+
+		_ObjectConstantBuffer.SetBuffer(OCB_Left);
+		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
+
+		_ObjectConstantBuffer.SetBuffer(OCB_Down);
+		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
+
+		_ObjectConstantBuffer.SetBuffer(OCB_Right);
+		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
 	}
 	UnsetGBufferAsRenderTarget();
 	// 恢复屏幕RT
@@ -129,12 +141,12 @@ void GameApp::InitResource()
 	ViewConstantBuffer viewData;
 	viewData.World2View = DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
-			DirectX::XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 7, -10.0f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		));
-	viewData.View2Proj = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, AspectRatio(), 1.0f, 1000.0f));;
-	viewData.ViewPosWS = DirectX::XMFLOAT3(0.0f, 0.0f, -2.25f);
+	viewData.View2Proj = DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PI / 2, AspectRatio(), 1.0f, 1000.0f));;
+	viewData.ViewPosWS = DirectX::XMFLOAT3(0.0f, 3.0f, -8.0f);
 	HR(_ViewConstantBuffer.Declare(_pd3dDevice.Get()));
 	_ViewConstantBuffer.SetBuffer(viewData);
 	_ViewConstantBuffer.Apply(_pd3dDeviceContext.Get());
@@ -165,6 +177,22 @@ void GameApp::InitLighting()
 	_LightingConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
 	_LightingConstantBuffer.SetDebugName("LightingConstantBuffer");
+}
+
+void GameApp::InitOCB()
+{
+	ZeroMemory(&OCB_Left, sizeof(ObjectConstantBuffer));
+	ZeroMemory(&OCB_Down, sizeof(ObjectConstantBuffer));
+	ZeroMemory(&OCB_Right, sizeof(ObjectConstantBuffer));
+
+	OCB_Left.Local2World = XMMatrixTranspose( XMMatrixScaling(5, 1, 5) * XMMatrixRotationZ(XM_PI / 2) * XMMatrixTranslation(-5.0f, 0.0f, 0.0f));
+	OCB_Left.World2Local = XMMatrixInverse(nullptr, OCB_Left.Local2World);
+
+	OCB_Down.Local2World = XMMatrixTranspose( XMMatrixScaling(5, 1, 5) * XMMatrixTranslation(0.0f, -5.0f, 0.0f));
+	OCB_Down.World2Local = XMMatrixInverse(nullptr, OCB_Down.Local2World);
+
+	OCB_Right.Local2World = XMMatrixTranspose( XMMatrixScaling(5, 1, 5) * XMMatrixRotationZ(XM_PI / 2) * XMMatrixTranslation(5.0f, 0.0f, 0.0f));
+	OCB_Right.World2Local = XMMatrixInverse(nullptr, OCB_Right.Local2World);
 }
 
 void GameApp::SetGBufferAsRenderTarget()
