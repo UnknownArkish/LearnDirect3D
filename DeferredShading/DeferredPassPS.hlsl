@@ -18,19 +18,11 @@ SamplerState GBufferSampler : register(s0);
 
 float4 main(DeferredPassVS2PS Input) : SV_TARGET
 {
-    float4 GBufferAData = GBufferA.Sample(GBufferSampler, Input.uvs);
-    float4 GBufferBData = GBufferB.Sample(GBufferSampler, Input.uvs);
-    float4 GBufferCData = GBufferC.Sample(GBufferSampler, Input.uvs);
-	
-    GBufferDataEncode Encode;
-    InitGBufferDataEncode(Encode);
-    Encode.GBufferA = GBufferAData;
-    Encode.GBufferB = GBufferBData;
-    Encode.GBufferC = GBufferCData;
-    
-    GBufferData Data;
-    InitGBufferData(Data);
-    DecodeGBuffer(Encode, Data);
+    GBufferData Data = SampleGBuffer(
+        Input.uvs, 
+        GBuffer0, GBufferA, GBufferB, GBufferC, 
+        GBufferSampler
+    );
     
     float3 FinalColor = float3(0.0f, 0.0f, 0.0f);
     
@@ -52,7 +44,10 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
         float NoL = max(dot(Data.NormalWS, LightDirection), 0);
         
         float Distance = distance(LightingData.PosWS, Data.PositionWS);
-        float attenator = Distance > LightingData.Radius ? 0.0f : 1 / pow(Distance, 2);
+        float attenator = pow(
+            max((LightingData.Radius - Distance) / LightingData.Radius, 0),
+            4
+        );
         
         FinalColor += Data.BaseColor * LightingData.Color * NoL * attenator * LightingData.Intensity;
     }

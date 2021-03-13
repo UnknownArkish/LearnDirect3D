@@ -12,7 +12,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	GameApp theApp(hInstance);
+	float aspect = 4.0f / 3;
+	float height = 450;
+
+	GameApp theApp(hInstance, aspect * height, height);
 
 	if (!theApp.Init())
 		return 0;

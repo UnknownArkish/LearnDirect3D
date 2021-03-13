@@ -2,5 +2,8 @@
 struct MaterialConstantBufferData
 {
     float3 BaseColor;
-    float _pad_0;
+    float Metallic;
+    
+    float Roughness;
+    float3 _pad_0;
 };

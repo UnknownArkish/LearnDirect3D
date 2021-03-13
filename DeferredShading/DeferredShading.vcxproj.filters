@@ -49,10 +49,10 @@
     <FxCompile Include="EndPassPS.hlsl">
       <Filter>Source Files</Filter>
     </FxCompile>
-    <FxCompile Include="SSGIVS.hlsl">
+    <FxCompile Include="SSGIPassVS.hlsl">
       <Filter>Source Files</Filter>
     </FxCompile>
-    <FxCompile Include="SSGIPS.hlsl">
+    <FxCompile Include="SSGIPassPS.hlsl">
       <Filter>Source Files</Filter>
     </FxCompile>
   </ItemGroup>

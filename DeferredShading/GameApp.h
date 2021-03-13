@@ -27,11 +27,15 @@ struct LightingConstantBufferData
 struct MaterialConstantBufferData
 {
 	MaterialConstantBufferData()
-		: BaseColor(0.0f, 0.0f, 0.0f)
+		: BaseColor(0.0f, 0.0f, 0.0f),
+		Metallic(0.0f), Roughness(0.0f), 
+		_pad_0()
 	{}
 
 	DirectX::XMFLOAT3 BaseColor;
-	float _pad_0;
+	float Metallic;
+	float Roughness;
+	DirectX::XMFLOAT3 _pad_0;
 };
 
 class GBufferSheet : public Texture
@@ -108,11 +112,13 @@ private:
 	ObjectConstantBufferData OCB_Left;
 	ObjectConstantBufferData OCB_Down;
 	ObjectConstantBufferData OCB_Right;
+	ObjectConstantBufferData OCB_Back;
 
 	MaterialConstantBufferData MCB_Red;
 	MaterialConstantBufferData MCB_Green;
 	MaterialConstantBufferData MCB_Blue;
 	MaterialConstantBufferData MCB_White;
+	MaterialConstantBufferData MCB_Purple;
 
 	ConstantBuffer<ViewConstantBufferData> _ViewConstantBuffer;
 	ConstantBuffer<ObjectConstantBufferData> _ObjectConstantBuffer;
@@ -124,6 +130,7 @@ private:
 	ComPtr<ID3D11DepthStencilView> _pCachedDSV;
 	D3D11_VIEWPORT _CacheVP;
 
+	ComPtr<ID3D11DepthStencilState> _DepthStencilState;
 private:
 	// GBuffer Start
 	GBufferSheet TempGBuffer0;
