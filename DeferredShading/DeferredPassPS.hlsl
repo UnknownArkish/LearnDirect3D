@@ -46,6 +46,14 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
     for (int i = 0; i < gLightingData.NumPointLight; i++)
     {
         PointLight LightingData = CookPointLight(gLightingData.PointLights[i]);
+        
+        float3 LightDirection = normalize(LightingData.PosWS - Data.PositionWS);
+        float NoL = max(dot(Data.NormalWS, LightDirection), 0);
+        
+        float Distance = distance(LightingData.PosWS, Data.PositionWS);
+        float attenator = Distance > LightingData.Radius ? 0.0f : 1 / pow(Distance, 2);
+        
+        FinalColor += Data.BaseColor * LightingData.Color * NoL * attenator * LightingData.Intensity;
     }
     
     //FinalColor = Data.NormalWS * 0.5 + 0.5;

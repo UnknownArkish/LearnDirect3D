@@ -22,6 +22,6 @@ private:
 	void InitResource();
 private:
 	Shader _BasePassShader;
-	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
-	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
+	ConstantBuffer<ViewConstantBufferData> _ViewConstantBuffer;
+	ConstantBuffer<ObjectConstantBufferData> _ObjectConstantBuffer;
 };

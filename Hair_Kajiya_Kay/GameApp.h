@@ -34,7 +34,7 @@ protected:
 	virtual void InitResource();
 private:
 	Shader _ShaderHair;
-	ConstantBuffer<ViewConstantBuffer> _ConstantBufferView;
-	ConstantBuffer<ObjectConstantBuffer> _ConstantBufferObject;
+	ConstantBuffer<ViewConstantBufferData> _ConstantBufferView;
+	ConstantBuffer<ObjectConstantBufferData> _ConstantBufferObject;
 	ConstantBuffer<PointLight> _ConstantBufferLight;
 };

@@ -42,7 +42,7 @@ void GameApp::UpdateScene(float dt)
 		theta += mouseOffset.x * dt * intensity;
 	}
 
-	ObjectConstantBuffer buffer;
+	ObjectConstantBufferData buffer;
 	_ObjectConstantBuffer.GetBuffer(buffer);
 	buffer.Local2World = XMMatrixRotationX(phi) * XMMatrixRotationY(theta);
 	buffer.World2Local = XMMatrixInverse(nullptr, buffer.Local2World);
@@ -200,7 +200,7 @@ void GameApp::InitResource()
 	HR(_NormalTexSampler.Delcare(_pd3dDevice.Get(), desc));
 
 	HR(_ViewConstantBuffer.Declare(_pd3dDevice.Get()));
-	ViewConstantBuffer viewData;
+	ViewConstantBufferData viewData;
 	viewData.World2View = DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			DirectX::XMVectorSet(0.0f, 0.0f, -2.25f, 0.0f),

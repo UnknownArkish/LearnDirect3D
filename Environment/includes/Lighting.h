@@ -52,6 +52,10 @@ struct PointLight
 		_Param1.y = color.y;
 		_Param1.z = color.z;
 	}
+	void SetIntensity(const float& Intensity)
+	{
+		_Param1.w = Intensity;
+	}
 	void SetPosition(const XMFLOAT3& position)
 	{
 		_Param2.x = position.x;

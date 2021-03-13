@@ -21,9 +21,10 @@ struct DirectionLight
 struct PointLight
 {
     float3 Color;
+    float Intensity;
 
-    float3 posWS;
-    float radius;
+    float3 PosWS;
+    float Radius;
 };
 
 DirectionLight CookDirectionLight(DirectionLightRaw rawData)
@@ -41,8 +42,9 @@ PointLight CookPointLight(PointLightRaw rawData)
     PointLight result;
     
     result.Color = rawData.param1.xyz;
-    result.posWS = rawData.param2.xyz;
-    result.radius = rawData.param2.w;
+    result.Intensity = rawData.param1.w;
+    result.PosWS = rawData.param2.xyz;
+    result.Radius = rawData.param2.w;
     
     return result;
 }

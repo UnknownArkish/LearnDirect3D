@@ -23,6 +23,7 @@ bool GameApp::Init()
 	InitGBuffer();
 	InitLighting();
 	InitOCB();
+	InitMCB();
 
 	return true;
 }
@@ -64,42 +65,73 @@ void GameApp::DrawScene()
 	{
 		// 1. BasePass
 		_ViewConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 0);
-		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
 		_ObjectConstantBuffer.VSBind(_pd3dDeviceContext.Get(), 1);
+		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+		_MaterialConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
 
 		_BasePassShader.Use(_pd3dDeviceContext.Get());
 
+		// Center
+		_ObjectConstantBuffer.SetBuffer(OCB_Center);
+		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_MaterialConstantBuffer.SetBuffer(MCB_White);
+		_MaterialConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_pRenderer->RenderSphere(_pd3dDeviceContext.Get());
+
+		// Left
 		_ObjectConstantBuffer.SetBuffer(OCB_Left);
 		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_MaterialConstantBuffer.SetBuffer(MCB_Red);
+		_MaterialConstantBuffer.Apply(_pd3dDeviceContext.Get());
 		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
 
+		// Down
 		_ObjectConstantBuffer.SetBuffer(OCB_Down);
 		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_MaterialConstantBuffer.SetBuffer(MCB_Green);
+		_MaterialConstantBuffer.Apply(_pd3dDeviceContext.Get());
 		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
 
+		// Right
 		_ObjectConstantBuffer.SetBuffer(OCB_Right);
 		_ObjectConstantBuffer.Apply(_pd3dDeviceContext.Get());
+		_MaterialConstantBuffer.SetBuffer(MCB_Blue);
+		_MaterialConstantBuffer.Apply(_pd3dDeviceContext.Get());
 		_pRenderer->RenderCube(_pd3dDeviceContext.Get());
 	}
 	UnsetGBufferAsRenderTarget();
+
+
+	SetGbuffer0AsRenderTarget();
+	{
+		// 2. DeferredPass
+		SetGBufferAsResourceView();
+		{
+			_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
+			_LightingConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
+
+			GBuffer.GBufferSampler.PSBind(_pd3dDeviceContext.Get(), 0);
+
+			_DeferredPassShader.Use(_pd3dDeviceContext.Get());
+			_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
+		}
+		UnsetGBufferAsResourceView();
+	}
+	UnsetGBuffer0AsRenderTarget();
+
 	// 恢复屏幕RT
 	_pd3dDeviceContext->OMSetRenderTargets(1, _pCachedRTV.GetAddressOf(), _pCachedDSV.Get());
 	_pd3dDeviceContext->RSSetViewports(NumViewPort, &_CacheVP);
 	_pCachedRTV.Reset();
 	_pCachedDSV.Reset();
 
-	// 2. DeferredPass
-	SetGBufferAsResourceView();
+	SetGbuffer0AsResourceView();
 	{
-		_ViewConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 0);
-		_LightingConstantBuffer.PSBind(_pd3dDeviceContext.Get(), 1);
-
 		GBuffer.GBufferSampler.PSBind(_pd3dDeviceContext.Get(), 0);
-
-		_DeferredPassShader.Use(_pd3dDeviceContext.Get());
+		_EndPassShader.Use(_pd3dDeviceContext.Get());
 		_pRenderer->RenderQuad(_pd3dDeviceContext.Get());
 	}
-	UnsetGBufferAsResourceView();
+	UnsetGBuffer0AsResourceView();
 
 	HR(_pSwapChain->Present(0, 0));
 }
@@ -130,15 +162,28 @@ void GameApp::InitShader()
 	Desc.ShaderModel = "ps_4_0";
 	HR(_DeferredPassShader.PSDeclare(_pd3dDevice.Get(), Desc));
 
+	Desc.FileName = L"EndPassVS.hlsl";
+	Desc.CsoName = L"EndPassVS.cso";
+	Desc.EntryPoint = "main";
+	Desc.ShaderModel = "vs_4_0";
+	HR(_EndPassShader.VSDeclare(_pd3dDevice.Get(), Desc));
+	Desc.FileName = L"EndPassPS.hlsl";
+	Desc.CsoName = L"EndPassPS.cso";
+	Desc.EntryPoint = "main";
+	Desc.ShaderModel = "ps_4_0";
+	HR(_EndPassShader.PSDeclare(_pd3dDevice.Get(), Desc));
+
 	_BasePassShader.VSSetDebugName("BasePassVS");
 	_BasePassShader.PSSetDebugName("BasePassPS");
-	_DeferredPassShader.VSSetDebugName("BasePassVS");
-	_DeferredPassShader.PSSetDebugName("BasePassPS");
+	_DeferredPassShader.VSSetDebugName("DeferredPassVS");
+	_DeferredPassShader.PSSetDebugName("DeferredPassPS");
+	_EndPassShader.VSSetDebugName("EndPassVS");
+	_EndPassShader.PSSetDebugName("EndPassPS");
 }
 
 void GameApp::InitResource()
 {
-	ViewConstantBuffer viewData;
+	ViewConstantBufferData viewData;
 	viewData.World2View = DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			DirectX::XMVectorSet(0.0f, 7, -10.0f, 0.0f),
@@ -151,10 +196,7 @@ void GameApp::InitResource()
 	_ViewConstantBuffer.SetBuffer(viewData);
 	_ViewConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
-	HR(_ObjectConstantBuffer.Declare(_pd3dDevice.Get()));
-
 	_ViewConstantBuffer.SetDebugName("ViewConstantBuffer");
-	_ObjectConstantBuffer.SetDebugName("ObjectConstantBuffer");
 }
 
 void GameApp::InitGBuffer()
@@ -165,14 +207,19 @@ void GameApp::InitGBuffer()
 void GameApp::InitLighting()
 {
 	HR(_LightingConstantBuffer.Declare(_pd3dDevice.Get()));
-	LightingConstantBuffer LightingData;
+	LightingConstantBufferData LightingData;
 	_LightingConstantBuffer.GetBuffer(LightingData);
 
 	LightingData.DirectionLights[0].SetColor(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 	LightingData.DirectionLights[0].SetDirection(DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f));
 
+	LightingData.PointLights[0].SetColor(DirectX::XMFLOAT3(0.5f, 0.6f, 0.8f));
+	LightingData.PointLights[0].SetIntensity(4);
+	LightingData.PointLights[0].SetPosition(DirectX::XMFLOAT3(0.0f, 3.5f, 3.0f));
+	LightingData.PointLights[0].SetRadius(10.0f);
+
 	LightingData.NumDirectionLight = 1;
-	LightingData.NumPointLight = 0;
+	LightingData.NumPointLight = 1;
 	_LightingConstantBuffer.SetBuffer(LightingData);
 	_LightingConstantBuffer.Apply(_pd3dDeviceContext.Get());
 
@@ -181,9 +228,12 @@ void GameApp::InitLighting()
 
 void GameApp::InitOCB()
 {
-	ZeroMemory(&OCB_Left, sizeof(ObjectConstantBuffer));
-	ZeroMemory(&OCB_Down, sizeof(ObjectConstantBuffer));
-	ZeroMemory(&OCB_Right, sizeof(ObjectConstantBuffer));
+	ZeroMemory(&OCB_Left, sizeof(ObjectConstantBufferData));
+	ZeroMemory(&OCB_Down, sizeof(ObjectConstantBufferData));
+	ZeroMemory(&OCB_Right, sizeof(ObjectConstantBufferData));
+
+	OCB_Center.Local2World = XMMatrixTranspose(XMMatrixScaling(3, 3, 3) * XMMatrixRotationZ(0.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	OCB_Center.World2Local = XMMatrixInverse(nullptr, OCB_Center.Local2World);
 
 	OCB_Left.Local2World = XMMatrixTranspose( XMMatrixScaling(5, 1, 5) * XMMatrixRotationZ(XM_PI / 2) * XMMatrixTranslation(-5.0f, 0.0f, 0.0f));
 	OCB_Left.World2Local = XMMatrixInverse(nullptr, OCB_Left.Local2World);
@@ -193,6 +243,20 @@ void GameApp::InitOCB()
 
 	OCB_Right.Local2World = XMMatrixTranspose( XMMatrixScaling(5, 1, 5) * XMMatrixRotationZ(XM_PI / 2) * XMMatrixTranslation(5.0f, 0.0f, 0.0f));
 	OCB_Right.World2Local = XMMatrixInverse(nullptr, OCB_Right.Local2World);
+
+	HR(_ObjectConstantBuffer.Declare(_pd3dDevice.Get()));
+	_ObjectConstantBuffer.SetDebugName("ObjectConstantBuffer");
+}
+
+void GameApp::InitMCB()
+{
+	MCB_Red.BaseColor = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	MCB_Green.BaseColor = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	MCB_Blue.BaseColor = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	MCB_White.BaseColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+	HR(_MaterialConstantBuffer.Declare(_pd3dDevice.Get()));
+	_MaterialConstantBuffer.SetDebugName("MaterialConstantBuffer");
 }
 
 void GameApp::SetGBufferAsRenderTarget()
@@ -228,6 +292,37 @@ void GameApp::UnsetGBufferAsRenderTarget()
 	
 	_pd3dDeviceContext->OMSetRenderTargets(Sheets.size(), pRenderTargetViews.data(), nullptr);
 }
+
+void GameApp::SetGbuffer0AsRenderTarget()
+{
+	static float black[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	_pd3dDeviceContext->ClearRenderTargetView(GBuffer.GBuffer0.pRTV.Get(), black);
+	_pd3dDeviceContext->ClearDepthStencilView(GBuffer.pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	_pd3dDeviceContext->OMSetRenderTargets(1, GBuffer.GBuffer0.pRTV.GetAddressOf(), GBuffer.pDepthStencilView.Get());
+	_pd3dDeviceContext->RSSetViewports(1, &GBuffer.Viewport);
+}
+
+void GameApp::UnsetGBuffer0AsRenderTarget()
+{
+	std::vector<ID3D11RenderTargetView*> pRenderTargetViews;
+	pRenderTargetViews.push_back(nullptr);
+	
+	_pd3dDeviceContext->OMSetRenderTargets(1, pRenderTargetViews.data(), nullptr);
+}
+
+void GameApp::SetGbuffer0AsResourceView()
+{
+	GBuffer.GBuffer0.View.PSBind(_pd3dDeviceContext.Get(), 0);
+}
+
+void GameApp::UnsetGBuffer0AsResourceView()
+{
+	std::vector<ID3D11ShaderResourceView*> _pSRVs;
+	_pSRVs.push_back(nullptr);
+	_pd3dDeviceContext->PSSetShaderResources(0, 1, _pSRVs.data());
+}
+
 
 void GameApp::SetGBufferAsResourceView()
 {
@@ -350,6 +445,7 @@ HRESULT GBufferSheets::Declare(ID3D11Device* Device, UINT Width, UINT Height)
 	HRESULT Result = E_NOTIMPL;
 	ComPtr<ID3D11Texture2D> TempTex;
 
+	DECLARE_GBUFFER_SHEET(GBuffer0, Device, Width, Height);
 	DECLARE_GBUFFER_SHEET(GBufferA, Device, Width, Height);
 	DECLARE_GBUFFER_SHEET(GBufferB, Device, Width, Height);
 	DECLARE_GBUFFER_SHEET(GBufferC, Device, Width, Height);

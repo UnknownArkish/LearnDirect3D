@@ -2,8 +2,13 @@
 #include "VertexLayoutCommon.hlsli"
 #include "ConstantBufferCommon0.hlsli"
 #include "GBufferCommon.hlsli"
+#include "BasePassCommon.hlsli"
 
 CONSTANT_BUFFER_VIEW(0)
+cbuffer MaterialConstantBuffer : register(b1)
+{
+    MaterialConstantBufferData gMaterialData;
+}
 
 struct BasePassPSOutput
 {
@@ -23,7 +28,7 @@ BasePassPSOutput main( UniversalVS2PS Input)
     Data.PositionWS = Input.posWS;
     Data.DepthCS = (posHS.xyz / posHS.w).z;
     Data.NormalWS = normalize(Input.normalWS);
-    Data.BaseColor = float3(1.0f, 1.0f, 1.0f);
+    Data.BaseColor = gMaterialData.BaseColor;
     
     GBufferDataEncode Encode;
     EncodeGBuffer(Data, Encode);

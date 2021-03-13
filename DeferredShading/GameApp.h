@@ -10,9 +10,9 @@
 #include <SamplerState.h>
 #include <Lighting.h>
 
-struct LightingConstantBuffer
+struct LightingConstantBufferData
 {
-	LightingConstantBuffer()
+	LightingConstantBufferData()
 		: NumDirectionLight(0), NumPointLight(0),
 		_pad_0(), _pad_1()
 	{}
@@ -24,9 +24,9 @@ struct LightingConstantBuffer
 	float _pad_0; float _pad_1;
 };
 
-struct MaterialConstantBuffer
+struct MaterialConstantBufferData
 {
-	MaterialConstantBuffer()
+	MaterialConstantBufferData()
 		: BaseColor(0.0f, 0.0f, 0.0f)
 	{}
 
@@ -62,6 +62,7 @@ public:
 	
 	D3D11_VIEWPORT Viewport;
 
+	GBufferSheet GBuffer0;
 	GBufferSheet GBufferA;
 	GBufferSheet GBufferB;
 	GBufferSheet GBufferC;
@@ -84,23 +85,37 @@ private:
 	void InitGBuffer();
 	void InitLighting();
 	void InitOCB();
+	void InitMCB();
 
 	void SetGBufferAsRenderTarget();
 	void UnsetGBufferAsRenderTarget();
 	void SetGBufferAsResourceView();
 	void UnsetGBufferAsResourceView();
+
+	void SetGbuffer0AsRenderTarget();
+	void UnsetGBuffer0AsRenderTarget();
+	void SetGbuffer0AsResourceView();
+	void UnsetGBuffer0AsResourceView();
 private:
 	Shader _BasePassShader;
 	Shader _DeferredPassShader;
+	Shader _EndPassShader;
 
-	ObjectConstantBuffer OCB_Left;
-	ObjectConstantBuffer OCB_Down;
-	ObjectConstantBuffer OCB_Right;
+	ObjectConstantBufferData OCB_Center;
+	ObjectConstantBufferData OCB_Left;
+	ObjectConstantBufferData OCB_Down;
+	ObjectConstantBufferData OCB_Right;
 
-	ConstantBuffer<ViewConstantBuffer> _ViewConstantBuffer;
-	ConstantBuffer<ObjectConstantBuffer> _ObjectConstantBuffer;
+	MaterialConstantBufferData MCB_Red;
+	MaterialConstantBufferData MCB_Green;
+	MaterialConstantBufferData MCB_Blue;
+	MaterialConstantBufferData MCB_White;
 
-	ConstantBuffer<LightingConstantBuffer> _LightingConstantBuffer;
+	ConstantBuffer<ViewConstantBufferData> _ViewConstantBuffer;
+	ConstantBuffer<ObjectConstantBufferData> _ObjectConstantBuffer;
+
+	ConstantBuffer<LightingConstantBufferData> _LightingConstantBuffer;
+	ConstantBuffer<MaterialConstantBufferData> _MaterialConstantBuffer;
 
 	ComPtr<ID3D11RenderTargetView> _pCachedRTV;
 	ComPtr<ID3D11DepthStencilView> _pCachedDSV;
