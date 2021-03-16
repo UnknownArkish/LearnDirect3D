@@ -16,18 +16,26 @@ struct DirectionLight
 		_Param1.y = color.y;
 		_Param1.z = color.z;
 	}
+	void SetIntensity(const float& intensity)
+	{
+		_Param1.w = intensity;
+	}
 	void SetDirection(const XMFLOAT3& direction)
 	{
 		_Param2.x = direction.x;
 		_Param2.y = direction.y;
 		_Param2.z = direction.z;
 	}
-
+	
 	void GetColor(XMFLOAT3& output)
 	{
 		output.x = _Param1.x;
 		output.y = _Param1.y;
 		output.z = _Param1.z;
+	}
+	void GetIntensity(float& Output)
+	{
+		Output = _Param1.w;
 	}
 	void GetDirection(XMFLOAT3& output)
 	{

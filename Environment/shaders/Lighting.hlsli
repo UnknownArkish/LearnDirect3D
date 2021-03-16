@@ -14,6 +14,7 @@ struct PointLightRaw
 struct DirectionLight
 {
     float3 Color;
+    float Intensity;
 
     float3 DirectionWS;
 };
@@ -32,6 +33,7 @@ DirectionLight CookDirectionLight(DirectionLightRaw rawData)
     DirectionLight result;
     
     result.Color = rawData.param1.xyz;
+    result.Intensity = rawData.param1.w;
     result.DirectionWS = normalize(rawData.param2.xyz);
     
     return result;

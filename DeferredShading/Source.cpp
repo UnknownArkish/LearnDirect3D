@@ -12,7 +12,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	float aspect = 4.0f / 3;
+	float aspect = 16.0f / 9.0;
 	float height = 450;
 
 	GameApp theApp(hInstance, aspect * height, height);

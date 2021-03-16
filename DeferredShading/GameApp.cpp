@@ -256,15 +256,16 @@ void GameApp::InitLighting()
 	_LightingConstantBuffer.GetBuffer(LightingData);
 
 	LightingData.DirectionLights[0].SetColor(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+	LightingData.DirectionLights[0].SetIntensity(7.0f);
 	LightingData.DirectionLights[0].SetDirection(DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f));
 
 	LightingData.PointLights[0].SetColor(DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f));
-	LightingData.PointLights[0].SetIntensity(1);
+	LightingData.PointLights[0].SetIntensity(2.0f);
 	LightingData.PointLights[0].SetPosition(DirectX::XMFLOAT3(0.0f, 8.0f, 0.0f));
 	LightingData.PointLights[0].SetRadius(32.0f);
 
 	LightingData.PointLights[1].SetColor(DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f));
-	LightingData.PointLights[1].SetIntensity(1);
+	LightingData.PointLights[1].SetIntensity(1.5f);
 	LightingData.PointLights[1].SetPosition(DirectX::XMFLOAT3(0.0f, -1.0f, -5.0f));
 	LightingData.PointLights[1].SetRadius(16.0f);
 

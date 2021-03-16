@@ -66,5 +66,8 @@
     <None Include="BasePassCommon.hlsli">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="BRDF.hlsli">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

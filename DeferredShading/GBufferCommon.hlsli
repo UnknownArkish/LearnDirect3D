@@ -46,7 +46,7 @@ void EncodeGBuffer(
 {
     OutEncode.GBuffer0 = Data.ScreenColor;
     OutEncode.GBufferA = float4(Data.PositionWS.xyz, Data.DepthCS);
-    OutEncode.GBufferB = float4(Data.NormalWS, Data.Roughness);
+    OutEncode.GBufferB = float4(Data.NormalWS.xyz, Data.Roughness);
     OutEncode.GBufferC = float4(Data.BaseColor.xyz, Data.Metallic);
 }
 
