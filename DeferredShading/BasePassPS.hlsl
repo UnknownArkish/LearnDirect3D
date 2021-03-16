@@ -28,7 +28,9 @@ BasePassPSOutput main( UniversalVS2PS Input)
     Data.PositionWS = Input.posWS;
     Data.DepthCS = (posHS.xyz / posHS.w).z;
     Data.NormalWS = normalize(Input.normalWS);
+    Data.Roughness = gMaterialData.Roughness;
     Data.BaseColor = gMaterialData.BaseColor;
+    Data.Metallic = gMaterialData.Metallic;
     
     GBufferDataEncode Encode;
     EncodeGBuffer(Data, Encode);

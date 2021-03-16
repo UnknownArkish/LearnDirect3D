@@ -23,7 +23,7 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
     
     float3 FinalColor = float3(0.0f, 0.0f, 0.0f);
     float Min = -0.2f, Max = 0.2f;
-    float Step = 0.02f;
+    float Step = 0.015f;
     //[unroll(21)]
     for (float x = Min; x < Max; x+= Step)
     {
@@ -48,13 +48,13 @@ float4 main(DeferredPassVS2PS Input) : SV_TARGET
                     dot(NewData.NormalWS, normalize(Data.PositionWS - NewData.PositionWS)) *
                     max(dot(Data.NormalWS, normalize(NewData.PositionWS - Data.PositionWS)), 0)
                 );
-                E /= (1.0f + pow(length(Data.PositionWS - NewData.PositionWS), 4));
+                E /= (1.0f + pow(length(Data.PositionWS - NewData.PositionWS), 2));
                 
                 FinalColor += E * NewData.ScreenColor;
             }
         }
     }
-    FinalColor *= 1.0f;
+    FinalColor *= 0.15f;
     
     return float4(Data.ScreenColor.xyz + FinalColor.xyz, Data.ScreenColor.w);
 }

@@ -7,15 +7,18 @@ struct GBufferData
     float DepthCS;
     
     float3 NormalWS;
+    float Roughness;
+    
     float3 BaseColor;
+    float Metallic;
 };
 
 struct GBufferDataEncode
 {
     float4 GBuffer0;        // ScreenColor
     float4 GBufferA;        // PositionWS + DepthCS
-    float4 GBufferB;        // NormalWS
-    float4 GBufferC;        // BaseColor
+    float4 GBufferB;        // NormalWS + Roughness
+    float4 GBufferC;        // BaseColor + Metallic
 };
 
 void InitGBufferData(inout GBufferData Data)
@@ -24,7 +27,9 @@ void InitGBufferData(inout GBufferData Data)
     Data.PositionWS = float3(0.0f, 0.0f, 0.0f);
     Data.DepthCS = 1.0f;
     Data.NormalWS = float3(1.0f, 0.0f, 0.0f);
+    Data.Roughness = 0.0f;
     Data.BaseColor = float3(0.0f, 0.0f, 0.0f);
+    Data.Metallic = 0.0f;
 }
 void InitGBufferDataEncode(inout GBufferDataEncode Encode)
 {
@@ -41,8 +46,8 @@ void EncodeGBuffer(
 {
     OutEncode.GBuffer0 = Data.ScreenColor;
     OutEncode.GBufferA = float4(Data.PositionWS.xyz, Data.DepthCS);
-    OutEncode.GBufferB = float4(Data.NormalWS, 0.0f);
-    OutEncode.GBufferC = float4(Data.BaseColor.xyz, 0.0f);
+    OutEncode.GBufferB = float4(Data.NormalWS, Data.Roughness);
+    OutEncode.GBufferC = float4(Data.BaseColor.xyz, Data.Metallic);
 }
 
 void DecodeGBuffer(
@@ -54,7 +59,9 @@ void DecodeGBuffer(
     OutData.PositionWS = Encode.GBufferA.xyz;
     OutData.DepthCS = Encode.GBufferA.w;
     OutData.NormalWS = Encode.GBufferB.xyz;
+    OutData.Roughness = Encode.GBufferB.w;
     OutData.BaseColor = Encode.GBufferC.xyz;
+    OutData.Metallic = Encode.GBufferC.w;
 }
 
 GBufferData SampleGBuffer( float2 uvs, 
