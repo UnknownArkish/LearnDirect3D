@@ -89,7 +89,7 @@ struct PointLight
 	}
 	void GetRadius(float& radius)
 	{
-		radius - _Param2.w;
+		radius = _Param2.w;
 	}
 private:
 	XMFLOAT4 _Param1;

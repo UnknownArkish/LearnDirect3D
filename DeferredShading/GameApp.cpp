@@ -110,7 +110,6 @@ void GameApp::DrawScene()
 	}
 	UnsetGBufferAsRenderTarget();
 
-
 	SetGbuffer0AsRenderTarget();
 	{
 		_pd3dDeviceContext->OMSetDepthStencilState(_DepthStencilState.Get(), 0xffffffff);
